@@ -14,13 +14,6 @@
     <name>cryptolibrary</name>
     <description>Progetto CRYPTOLIBRARY</description>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/RegioneER/parer.sacer.parent</url>
-        </repository> 
-    </distributionManagement>
-
     <repositories>
         <repository>
             <id>github</id>
