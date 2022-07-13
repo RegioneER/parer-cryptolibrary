@@ -8,7 +8,7 @@
     </parent>
     <groupId>it.eng.parer</groupId>
     <artifactId>cryptolibrary</artifactId>    
-    <version>1.12.5</version>
+    <version>1.12.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>cryptolibrary</name>
@@ -117,7 +117,7 @@
     
     <scm>
         <developerConnection>scm:git:https://github.com/RegioneER/parer.sacer.cryptolibrary.git</developerConnection>
-        <tag>cryptolibrary-1.12.5</tag>
+        <tag>HEAD</tag>
     </scm>
     
     
