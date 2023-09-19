@@ -1,16 +1,33 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.crypto.controller.impl.signature;
 
-import it.eng.crypto.controller.bean.DocumentAndTimeStampInfoBean;
 import java.util.List;
 
+import org.bouncycastle.tsp.TimeStampToken;
+
+import it.eng.crypto.controller.bean.DocumentAndTimeStampInfoBean;
 import it.eng.crypto.controller.bean.InputSignerBean;
 import it.eng.crypto.controller.bean.OutputSignerBean;
 import it.eng.crypto.controller.exception.ExceptionController;
 import it.eng.crypto.data.AbstractSigner;
 import it.eng.crypto.data.signature.ISignature;
 import it.eng.crypto.utils.VerificheEnums.TipoRifTemporale;
-import java.util.ArrayList;
-import org.bouncycastle.tsp.TimeStampToken;
 
 /**
  * Recupera il contenuto della busta tramite la chiamata al metodo
@@ -48,7 +65,7 @@ public class SignatureExtraction extends AbstractSignerController {
 
                 // 0 - Riferimento temporale ESTERNO PASSATO (CASO DELLA CHIUSURA DEI VOLUMI - Il paramentro è settato
                 // nel contesto xml spring)
-                if (input.getUseExternalReferenceTime()) {
+                if (input.getUseExternalReferenceTime().booleanValue()) {
                     s.setReferenceDate(input.getReferenceDate());
                 } else {
                     TimeStampToken tst = null;
@@ -63,7 +80,7 @@ public class SignatureExtraction extends AbstractSignerController {
                         s.setReferenceDateType(TipoRifTemporale.MT_VERS_NORMA.toString());
                     } // 2 - Riferimento temporale settato da un TSD, TSR o M7M che si trova in una busta esterna a
                       // quella corrente
-                    else if (input.getUseExternalTsdTsrM7MEnvelop()) {
+                    else if (input.getUseExternalTsdTsrM7MEnvelop().booleanValue()) {
                         s.setReferenceDate(input.getReferenceDate());
                         s.setReferenceDateType(TipoRifTemporale.MT_VERS_NORMA.toString());
                     } // 3 - La Marca detached (o embedded M7M) più vecchia tra le detached e solo se valida (da usare
@@ -85,7 +102,7 @@ public class SignatureExtraction extends AbstractSignerController {
                       // data di versamento)
                     else {
                         s.setReferenceDate(input.getReferenceDate());
-                        s.setReferenceDateType(input.getReferenceDateType());
+                        s.setReferenceDateType(TipoRifTemporale.DATA_VERS.toString());
                     }
 
                 }

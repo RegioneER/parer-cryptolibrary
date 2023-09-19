@@ -1,4 +1,47 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.crypto.controller.impl.timestamp;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.math.BigInteger;
+import java.security.Principal;
+import java.security.PublicKey;
+import java.security.cert.CRL;
+import java.security.cert.CertStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.X509CRL;
+import java.security.cert.X509CRLEntry;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.security.auth.x500.X500Principal;
+
+import org.bouncycastle.tsp.GenTimeAccuracy;
+import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.tsp.TimeStampTokenInfo;
 
 import it.eng.crypto.FactorySigner;
 import it.eng.crypto.controller.ITimeStampController;
@@ -13,36 +56,6 @@ import it.eng.crypto.exception.CryptoStorageException;
 import it.eng.crypto.storage.ICAStorage;
 import it.eng.crypto.storage.ICRLStorage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.math.BigInteger;
-import java.security.Principal;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.cert.CRL;
-import java.security.cert.CertStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.X509CRL;
-import java.security.cert.X509CRLEntry;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.tsp.GenTimeAccuracy;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.tsp.TimeStampTokenInfo;
-
 /**
  * Consente di effettuare l'analisi di file contenenti marche temporali (metodo {@link checkTimeStamps(File)} ), oppure
  * associati a marche temporali detached (metodo {@link checkTimeStamps(File, File)} ]. Nel caso siano presenti delle
@@ -53,6 +66,7 @@ import org.bouncycastle.tsp.TimeStampTokenInfo;
  * @author Stefano Zennaro
  *
  */
+@SuppressWarnings("unchecked")
 public class TimeStampController implements ITimeStampController {
 
     private AbstractSigner signer;
@@ -130,7 +144,7 @@ public class TimeStampController implements ITimeStampController {
 
                         X509Certificate qualifiedCertificate = certificatesAuthorityStorage.retriveCA(
                                 saX509Certificate.getSubjectX500Principal(),
-                                signerUtil.getSubjectKeyId(saX509Certificate));
+                                SignerUtil.getSubjectKeyId(saX509Certificate));
                         if (qualifiedCertificate == null) {
                             isCertificateInList = false;
                             validationInfos.addError("Il certificato della TSA non è accreditato");
@@ -154,8 +168,9 @@ public class TimeStampController implements ITimeStampController {
                                                     + " è precedente alla data di inizio validità del certificato: "
                                                     + qualifiedCertificate.getNotBefore());
                                     isCertificateInList = false;
-                                } else
+                                } else {
                                     isCertificateInList = true;
+                                }
                             } else {
                                 validationInfos.addError(
                                         "La TSA indicata nel timestamp non corrisponde a quella salvata nello storage");
@@ -163,7 +178,7 @@ public class TimeStampController implements ITimeStampController {
                             }
                         }
 
-                        if (isCertificateInList) {
+                        if (isCertificateInList.booleanValue()) {
                             /*
                              * controllo che il certificato non faccia parte della CRL indicata dalla TSA
                              */
@@ -180,9 +195,9 @@ public class TimeStampController implements ITimeStampController {
 
                             // Verifico se la data di prossimo aggiornamento della CRL è >= della
                             // data del riferimento temporale
-                            if (historicalCRL != null && historicalCRL.getNextUpdate().after(timestampDate))
+                            if (historicalCRL != null && historicalCRL.getNextUpdate().after(timestampDate)) {
                                 checkCRL(validationInfos, saX509Certificate, historicalCRL, timestampDate);
-                            else {
+                            } else {
 
                                 // Se la CRL storica non è stato trovata oppure
                                 // se il suo periodo di validità non è applicabile
@@ -202,14 +217,14 @@ public class TimeStampController implements ITimeStampController {
                                         try {
                                             crlStorage.upsertCRL(envelopeCrl);
                                         } catch (CryptoStorageException e) {
-                                            // TODO Auto-generated catch block
                                             e.printStackTrace();
                                         }
 
                                         // Controllo la validità del certificato rispetto alla crl scaricata
                                         checkCRL(validationInfos, saX509Certificate, envelopeCrl, timestampDate);
-                                    } else
+                                    } else {
                                         throw new CryptoSignerException();
+                                    }
 
                                 } catch (CryptoSignerException e) {
 
@@ -284,11 +299,12 @@ public class TimeStampController implements ITimeStampController {
                                                     }
                                                 }
 
-                                                if (!existsEmbeddedCRLReferredToIssuer)
+                                                if (!existsEmbeddedCRLReferredToIssuer) {
                                                     validationInfos.addWarning(
                                                             "CRL non verificabile: nella busta sono presenti "
                                                                     + embeddedCRLs.size()
                                                                     + " CRL ma nessuna è valida rispetto al certificato dell'issuer");
+                                                }
                                             }
                                         }
                                     } else {
@@ -314,8 +330,9 @@ public class TimeStampController implements ITimeStampController {
          * Controllo della validità attuale del timestamp
          */
         if (executeCurrentDateValidation && !timeStampValidator.isTimeStampCurrentlyValid(timeStampToken,
-                getTimeStampValidityForTimeStampToken(timeStampToken)))
+                getTimeStampValidityForTimeStampToken(timeStampToken))) {
             validationInfos.addError("La marca temporale non è attualmente valida");
+        }
 
     }
 
@@ -352,7 +369,7 @@ public class TimeStampController implements ITimeStampController {
     public DocumentAndTimeStampInfoBean[] checkTimeStamps(File file, boolean executeCurrentDateValidation)
             throws FileNotFoundException, CryptoSignerException {
 
-        List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfoList = new ArrayList<DocumentAndTimeStampInfoBean>();
+        List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfoList = new ArrayList<>();
 
         signer = signerUtil.getSignerManager(file);
         TimeStampToken[] timeStampTokens = signer.getTimeStampTokens();
@@ -436,14 +453,12 @@ public class TimeStampController implements ITimeStampController {
      * 
      * @return informazioni sulle marche temporali contenute nella busta
      * 
-     * @throws FileNotFoundException
-     *             se il file da analizzare non può essere recuperato
      * @throws CryptoSignerException
      *             se si è verificato un errore durante le fasi di analisi
      */
     private DocumentAndTimeStampInfoBean[] checkTimeStamps(File file, File detachedTimeStamp,
-            boolean executeCurrentDateValidation) throws FileNotFoundException, CryptoSignerException {
-        List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfoList = new ArrayList<DocumentAndTimeStampInfoBean>();
+            boolean executeCurrentDateValidation) throws CryptoSignerException {
+        List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfoList = new ArrayList<>();
         signer = signerUtil.getSignerManager(detachedTimeStamp);
 
         TimeStampToken[] timeStampTokens = signer.getTimeStampTokens();
@@ -518,11 +533,12 @@ public class TimeStampController implements ITimeStampController {
         X509CRLEntry crlEntry = crl.getRevokedCertificate(signatureCertificate);
         // il certificato è stato revocato
         if (crlEntry != null) {
-            if (date != null && crlEntry.getRevocationDate().before(date))
+            if (date != null && crlEntry.getRevocationDate().before(date)) {
                 validationInfos.addError("Certificato revocato in data: " + crlEntry.getRevocationDate()
                         + " (antecedente a: " + date + ")");
-            else if (date == null)
+            } else if (date == null) {
                 validationInfos.addError("Certificato già revocato in data: " + crlEntry.getRevocationDate());
+            }
         }
     }
 
@@ -587,11 +603,12 @@ public class TimeStampController implements ITimeStampController {
             File[] timeStampExtensionChain) throws CryptoSignerException {
 
         // Controllo se esiste una catena di estensioni del timestamp
-        if (timeStampExtensionChain == null)
+        if (timeStampExtensionChain == null) {
             return;
+        }
 
         // Recupero i timestampToken presenti nel documento
-        List<TimeStampToken> timeStampTokens = new ArrayList<TimeStampToken>();
+        List<TimeStampToken> timeStampTokens = new ArrayList<>();
         for (DocumentAndTimeStampInfoBean documentAndTimeStampInfo : documentAndTimeStampInfos) {
             timeStampTokens.add(documentAndTimeStampInfo.getTimeStampToken());
         }
@@ -625,8 +642,8 @@ public class TimeStampController implements ITimeStampController {
                         List<TimeStampToken> timeStampExtensionTokens = documentAndTimeStampInfo
                                 .getTimeStampExtensionChain();
                         if (timeStampExtensionTokens == null) {
-                            documentAndTimeStampInfo.setTimeStampExtensionChain(
-                                    timeStampExtensionTokens = new ArrayList<TimeStampToken>());
+                            timeStampExtensionTokens = new ArrayList<>();
+                            documentAndTimeStampInfo.setTimeStampExtensionChain(timeStampExtensionTokens);
                         }
                         timeStampExtensionTokens.addAll(Arrays.asList(timeStampExtensions));
                     }
@@ -642,7 +659,7 @@ public class TimeStampController implements ITimeStampController {
                 }
 
                 // Verifico l'attuale validità dell'ultima estensione del timestamp
-                if (i == timeStampExtensionChain.length - 1) {
+                if (timeStampExtensions != null && i == timeStampExtensionChain.length - 1) {
                     if (!validateLastTimeStampExtensions(documentAndTimeStampInfos, timeStampExtensions,
                             timeStampExtensionFile))
                         break;
@@ -670,7 +687,6 @@ public class TimeStampController implements ITimeStampController {
                                 + tmpValidationInfos.getErrors() },
                         null);
             }
-            // if (tmpValidationInfos.getWarnings()!=null && tmpValidationInfos.getWarnings().size()!=0){
             if (tmpValidationInfos.getWarnings() != null && tmpValidationInfos.getWarnings().length != 0) {
                 setAllValidationInfos(documentAndTimeStampInfos, null,
                         new String[] { "L'estensione della marca temporale #" + (i + 1) + " contenuta nel file: "
@@ -725,11 +741,13 @@ public class TimeStampController implements ITimeStampController {
 
     private void setAllValidationInfos(DocumentAndTimeStampInfoBean[] documentAndTimeStampInfos, String[] errors,
             String[] warnings) {
-        if (documentAndTimeStampInfos == null)
+        if (documentAndTimeStampInfos == null) {
             return;
+        }
         for (DocumentAndTimeStampInfoBean documentAndTimeStampInfo : documentAndTimeStampInfos) {
-            if (documentAndTimeStampInfo.getValidationInfos() == null)
+            if (documentAndTimeStampInfo.getValidationInfos() == null) {
                 documentAndTimeStampInfo.setValidationInfos(new ValidationInfos());
+            }
             ValidationInfos validationInfos = documentAndTimeStampInfo.getValidationInfos();
             validationInfos.addErrors(errors);
             validationInfos.addWarnings(warnings);
@@ -737,8 +755,9 @@ public class TimeStampController implements ITimeStampController {
     }
 
     private TimeStampValidityBean getTimeStampValidityForTimeStampToken(TimeStampToken timeStampToken) {
-        if (timeStampValidity == null || timeStampValidity.size() == 0)
+        if (timeStampValidity == null || timeStampValidity.isEmpty()) {
             return null;
+        }
         TimeStampValidityBean result = null;
         Iterator<TimeStampValidityBean> iterator = timeStampValidity.iterator();
         Calendar timeStampTokenCalendar = Calendar.getInstance();
@@ -746,14 +765,15 @@ public class TimeStampController implements ITimeStampController {
         Calendar tmpCal = Calendar.getInstance();
         while (iterator.hasNext()) {
             TimeStampValidityBean timeStampValidityBean = iterator.next();
-            if (timeStampValidityBean.getBegin() == null)
+            if (timeStampValidityBean.getBegin() == null) {
                 result = timeStampValidityBean;
-            else {
+            } else {
                 tmpCal.setTime(timeStampValidityBean.getBegin());
-                if (tmpCal.before(timeStampTokenCalendar))
+                if (tmpCal.before(timeStampTokenCalendar)) {
                     result = timeStampValidityBean;
-                else
+                } else {
                     break;
+                }
             }
         }
         return result;
