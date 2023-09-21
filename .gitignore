@@ -1,6 +1,5 @@
-target
-.project
+target/
+nb-configuration.xml
 .classpath
 .settings
-nb-configuration.xml
-nbactions.xml
+.project

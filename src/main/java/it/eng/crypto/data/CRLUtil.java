@@ -1,3 +1,20 @@
+/*
+ * Engineering Ingegneria Informatica S.p.A.
+ *
+ * Copyright (C) 2023 Regione Emilia-Romagna
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.eng.crypto.data;
 
 import java.io.ByteArrayInputStream;
@@ -58,6 +75,10 @@ import org.slf4j.LoggerFactory;
 
 import it.eng.crypto.CryptoConfiguration;
 import it.eng.crypto.exception.CryptoSignerException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class CRLUtil {
 
@@ -71,9 +92,9 @@ public class CRLUtil {
      *
      * @param url
      *            ottieni le CRL dall'url (se raggiungibile)
-     * 
+     *
      * @return CRL o null
-     * 
+     *
      * @throws IOException
      * @throws CryptoSignerException
      * @throws Exception
@@ -151,9 +172,9 @@ public class CRLUtil {
      * Recupera le CRL tramite il protocollo LDAP
      *
      * @param url
-     * 
+     *
      * @return
-     * 
+     *
      * @throws Exception
      */
     X509CRL searchCrlByLDAP(String url) throws Exception {
@@ -206,16 +227,23 @@ public class CRLUtil {
 
         return ret;
     }
+
+    X509CRL ricercaCrlByFile(String url) throws IOException, Exception {
+        Path crlPath = Paths.get(new URI(url));
+        byte[] crlBytes = Files.readAllBytes(crlPath);
+        return parse(crlBytes);
+
+    }
+
     // ******************************************************************************************************************************
     // Metodi di utilità
     // ******************************************************************************************************************************
-
     /**
      * Parsa l'array di byte in ingresso per recuperare la CRL
-     * 
+     *
      * @param crlEnc
      *            byte array della crl così come fornito dall'url
-     * 
+     *
      * @return crl o null
      */
     public static X509CRL parse(byte[] crlEnc) throws Exception {
@@ -259,10 +287,10 @@ public class CRLUtil {
      * In alcuni casi il base64 decoder di BC non è in grado di interpretare il base64 del certificato perché
      * presentato su più righe. In questo caso elimino i caratteri di fine linea (e il boundary del ascii armor) ed
      * utilizzo il decoder standard di java.
-     * 
+     *
      * @param crlEnc
      *            CRL in formato base64
-     * 
+     *
      * @return oggetto CRL (o null)
      */
     private static X509CRL repairCRLBase64(byte[] crlEnc) {
@@ -293,12 +321,12 @@ public class CRLUtil {
 
     /**
      * Ottieni la CRL utilizzando il provider X.509 predefinito di Java.
-     * 
+     *
      * @param crlData
      *            CRL in forma binaria (DER)
-     * 
+     *
      * @return oggetto crl o null
-     * 
+     *
      * @throws CRLException
      *             in caso di errore sulla CRL
      * @throws CertificateException
@@ -317,12 +345,12 @@ public class CRLUtil {
 
     /**
      * Ottieni la CRL utilizzando il provider X.509 BouncyCastle.
-     * 
+     *
      * @param crlData
      *            CRL in forma binaria (DER)
-     * 
+     *
      * @return oggetto crl o null
-     * 
+     *
      * @throws CertificateException
      *             in caso di errore sul certificato
      * @throws NoSuchProviderException
