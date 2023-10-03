@@ -14,6 +14,13 @@
     <name>cryptolibrary</name>
     <description>Progetto CRYPTOLIBRARY</description>
 
+    <distributionManagement>
+        <repository>
+	   <id>github</id>
+	   <url>https://maven.pkg.github.com/RegioneER/parer-cryptolibrary</url>
+	 </repository>      
+    </distributionManagement>
+    
     <repositories>
         <repository>
             <id>github</id>
