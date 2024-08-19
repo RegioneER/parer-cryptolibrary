@@ -19,7 +19,7 @@ package it.eng.crypto.data.type;
 
 /**
  * Definisce la lista dei possibili formati di firma digitale
- * 
+ *
  * @author Administrator
  *
  */

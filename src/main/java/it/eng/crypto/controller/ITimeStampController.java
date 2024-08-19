@@ -37,9 +37,9 @@ public interface ITimeStampController {
      *
      * @param file
      *            file contenente il documento e la marca temporale
-     * 
+     *
      * @return informazioni relative alla marca temporale
-     * 
+     *
      * @throws FileNotFoundException
      * @throws CryptoSignerException
      */
@@ -49,9 +49,9 @@ public interface ITimeStampController {
      *
      * @param file
      *            file contenente il documento e la marca temporale
-     * 
+     *
      * @return informazioni relative alla marca temporale
-     * 
+     *
      * @throws FileNotFoundException
      * @throws CryptoSignerException
      */
@@ -66,9 +66,9 @@ public interface ITimeStampController {
      *            file contenente il documento e la marca temporale
      * @param timeStampExtensionChain
      *            lista dei timestamp che estendono le marche temporali
-     * 
+     *
      * @return informazioni relative alle marche temporali
-     * 
+     *
      * @throws FileNotFoundException
      * @throws CryptoSignerException
      */
@@ -82,9 +82,9 @@ public interface ITimeStampController {
      *            file contenente il documento
      * @param detachedTimeStamp
      *            file contente la marca temporale del documento
-     * 
+     *
      * @return informazioni relative alle marche temporali
-     * 
+     *
      * @throws CryptoSignerException
      * @throws FileNotFoundException
      */
@@ -101,9 +101,9 @@ public interface ITimeStampController {
      *            file contente le marche temporali del documento
      * @param timeStampExtensionChain
      *            lista dei timestamp che estendono le marche temporali
-     * 
+     *
      * @return informazioni relative alle marche temporali
-     * 
+     *
      * @throws FileNotFoundException
      * @throws CryptoSignerException
      */

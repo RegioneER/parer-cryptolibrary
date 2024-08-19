@@ -74,9 +74,9 @@ public class MasterTimeStampController {
      *
      * @param input
      *            bean contenente le informazioni in input per eseguire i controlli
-     * 
+     *
      * @return
-     * 
+     *
      * @throws ExceptionController
      */
     public OutputTimeStampBean executeControll(InputTimeStampBean input) throws ExceptionController {

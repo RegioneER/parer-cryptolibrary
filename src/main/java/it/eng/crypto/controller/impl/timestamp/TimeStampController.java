@@ -62,7 +62,7 @@ import it.eng.crypto.storage.ICRLStorage;
  * marche temporali aggiuntive (che estendono quella da analizzare), esse devono essere specificate come parametri
  * aggiuntivi del metodo corrispondente all'interno di un array, ad esempio:<br/>
  * <code>checkTimeStamps(contentFileWithTimeStamp, new File[]{timeStampExtension1 timestampExtension2,..})</code>
- * 
+ *
  * @author Stefano Zennaro
  *
  */
@@ -338,7 +338,7 @@ public class TimeStampController implements ITimeStampController {
 
     /**
      * Effetta l'analisi di un file contenente marche temporali.
-     * 
+     *
      * Il risultato dell’analisi produce una struttura contenente gli esiti dei seguenti controlli:
      * <ul>
      * <li>Riconoscimento del formato di busta</li>
@@ -353,14 +353,14 @@ public class TimeStampController implements ITimeStampController {
      * </li>
      * <li>Eventuale controllo di validità rispetto alla data corrente</li>
      * </ul>
-     * 
+     *
      * @param file
      *            busta contenente i timestamp
      * @param executeCurrentDateValidation
      *            flag per indicare l'esecuzione della validazione rispetto alla data attuale
-     * 
+     *
      * @return informazioni sulle marche temporali contenute nella busta
-     * 
+     *
      * @throws FileNotFoundException
      *             se il file da analizzare non può essere recuperato
      * @throws CryptoSignerException
@@ -428,7 +428,7 @@ public class TimeStampController implements ITimeStampController {
 
     /**
      * Effetta l'analisi di un file con marca temporale detached.
-     * 
+     *
      * Il risultato dell'analisi produce una struttura contenente gli esiti dei seguenti controlli:
      * <ul>
      * <li>Riconoscimento del formato di busta</li>
@@ -443,16 +443,16 @@ public class TimeStampController implements ITimeStampController {
      * </li>
      * <li>Eventuale controllo di validità rispetto alla data corrente</li>
      * </ul>
-     * 
+     *
      * @param file
      *            contenuto marcato
      * @param detachedTimeStamp
      *            timestamp associato al contenuto
      * @param executeCurrentDateValidation
      *            flag per indicare l'esecuzione della validazione rispetto alla data attuale
-     * 
+     *
      * @return informazioni sulle marche temporali contenute nella busta
-     * 
+     *
      * @throws CryptoSignerException
      *             se si è verificato un errore durante le fasi di analisi
      */
@@ -566,7 +566,7 @@ public class TimeStampController implements ITimeStampController {
 
     /**
      * Recupera la lista dei bean che memorizzano i periodi di validità dei tipi di marche temporali
-     * 
+     *
      * @return
      */
     public List<TimeStampValidityBean> getTimeStampValidity() {
@@ -575,7 +575,7 @@ public class TimeStampController implements ITimeStampController {
 
     /**
      * Definisce la lista dei bean che memorizzano i periodi di validità dei tipi di marche temporali
-     * 
+     *
      * @param timeStampValidity
      */
     public void setTimeStampValidity(List<TimeStampValidityBean> timeStampValidity) {

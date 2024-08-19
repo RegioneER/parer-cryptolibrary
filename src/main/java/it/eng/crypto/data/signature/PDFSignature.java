@@ -128,7 +128,7 @@ public class PDFSignature implements ISignature {
     /**
      * Ritorna l'algoritmo di firma; se non presente nell'oggetto tornato da iText torna SHA1withRSA. L'algoritmo non è
      * presente quando le firme PDF sono realizzate con un subfilter di tipo adbe.x509.rsa_sha1
-     * 
+     *
      * @return l'algoritmo di firma
      */
     @Override

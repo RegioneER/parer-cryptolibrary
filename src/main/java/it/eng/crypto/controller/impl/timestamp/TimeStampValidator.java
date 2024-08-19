@@ -28,7 +28,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 /**
  * Esegue la validazione corrente di una marca temporale basandosi sulla data recuperata dalla chiamata
  * Calendar.getInstance()
- * 
+ *
  * @author Administrator
  *
  */

@@ -21,7 +21,7 @@ package it.eng.crypto;
  * Costanti del sistema
  *
  * @author Rigo Michele
- * 
+ *
  * @version 0.1
  */
 public class CryptoConstants {

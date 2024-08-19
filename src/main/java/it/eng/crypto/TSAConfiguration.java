@@ -24,7 +24,7 @@ import java.util.Map;
  * Classe che setta i parametri di configurazione per una TSA
  *
  * @author Rigo Michele
- * 
+ *
  * @version 0.1
  */
 public class TSAConfiguration {

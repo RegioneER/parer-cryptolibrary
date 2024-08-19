@@ -33,7 +33,7 @@ package it.eng.crypto.controller.bean;
  * <li>FORMAT_VALIDITY_PROPERTY: informazioni sulla validità del formato rispetto al periodo di validità associato</li>
  * <li>TIME_STAMP_INFO_PROPERTY: informazioni sulle marche temporali associate</li>
  * </ul>
- * 
+ *
  * @author Stefano Zennaro
  *
  */
@@ -112,7 +112,7 @@ public class OutputSignerBean extends OutputBean {
 
     /**
      * Recupera il contenuto sbustato
-     * 
+     *
      * @return
      */
     public ContentBean getContent() {
@@ -121,7 +121,7 @@ public class OutputSignerBean extends OutputBean {
 
     /**
      * Definisce il contenuto sbustato
-     * 
+     *
      * @param content
      */
     public void setContent(ContentBean content) {

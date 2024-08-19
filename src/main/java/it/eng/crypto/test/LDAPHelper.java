@@ -117,9 +117,9 @@ public class LDAPHelper {
      *
      * @param paramToResearch
      *            Parametro da cercare
-     * 
+     *
      * @return Restituisce il valore del parametro cercato
-     * 
+     *
      * @exception Il
      *                metodo restituisce ""
      */
@@ -153,9 +153,9 @@ public class LDAPHelper {
      *            Utente su cui cercare un parametro
      * @param paramToResearch
      *            Parametro da cercare
-     * 
+     *
      * @return Restituisce il valore del parametro cercato
-     * 
+     *
      * @exception Il
      *                metodo restituisce ""
      */

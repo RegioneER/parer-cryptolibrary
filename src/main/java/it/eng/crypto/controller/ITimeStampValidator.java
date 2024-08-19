@@ -38,7 +38,7 @@ public interface ITimeStampValidator {
      *
      * @param timeStamp
      * @param timeStampValidity
-     * 
+     *
      * @return true se la marca temporale in input è attualmente valida
      */
     public boolean isTimeStampCurrentlyValid(TimeStampToken timeStamp, TimeStampValidityBean timeStampValidity);
@@ -56,7 +56,7 @@ public interface ITimeStampValidator {
      *            estensione del timestamp
      * @param timeStampExtensionValidity
      *            periodo di validità dell'estensione del timestamp
-     * 
+     *
      * @return
      */
     public boolean isTimeStampExtended(TimeStampToken timeStampToValidate,
@@ -73,7 +73,7 @@ public interface ITimeStampValidator {
      *            periodo di validità del timestamp
      * @param referenceDate
      *            data di riferimento
-     * 
+     *
      * @return
      */
     public boolean isTimeStampValidAtDate(TimeStampToken timeStamp, TimeStampValidityBean timeStampValidity,

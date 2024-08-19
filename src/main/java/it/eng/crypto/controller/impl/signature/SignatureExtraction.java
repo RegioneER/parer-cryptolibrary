@@ -32,7 +32,7 @@ import it.eng.crypto.utils.VerificheEnums.TipoRifTemporale;
 /**
  * Recupera il contenuto della busta tramite la chiamata al metodo
  * {@link it.eng.crypto.data.AbstractSigner#getContentAsFile getContentAsFile} del signer ad esso associato.
- * 
+ *
  * @author Stefano Zennaro
  *
  */

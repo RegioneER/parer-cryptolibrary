@@ -43,14 +43,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementazione di uno storage di certificati basato su fileSystem
- * 
+ *
  * @author Michele Rigo
  *
  */
 public class FileSystemCAStorage implements ICAStorage, Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -67,7 +67,7 @@ public class FileSystemCAStorage implements ICAStorage, Serializable {
 
     /**
      * Recupera il riferimento alla directory di salvataggio dei certificati
-     * 
+     *
      * @return
      */
     public String getDirectory() {
@@ -76,7 +76,7 @@ public class FileSystemCAStorage implements ICAStorage, Serializable {
 
     /**
      * Definisce il riferimento alla directory di salvataggio dei certificati
-     * 
+     *
      * @param directory
      */
     public void setDirectory(String directory) {

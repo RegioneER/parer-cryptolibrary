@@ -21,7 +21,7 @@ package it.eng.crypto.exception;
  * Eccezione specializzata per il mancato recupero della classe Signer
  *
  * @author Rigo Michele
- * 
+ *
  * @verison 0.1 14/04/2010
  */
 public class NoSignerException extends Exception {

@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * <li>Alla CRL fornita in input – deve essere valida rispetto al riferimento temporale</li>
  * <li>Alla CRL storicizzata al momento del riferimento temporale</li>
  * </ol>
- * 
+ *
  * @author Stefano Zennaro
  */
 public class CertificateRevocation extends AbstractSignerController {

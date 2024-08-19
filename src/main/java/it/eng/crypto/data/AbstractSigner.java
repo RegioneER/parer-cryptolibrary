@@ -136,7 +136,7 @@ public abstract class AbstractSigner {
      * Controlla se il file contiene firme in formato riconosciuto
      *
      * @param file
-     * 
+     *
      * @return true se il vi sono firme con formato riconosciuto
      */
     public abstract boolean isSignedType(File file, ValidationInfos complianceCheck);
@@ -146,7 +146,7 @@ public abstract class AbstractSigner {
      *
      * @param content
      *            contenuto su cui eseguire il controllo
-     * 
+     *
      * @return true se il vi sono firme con formato riconosciuto
      */
     public abstract boolean isSignedType(byte[] content, ValidationInfos complianceCheck);
@@ -460,7 +460,7 @@ public abstract class AbstractSigner {
      *
      * @return restituisce il file originario se si tratta di marche detached, altrimenti salva il contenuto sbustato in
      *         un file temporaneo e ne restituisce il riferimento
-     * 
+     *
      * @throws IOException
      */
     public File getContentAsFile() throws IOException {

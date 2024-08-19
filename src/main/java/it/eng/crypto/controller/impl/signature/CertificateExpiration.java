@@ -38,7 +38,7 @@ import java.util.Locale;
 /**
  * Controlla la validità temporale dei certificati richiamando il metodo checkValidity di ciascun certificato di firma
  * rispetto al riferimento temporale o la data attuale
- * 
+ *
  * @author Stefano Zennaro
  *
  */
