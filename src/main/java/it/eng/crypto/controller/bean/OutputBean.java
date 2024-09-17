@@ -28,10 +28,10 @@ public class OutputBean {
 
     /**
      * Recupera una proprietà settata nel bean
-     * 
+     *
      * @param key
      *            nome della proprietà da recuperare
-     * 
+     *
      * @return valore della proprietà
      */
     public Object getProperty(String key) {
@@ -40,7 +40,7 @@ public class OutputBean {
 
     /**
      * Definisce il valore di una proprietà del bean
-     * 
+     *
      * @param key
      *            nome della proprietà
      * @param value
@@ -52,7 +52,7 @@ public class OutputBean {
 
     /**
      * Recupera tutte le proprietà settate nel bean
-     * 
+     *
      * @return la mappa tra i nomi e i valori delle proprietà
      */
     public Map<String, Object> getProperties() {
@@ -61,7 +61,7 @@ public class OutputBean {
 
     /**
      * Definisce le proprietà del bean
-     * 
+     *
      * @param properties
      */
     public void setProperties(Map<String, Object> properties) {
@@ -71,7 +71,7 @@ public class OutputBean {
     /**
      * Recupera l'istanza dell'{@link it.eng.crypto.controller.bean.OutputSignerBean OutputSignerBean} linkato
      * (contenente il risultato del successivo ciclo di analisi)
-     * 
+     *
      * @return
      */
     public OutputSignerBean getChild() {
@@ -81,7 +81,7 @@ public class OutputBean {
     /**
      * Definisce l'istanza dell'{@link it.eng.crypto.controller.bean.OutputSignerBean OutputSignerBean} linkato
      * (contenente il risultato del successivo ciclo di analisi)
-     * 
+     *
      * @return
      */
     public void setChild(OutputSignerBean child) {

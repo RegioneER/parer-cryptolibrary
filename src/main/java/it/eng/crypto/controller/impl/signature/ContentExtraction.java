@@ -29,7 +29,7 @@ import it.eng.crypto.data.AbstractSigner;
 /**
  * Recupera il contenuto della busta tramite il metodo {@link it.eng.crypto.data.AbstractSigner#getContentAsFile
  * getContentAsFile} del signer ad esso associato.
- * 
+ *
  * @author Administrator
  */
 public class ContentExtraction extends AbstractSignerController {

@@ -262,7 +262,7 @@ public class P7MSigner extends AbstractSigner {
      *            contenuto di tipo CMS
      * @param detachedContent
      *            contenuto detached
-     * 
+     *
      * @return la lista di firme
      */
     public static List<ISignature> getISigneturesFromCMSSignedData(CMSSignedData signedData, List<File> detachedContent,

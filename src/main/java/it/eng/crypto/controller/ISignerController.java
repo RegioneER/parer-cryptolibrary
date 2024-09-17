@@ -35,7 +35,7 @@ public interface ISignerController {
      *
      * @param input
      *            bean contenente le informazioni necessarie all'esecuzione
-     * 
+     *
      * @return true se il controllo può essere effettuato
      */
     public boolean canExecute(InputBean input);
@@ -47,9 +47,9 @@ public interface ISignerController {
      *            bean contenente le informazioni necessarie all'esecuzione
      * @param output
      *            bean contenente le proprietà valorizzate dal controller in seguito all'esecuzione
-     * 
+     *
      * @return true se il controllo è stato superato
-     * 
+     *
      * @throws ExceptionController
      */
     public boolean execute(InputBean input, OutputBean output) throws ExceptionController;

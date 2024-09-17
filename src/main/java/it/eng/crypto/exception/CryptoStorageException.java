@@ -21,7 +21,7 @@ package it.eng.crypto.exception;
  * Eccezione specializzata per lo storage
  *
  * @author Rigo Michele
- * 
+ *
  * @verison 0.1 14/04/2010
  */
 public class CryptoStorageException extends Exception {

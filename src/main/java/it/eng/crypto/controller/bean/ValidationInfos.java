@@ -50,7 +50,7 @@ public class ValidationInfos implements Cloneable {
      *
      * @param strict
      *            verifica anche la presenza di avvisi
-     * 
+     *
      * @return true se non sono presenti erorri ed eventualmente avvisi
      */
     public boolean isValid(boolean strict) {

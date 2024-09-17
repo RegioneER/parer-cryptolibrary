@@ -16,11 +16,11 @@
  */
 
 /*
- * Licensed to the University Corporation for Advanced Internet Development, 
- * Inc. (UCAID) under one or more contributor license agreements.  See the 
+ * Licensed to the University Corporation for Advanced Internet Development,
+ * Inc. (UCAID) under one or more contributor license agreements.  See the
  * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache 
- * License, Version 2.0 (the "License"); you may not use this file except in 
+ * copyright ownership. The UCAID licenses this file to You under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
@@ -49,9 +49,9 @@ public interface ParserPool {
 
     /**
      * Gets a builder from the pool.
-     * 
+     *
      * @return a builder from the pool
-     * 
+     *
      * @throws XmlParserException
      *             thrown if the document builder factory is misconfigured
      */
@@ -59,7 +59,7 @@ public interface ParserPool {
 
     /**
      * Returns a builder to the pool.
-     * 
+     *
      * @param builder
      *            the builder to return
      */
@@ -67,9 +67,9 @@ public interface ParserPool {
 
     /**
      * Convience method for creating a new document with a pooled builder.
-     * 
+     *
      * @return created document
-     * 
+     *
      * @throws XmlParserException
      *             thrown if there is a problem retrieving a builder
      */
@@ -77,12 +77,12 @@ public interface ParserPool {
 
     /**
      * Convience method for parsing an XML file using a pooled builder.
-     * 
+     *
      * @param input
      *            XML to parse
-     * 
+     *
      * @return parsed document
-     * 
+     *
      * @throws XmlParserException
      *             thrown if there is a problem retrieving a builder, the input stream can not be read, or the XML was
      *             invalid
@@ -91,12 +91,12 @@ public interface ParserPool {
 
     /**
      * Convience method for parsing an XML file using a pooled builder.
-     * 
+     *
      * @param input
      *            XML to parse
-     * 
+     *
      * @return parsed document
-     * 
+     *
      * @throws XmlParserException
      *             thrown if there is a problem retrieving a builder, the input stream can not be read, or the XML was
      *             invalid
@@ -105,14 +105,14 @@ public interface ParserPool {
 
     /**
      * Gets the schema builders use to validate.
-     * 
+     *
      * @return the schema builders use to validate
      */
     public Schema getSchema();
 
     /**
      * Sets the schema builders use to validate.
-     * 
+     *
      * @param newSchema
      *            the schema builders use to validate
      */

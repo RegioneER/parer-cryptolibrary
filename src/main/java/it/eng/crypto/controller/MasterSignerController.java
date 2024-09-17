@@ -73,9 +73,9 @@ public class MasterSignerController {
      *
      * @param input
      *            bean contenente le informazioni in input per eseguire i controlli
-     * 
+     *
      * @return
-     * 
+     *
      * @throws ExceptionController
      */
     public OutputSignerBean executeControll(InputSignerBean input) throws ExceptionController {

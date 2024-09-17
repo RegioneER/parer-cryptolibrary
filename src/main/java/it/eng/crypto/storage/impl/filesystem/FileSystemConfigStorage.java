@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implmentazione di uno storage di configurazioni basato su file system
- * 
+ *
  * @author Michele Rigo
  *
  */
@@ -54,7 +54,7 @@ public class FileSystemConfigStorage implements IConfigStorage {
 
     /**
      * Recupera la directory di salvataggio dei certificati
-     * 
+     *
      * @return
      */
     public String getDirectory() {
@@ -63,7 +63,7 @@ public class FileSystemConfigStorage implements IConfigStorage {
 
     /**
      * Definisce la directory di salvataggio dei certificati
-     * 
+     *
      * @param directory
      */
     public void setDirectory(String directory) {

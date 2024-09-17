@@ -29,7 +29,7 @@ import java.util.Locale;
 
 /**
  * Definisce la classe di base per l'implementazione di un {@link it.eng.crypto.controller.ISignerController}
- * 
+ *
  * @author Administrator
  *
  */
@@ -51,7 +51,7 @@ public abstract class AbstractSignerController extends AbstractController {
 
     /**
      * Definisce se occorre effettuare i controlli anche sulle controfirme
-     * 
+     *
      * @param performCounterSignaturesCheck
      */
     public void setPerformCounterSignaturesCheck(boolean performCounterSignaturesCheck) {

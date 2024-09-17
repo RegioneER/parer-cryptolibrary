@@ -23,7 +23,7 @@ import it.eng.crypto.exception.CryptoSignerException;
  * Espone i metodi di gestione della certification authority root
  *
  * @author Rigo Michele
- * 
+ *
  * @version 0.1
  */
 public interface ICertificateAuthority {

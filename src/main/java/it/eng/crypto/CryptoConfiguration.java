@@ -23,7 +23,7 @@ import java.io.Serializable;
  * Classe che setta i parametri di configurazione del sistema
  *
  * @author Rigo Michele
- * 
+ *
  * @version 0.1
  */
 public class CryptoConfiguration implements Serializable {

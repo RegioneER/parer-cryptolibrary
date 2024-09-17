@@ -22,15 +22,15 @@ import java.io.Serializable;
 /**
  * Bean di appoggio allo storage del FileSystemCAStorage che wrappa gli attributi di una Certification Authority da
  * salvare
- * 
+ *
  * @author Rigo Michele
- * 
+ *
  * @version 0.1
  */
 class CABean implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private String subjectDN;
@@ -39,7 +39,7 @@ class CABean implements Serializable {
 
     /**
      * Recupera il riferimento al file
-     * 
+     *
      * @return
      */
     public String getFilePath() {
@@ -48,7 +48,7 @@ class CABean implements Serializable {
 
     /**
      * Definisce il riferimento al file
-     * 
+     *
      * @param filePath
      */
     public void setFilePath(String filePath) {
@@ -57,7 +57,7 @@ class CABean implements Serializable {
 
     /**
      * Recupera il nome dell'entità associata al certificato così come riportato nel Distinguished Name (RFC2459)
-     * 
+     *
      * @return
      */
     public String getSubjectDN() {
@@ -66,7 +66,7 @@ class CABean implements Serializable {
 
     /**
      * Definisce il nome dell'entità associata al certificato così come riportato nel Distinguished Name (RFC2459)
-     * 
+     *
      * @return
      */
     public void setSubjectDN(String subjectDN) {
@@ -75,7 +75,7 @@ class CABean implements Serializable {
 
     /**
      * Restituisce true se il certificato è attivo
-     * 
+     *
      * @return
      */
     public boolean isActive() {
@@ -84,7 +84,7 @@ class CABean implements Serializable {
 
     /**
      * Definisce se il certificato è attivo
-     * 
+     *
      * @param active
      */
     public void setActive(boolean active) {

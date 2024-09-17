@@ -37,7 +37,7 @@ public class VerificaTest {
 
     /*
      * @param args
-     * 
+     *
      * @throws ExceptionController
      */
     public static void main(String[] args) throws ExceptionController {

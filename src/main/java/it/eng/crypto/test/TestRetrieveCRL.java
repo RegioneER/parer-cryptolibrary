@@ -365,9 +365,9 @@ public class TestRetrieveCRL {
              * Hashtable env = new Hashtable(11); env.put(Context.INITIAL_CONTEXT_FACTORY,
              * "com.sun.jndi.ldap.LdapCtxFactory"); // env.put(Context.PROVIDER_URL,
              * "ldap://localhost:389/o=JNDITutorial"); env.put(Context.PROVIDER_URL, ldapUrl);
-             * 
+             *
              * // Specify timeout to be 5 seconds env.put("com.sun.jndi.ldap.connect.timeout", "15000");
-             * 
+             *
              * // Create initial context DirContext ctx = new InitialDirContext(env);
              */
             DirContext ctx = new InitialDirContext();
@@ -377,7 +377,7 @@ public class TestRetrieveCRL {
             /*
              * int timeout = 5000; //5 s SearchControls ctls = new SearchControls();
              * ctls.setSearchScope(SearchControls.SUBTREE_SCOPE); ctls.setTimeLimit(timeout); //
-             * 
+             *
              * NamingEnumeration ne = ctx.search(ldapUrl, "", ctls);
              */
             NamingEnumeration ne = ctx.search(ldapUrl, "", null);

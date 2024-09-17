@@ -22,7 +22,7 @@ import java.io.File;
 /**
  * Bean d'appoggio contenente il riferimento ai file sbustati e informazioni sul fatto che questi possano contenere a
  * loro volta delle firme
- * 
+ *
  * @author Stefano Zennaro
  *
  */
@@ -33,7 +33,7 @@ public class ContentBean {
 
     /**
      * Recupera il contenuto sbustato
-     * 
+     *
      * @return il contenuto sbustato
      */
     public File getContentFile() {
@@ -42,7 +42,7 @@ public class ContentBean {
 
     /**
      * Definisce il contenuto sbustato
-     * 
+     *
      * @param contentFile
      */
     public void setContentFile(File contentFile) {
@@ -51,7 +51,7 @@ public class ContentBean {
 
     /**
      * Restituisce true se il contenuto può essere ulteriormente firmato
-     * 
+     *
      * @return
      */
     public boolean isPossiblySigned() {
@@ -60,7 +60,7 @@ public class ContentBean {
 
     /**
      * Definisce se il contenuto può essere ulteriormente firmato
-     * 
+     *
      * @param possiblySigned
      */
     public void setPossiblySigned(boolean possiblySigned) {

@@ -379,7 +379,7 @@ public class XMLSigner extends AbstractSigner {
      *
      * @param formatoFirma
      *            formato firma in input
-     * 
+     *
      * @return formato corrispondente
      */
     public static final SignerType enumFormatoFirma2SignerType(EnumFormatoFirma formatoFirma) {

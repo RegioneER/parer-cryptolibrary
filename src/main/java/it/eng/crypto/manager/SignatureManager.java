@@ -178,7 +178,7 @@ public class SignatureManager {
      * metodo {@link SignatureManager#setConfig}
      *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean execute() throws CryptoSignerException {
@@ -189,7 +189,7 @@ public class SignatureManager {
      * Avvia l'esecuzione dei controlli a partire dalla configurazione passata in ingresso
      *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean execute(SignatureManagerConfig config) throws CryptoSignerException {
@@ -231,9 +231,9 @@ public class SignatureManager {
      *
      * @param file
      *            contenente firma, contenuto firmato ed eventuale marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile) throws CryptoSignerException {
@@ -247,9 +247,9 @@ public class SignatureManager {
      *            firma e contenuto firmato
      * @param timeStampFile
      *            marca temporale detached
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, File timeStampFile)
@@ -265,9 +265,9 @@ public class SignatureManager {
      *            file contenente firma, contenuto firmato ed eventuale marca temporale
      * @param timeStampExtensionFiles
      *            catena di estensioni della marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile, File... timeStampExtensionFiles)
@@ -285,9 +285,9 @@ public class SignatureManager {
      *            marca temporale detached
      * @param timeStampExtensionFiles
      *            catena di estensioni della marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, File timeStampFile,
@@ -300,9 +300,9 @@ public class SignatureManager {
      *
      * @param file
      *            contenente firma, contenuto firmato ed eventuale marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile, Date reference)
@@ -320,9 +320,9 @@ public class SignatureManager {
      *            firma e contenuto firmato
      * @param timeStampFile
      *            marca temporale detached
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, Date reference, File timeStampFile)
@@ -342,9 +342,9 @@ public class SignatureManager {
      *            file contenente firma, contenuto firmato ed eventuale marca temporale
      * @param timeStampExtensionFiles
      *            catena di estensioni della marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile, Date reference,
@@ -366,9 +366,9 @@ public class SignatureManager {
      *            marca temporale detached
      * @param timeStampExtensionFiles
      *            catena di estensioni della marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, File timeStampFile, Date reference,
@@ -392,9 +392,9 @@ public class SignatureManager {
      *            contenuto firmato
      * @param timeStampedSignatureFile
      *            firma digitale con eventuale marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile)
@@ -411,9 +411,9 @@ public class SignatureManager {
      *            firma digitale
      * @param timeStampFile
      *            marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile, File timeStampFile)
@@ -431,9 +431,9 @@ public class SignatureManager {
      *            firma digitale con eventuale marca temporale
      * @param timeStampExtensionFiles
      *            catena di estensioni della marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile,
@@ -453,9 +453,9 @@ public class SignatureManager {
      *            marca temporale
      * @param timeStampExtensionFiles
      *            catena di estensioni della marca temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile, File timeStampFile,
@@ -472,9 +472,9 @@ public class SignatureManager {
      *            firma digitale con eventuale marca temporale
      * @param reference
      *            data di riferimento temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile, Date reference)
@@ -497,9 +497,9 @@ public class SignatureManager {
      *            marca temporale
      * @param reference
      *            data di riferimento temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile, File timeStampFile,
@@ -524,9 +524,9 @@ public class SignatureManager {
      *            catena di estensioni della marca temporale
      * @param reference
      *            data di riferimento temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile, Date reference,
@@ -553,9 +553,9 @@ public class SignatureManager {
      *            catena di estensioni della marca temporale
      * @param reference
      *            data di riferimento temporale
-     * 
+     *
      * @return bean di output contenente i risultati dell'analisi
-     * 
+     *
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile, File timeStampFile,

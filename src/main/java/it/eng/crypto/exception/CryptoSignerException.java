@@ -24,7 +24,7 @@ import java.util.Map;
  * Eccezione specializzata per la firma
  *
  * @author Rigo Michele
- * 
+ *
  * @verison 0.1 14/04/2010
  */
 public class CryptoSignerException extends Exception {

@@ -28,7 +28,7 @@ import javax.security.auth.x500.X500Principal;
  * Storage dei certificati
  *
  * @author Rigo Michele
- * 
+ *
  * @version 0.1
  */
 public interface ICAStorage {
@@ -44,7 +44,7 @@ public interface ICAStorage {
      * Recupero il certificato dal soggetto X500Principal, se non trova il certificato restituisce null.
      *
      * @param subject
-     * 
+     *
      * @return X509Certificate
      */
     public X509Certificate retriveCA(X500Principal subject, String authorityKeyId) throws CryptoStorageException;
@@ -53,9 +53,9 @@ public interface ICAStorage {
 
     /**
      * Restituisce la lista dei certificati attivi.
-     * 
+     *
      * @param subject
-     * 
+     *
      * @return
      */
     public List<X509Certificate> retriveActiveCA() throws CryptoStorageException;

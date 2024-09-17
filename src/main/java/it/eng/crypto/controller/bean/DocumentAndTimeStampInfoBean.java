@@ -117,7 +117,7 @@ public class DocumentAndTimeStampInfoBean {
      *
      * @Deprecated è preferibile affidarsi ad un controllo esterno per verificare correttamente la data attuale
      *             {@link it.eng.crypto.controller.ITimeStampValidator ITimeStampValidator})
-     * 
+     *
      * @return true se il certificato del timestamp è attualmente valido
      */
     public boolean isCurrentlyValid() {
@@ -133,10 +133,10 @@ public class DocumentAndTimeStampInfoBean {
      * @Deprecated è preferibile affidarsi ad un controllo esterno per verificare correttamente la data
      *             {@link it.eng.crypto.controller.ITimeStampValidator ITimeStampValidator}) Controlla se il
      *             timestampToken contiene un certificato valido alla data di riferimento in ingresso
-     * 
+     *
      * @param date
      *            data di riferimento per il controllo
-     * 
+     *
      * @return true se il certificato del timestamp era valido alla data considerata
      */
     public boolean isValidAtDate(Date date) {
