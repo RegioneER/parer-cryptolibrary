@@ -12,14 +12,24 @@
 
     <name>cryptolibrary</name>
     <description>Progetto CRYPTOLIBRARY</description>
-    <url>https://nexus.ente.regione.emr.it/repository/parer-site/cryptolibrary/${project.version}/</url>
 
-    <distributionManagement>
-        <site>
-            <id>site</id>
-            <url>dav:https://nexus.ente.regione.emr.it/repository/parer-site/cryptolibrary/${project.version}</url>
-        </site>
+<distributionManagement>
+        <repository>
+	   <id>github</id>
+	   <url>https://maven.pkg.github.com/RegioneER/parer-cryptolibrary</url>
+	 </repository>      
     </distributionManagement>
+
+<repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>            
+        </repository>
+		<repository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2</url>
+		</repository>              
+	</repositories>
 
 
     <properties>
@@ -141,9 +151,9 @@
 		</plugins>
 	</build>
   
-    <scm>
-        <developerConnection>scm:git:git@gitlab.ente.regione.emr.it:parer/lib/cryptolibrary.git</developerConnection>
-        <tag>cryptolibrary-1.13.0</tag>
+<scm>
+        <developerConnection>scm:git:https://github.com/RegioneER/parer-cryptolibrary.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
     
     
