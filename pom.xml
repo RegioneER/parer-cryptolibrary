@@ -7,7 +7,7 @@
         <version>6.4.0</version>
     </parent>
     <artifactId>cryptolibrary</artifactId>    
-    <version>1.13.0</version>
+    <version>1.13.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>cryptolibrary</name>
