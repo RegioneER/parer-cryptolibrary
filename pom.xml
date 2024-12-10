@@ -4,10 +4,10 @@
     <parent>
         <groupId>it.eng.parer</groupId>
         <artifactId>parer-pom</artifactId>
-        <version>6.4.0</version>
+        <version>6.4.1</version>
     </parent>
     <artifactId>cryptolibrary</artifactId>    
-    <version>1.13.1-SNAPSHOT</version>
+    <version>1.14.0</version>
     <packaging>jar</packaging>
 
     <name>cryptolibrary</name>
