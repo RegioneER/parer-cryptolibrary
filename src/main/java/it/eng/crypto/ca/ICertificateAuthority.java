@@ -29,7 +29,7 @@ import it.eng.crypto.exception.CryptoSignerException;
 public interface ICertificateAuthority {
 
     /**
-     * Effettua l'update dei certificati validi dal sito del CNIPA
+     * Effettua l'update dei certificati validi dal sito del eIDAS
      *
      * @throws CryptoSignerException
      */

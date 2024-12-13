@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @101000 La classe è stata modificata per ritornare in ogni caso i certificati utilizzati e gli errori trovati!!
  *
- * Effettua il controllo di validità delle CA rispetto alla lista fornita dal CNIPA. I passi per verificare la
+ * Effettua il controllo di validità delle CA rispetto alla lista fornita dal eIDAS. I passi per verificare la
  * correttezza del certificato sono i seguenti:
  * <ol>
  * <li>recupero della firma del certificato e dell'issuer</li>
@@ -151,12 +151,11 @@ public class CertificateReliability extends AbstractSignerController {
                 boolean isQualified;
                 if (qualifiedCertificate == null) {
                     isQualified = false;
-                    validationInfos.addError(
-                            "La CA non è presente nella lista dei certificatori accreditati fornita dal CNIPA");
-                    log.debug("La CA non è presente nella lista dei certificatori accreditati fornita dal CNIPA");
+                    validationInfos.addError("La CA non è presente nella lista dei certificatori accreditati da eIDAS");
+                    log.debug("La CA non è presente nella lista dei certificatori accreditati dal eIDAS");
                 } else {
                     issuerPrincipal = qualifiedCertificate.getIssuerX500Principal();
-                    // Di default il certificato è accreditato se presente nella lista del cnipa
+                    // Di default il certificato è accreditato se presente nella lista del eidas
                     isQualified = true;
 
                     // Occorre controllare che il certificato sia ancora attivo
@@ -231,7 +230,7 @@ public class CertificateReliability extends AbstractSignerController {
                                 } catch (CryptoSignerException e) {
                                     // Non è stato possibile validare il certificato di certificazione rispetto alle CRL
                                     // tengo traccia dell'errore ma considero il certificato comunque accreditato
-                                    // (poichè presente nella lista del CNIPA e attivo al riferimento temporale)
+                                    // (poichè presente nella lista del eIDAS e attivo al riferimento temporale)
                                     validationInfos.addWarning(
                                             "Controllo delle CRL del certificato dell'issuer non effettuato");
                                     isQualified = true;
