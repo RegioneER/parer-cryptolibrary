@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto;
@@ -37,10 +33,10 @@ public class CryptoSingleton {
     private static CryptoSingleton singleton = null;
 
     public static synchronized CryptoSingleton getInstance() {
-        if (singleton == null) {
-            singleton = new CryptoSingleton();
-        }
-        return singleton;
+	if (singleton == null) {
+	    singleton = new CryptoSingleton();
+	}
+	return singleton;
     }
 
     /**
@@ -54,7 +50,7 @@ public class CryptoSingleton {
      * @return
      */
     public CryptoConfiguration getConfiguration() {
-        return context.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
+	return context.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
     }
 
     /**
@@ -63,7 +59,7 @@ public class CryptoSingleton {
      * @param context
      */
     public void setContext(ApplicationContext context) {
-        this.context = context;
+	this.context = context;
     }
 
     /**
@@ -72,7 +68,7 @@ public class CryptoSingleton {
      * @return
      */
     protected ApplicationContext getContext() {
-        return this.context;
+	return this.context;
     }
 
 }

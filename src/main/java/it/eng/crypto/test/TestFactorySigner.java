@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.test;
@@ -40,102 +36,112 @@ public class TestFactorySigner {
 
     public static void main(String[] args) throws Exception {
 
-        // AbstractSigner manager = SignerUtil.newInstance().getSignerManager(new File(""));
-        //
-        // TimeStampToken token = manager.getTimeStampToken();
-        //
-        // token.getTimeStampInfo().getMessageImprintAlgOID();
-        //
-        // byte[] digestFile = manager.getDigestSigner();
-        //
-        // byte[] digestToken = token.getTimeStampInfo().getMessageImprintDigest();
+	// AbstractSigner manager = SignerUtil.newInstance().getSignerManager(new File(""));
+	//
+	// TimeStampToken token = manager.getTimeStampToken();
+	//
+	// token.getTimeStampInfo().getMessageImprintAlgOID();
+	//
+	// byte[] digestFile = manager.getDigestSigner();
+	//
+	// byte[] digestToken = token.getTimeStampInfo().getMessageImprintDigest();
 
-        PdfSigner signer = new PdfSigner();
-        signer.isSignedType(new File("C:\\ODG2_signed.pdf"), new ValidationInfos());
-        TimeStampToken token = signer.getTimeStampTokens()[0];
+	PdfSigner signer = new PdfSigner();
+	signer.isSignedType(new File("C:\\ODG2_signed.pdf"), new ValidationInfos());
+	TimeStampToken token = signer.getTimeStampTokens()[0];
 
-        MessageImprint imprint = token.getTimeStampInfo().toTSTInfo().getMessageImprint();
+	MessageImprint imprint = token.getTimeStampInfo().toTSTInfo().getMessageImprint();
 
-        byte[] by = imprint.getHashedMessage();
-        System.out.println(new String(by));
-        System.out.println(new String(token.getTimeStampInfo().getMessageImprintDigest()));
+	byte[] by = imprint.getHashedMessage();
+	System.out.println(new String(by));
+	System.out.println(new String(token.getTimeStampInfo().getMessageImprintDigest()));
 
-        System.out.println(((AlgorithmIdentifier) imprint.getHashAlgorithm()).getAlgorithm());
+	System.out.println(((AlgorithmIdentifier) imprint.getHashAlgorithm()).getAlgorithm());
 
-        Hashtable table = token.getSignedAttributes().toHashtable();
+	Hashtable table = token.getSignedAttributes().toHashtable();
 
-        // Attribute obj = (Attribute)table.get(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
+	// Attribute obj = (Attribute)table.get(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
 
-        Iterator itera = table.keySet().iterator();
+	Iterator itera = table.keySet().iterator();
 
-        while (itera.hasNext()) {
-            Object key = itera.next();
-            Attribute obj = (Attribute) table.get(key);
-            System.out.println(obj.getAttrType() + " - " + obj.getAttrValues());
-        }
+	while (itera.hasNext()) {
+	    Object key = itera.next();
+	    Attribute obj = (Attribute) table.get(key);
+	    System.out.println(obj.getAttrType() + " - " + obj.getAttrValues());
+	}
 
-        TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator();
-        reqGen.setCertReq(true);
+	TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator();
+	reqGen.setCertReq(true);
 
-        // System.out.println(signer.getDigestSigner());
+	// System.out.println(signer.getDigestSigner());
 
-        // TimeStampRequest request = reqGen.generate(TSPAlgorithms.SHA1, signer.getUnsignedContent());
+	// TimeStampRequest request = reqGen.generate(TSPAlgorithms.SHA1,
+	// signer.getUnsignedContent());
 
-        // validate(request,token);
+	// validate(request,token);
 
     }
 
-    public static void validate(TimeStampRequest request, TimeStampToken token) throws TSPException {
-        TimeStampToken tok = token;
+    public static void validate(TimeStampRequest request, TimeStampToken token)
+	    throws TSPException {
+	TimeStampToken tok = token;
 
-        if (tok != null) {
-            TimeStampTokenInfo tstInfo = tok.getTimeStampInfo();
+	if (tok != null) {
+	    TimeStampTokenInfo tstInfo = tok.getTimeStampInfo();
 
-            if (request.getNonce() != null && !request.getNonce().equals(tstInfo.getNonce())) {
-                throw new TSPValidationException("response contains wrong nonce value.");
-            }
+	    if (request.getNonce() != null && !request.getNonce().equals(tstInfo.getNonce())) {
+		throw new TSPValidationException("response contains wrong nonce value.");
+	    }
 
-            // if (this.getStatus() != PKIStatus.GRANTED && this.getStatus() != PKIStatus.GRANTED_WITH_MODS)
-            // {
-            // throw new TSPValidationException("time stamp token found in failed request.");
-            // }
+	    // if (this.getStatus() != PKIStatus.GRANTED && this.getStatus() !=
+	    // PKIStatus.GRANTED_WITH_MODS)
+	    // {
+	    // throw new TSPValidationException("time stamp token found in failed request.");
+	    // }
 
-            System.out.println(request.getMessageImprintDigest());
+	    System.out.println(request.getMessageImprintDigest());
 
-            System.out.println(new String(request.getMessageImprintDigest()));
-            System.out.println(new String(tstInfo.getMessageImprintDigest()));
+	    System.out.println(new String(request.getMessageImprintDigest()));
+	    System.out.println(new String(tstInfo.getMessageImprintDigest()));
 
-            if (!Arrays.constantTimeAreEqual(request.getMessageImprintDigest(), tstInfo.getMessageImprintDigest())) {
-                throw new TSPValidationException("response for different message imprint digest.");
-            }
+	    if (!Arrays.constantTimeAreEqual(request.getMessageImprintDigest(),
+		    tstInfo.getMessageImprintDigest())) {
+		throw new TSPValidationException("response for different message imprint digest.");
+	    }
 
-            if (!tstInfo.getMessageImprintAlgOID().equals(request.getMessageImprintAlgOID())) {
-                throw new TSPValidationException("response for different message imprint algorithm.");
-            }
+	    if (!tstInfo.getMessageImprintAlgOID().equals(request.getMessageImprintAlgOID())) {
+		throw new TSPValidationException(
+			"response for different message imprint algorithm.");
+	    }
 
-            Attribute scV1 = tok.getSignedAttributes().get(PKCSObjectIdentifiers.id_aa_signingCertificate);
-            Attribute scV2 = tok.getSignedAttributes().get(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
+	    Attribute scV1 = tok.getSignedAttributes()
+		    .get(PKCSObjectIdentifiers.id_aa_signingCertificate);
+	    Attribute scV2 = tok.getSignedAttributes()
+		    .get(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
 
-            if (scV1 == null && scV2 == null) {
-                throw new TSPValidationException("no signing certificate attribute present.");
-            }
+	    if (scV1 == null && scV2 == null) {
+		throw new TSPValidationException("no signing certificate attribute present.");
+	    }
 
-            if (scV1 != null && scV2 != null) {
-                throw new TSPValidationException("conflicting signing certificate attributes present.");
-            }
+	    if (scV1 != null && scV2 != null) {
+		throw new TSPValidationException(
+			"conflicting signing certificate attributes present.");
+	    }
 
-            if (request.getReqPolicy() != null && !request.getReqPolicy().equals(tstInfo.getPolicy())) {
-                throw new TSPValidationException("TSA policy wrong for request.");
-            }
-        }
-        // else if (this.getStatus() == PKIStatus.GRANTED || this.getStatus() == PKIStatus.GRANTED_WITH_MODS)
-        // {
-        // throw new TSPValidationException("no time stamp token found and one expected.");
-        // }
+	    if (request.getReqPolicy() != null
+		    && !request.getReqPolicy().equals(tstInfo.getPolicy())) {
+		throw new TSPValidationException("TSA policy wrong for request.");
+	    }
+	}
+	// else if (this.getStatus() == PKIStatus.GRANTED || this.getStatus() ==
+	// PKIStatus.GRANTED_WITH_MODS)
+	// {
+	// throw new TSPValidationException("no time stamp token found and one expected.");
+	// }
     }
     // public static byte[]getDigestSigner(File file) throws IOException{
     // InputStream stream = FileUtils.openInputStream(file);
-    // //Controllo se è un pdf firmato
+    // //Controllo se Ã¨ un pdf firmato
     // PdfReader reader = new PdfReader(stream);
     // AcroFields acroFields = reader.getAcroFields();
     //

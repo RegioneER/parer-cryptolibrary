@@ -1,35 +1,29 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 /*
- * Licensed to the University Corporation for Advanced Internet Development,
- * Inc. (UCAID) under one or more contributor license agreements.  See the
- * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache
- * License, Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License.  You may obtain a copy of the License at
+ * Licensed to the University Corporation for Advanced Internet Development, Inc. (UCAID) under one
+ * or more contributor license agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership. The UCAID licenses this file to You under
+ * the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package it.eng.crypto.data.util;
 
@@ -58,26 +52,29 @@ import org.xml.sax.*;
  * A pool of JAXP 1.3 {@link DocumentBuilder}s.
  *
  * <p>
- * This implementation of {@link ParserPool} allows its properties to be modified over time and versions the builders it
- * manages appropriately. There are certain performance penalties for doing this. For a more performant implementation
- * that does not support versioning or property modification over time, see {@link StaticBasicParserPool}.
+ * This implementation of {@link ParserPool} allows its properties to be modified over time and
+ * versions the builders it manages appropriately. There are certain performance penalties for doing
+ * this. For a more performant implementation that does not support versioning or property
+ * modification over time, see {@link StaticBasicParserPool}.
  * </p>
  *
  * <p>
- * This is a pool implementation of the caching factory variety, and as such imposes no upper bound on the number of
- * DocumentBuilders allowed to be concurrently checked out and in use. It does however impose a limit on the size of the
- * internal cache of idle builder instances via the value configured via {@link #setMaxPoolSize(int)}.
+ * This is a pool implementation of the caching factory variety, and as such imposes no upper bound
+ * on the number of DocumentBuilders allowed to be concurrently checked out and in use. It does
+ * however impose a limit on the size of the internal cache of idle builder instances via the value
+ * configured via {@link #setMaxPoolSize(int)}.
  * </p>
  *
  * <p>
- * Builders retrieved from this pool may (but are not required to) be returned to the pool with the method
- * {@link #returnBuilder(DocumentBuilder)}. Builders checked out prior to a change in the pool's properties will not be
- * effected by the change and will be appropriately dealt with when they are returned.
+ * Builders retrieved from this pool may (but are not required to) be returned to the pool with the
+ * method {@link #returnBuilder(DocumentBuilder)}. Builders checked out prior to a change in the
+ * pool's properties will not be effected by the change and will be appropriately dealt with when
+ * they are returned.
  * </p>
  *
  * <p>
- * References to builders are kept by way of {@link SoftReference} so that the garbage collector may reap the builders
- * if the system is running out of memory.
+ * References to builders are kept by way of {@link SoftReference} so that the garbage collector may
+ * reap the builders if the system is running out of memory.
  * </p>
  */
 public class XmlParserPool implements ParserPool {
@@ -175,149 +172,150 @@ public class XmlParserPool implements ParserPool {
      * Constructor.
      */
     public XmlParserPool(int maxPoolSize) {
-        this.maxPoolSize = maxPoolSize;
-        builderPool = new Stack<SoftReference<DocumentBuilder>>();
-        builderAttributes = new LazyMap<String, Object>();
-        coalescing = true;
-        expandEntityReferences = true;
-        builderFeatures = new LazyMap<String, Boolean>();
-        ignoreComments = true;
-        ignoreElementContentWhitespace = true;
-        namespaceAware = true;
-        schema = null;
-        dtdValidating = false;
-        xincludeAware = false;
-        errorHandler = new ErrorHandler() {
+	this.maxPoolSize = maxPoolSize;
+	builderPool = new Stack<SoftReference<DocumentBuilder>>();
+	builderAttributes = new LazyMap<String, Object>();
+	coalescing = true;
+	expandEntityReferences = true;
+	builderFeatures = new LazyMap<String, Boolean>();
+	ignoreComments = true;
+	ignoreElementContentWhitespace = true;
+	namespaceAware = true;
+	schema = null;
+	dtdValidating = false;
+	xincludeAware = false;
+	errorHandler = new ErrorHandler() {
 
-            @Override
-            public void error(SAXParseException arg0) throws SAXException {
-                throw arg0;
-            }
+	    @Override
+	    public void error(SAXParseException arg0) throws SAXException {
+		throw arg0;
+	    }
 
-            @Override
-            public void fatalError(SAXParseException arg0) throws SAXException {
-                throw arg0;
-            }
+	    @Override
+	    public void fatalError(SAXParseException arg0) throws SAXException {
+		throw arg0;
+	    }
 
-            @Override
-            public void warning(SAXParseException arg0) throws SAXException {
-                throw arg0;
-            }
-        };
+	    @Override
+	    public void warning(SAXParseException arg0) throws SAXException {
+		throw arg0;
+	    }
+	};
 
-        try {
-            dirtyBuilderConfiguration = true;
-            initializePool();
-        } catch (XmlParserException e) {
-            // default settings, no parsing exception
-        }
+	try {
+	    dirtyBuilderConfiguration = true;
+	    initializePool();
+	} catch (XmlParserException e) {
+	    // default settings, no parsing exception
+	}
     }
 
     /**
      * {@inheritDoc}
      */
     public DocumentBuilder getBuilder() throws XmlParserException {
-        DocumentBuilder builder = null;
-        long version = 0;
+	DocumentBuilder builder = null;
+	long version = 0;
 
-        if (dirtyBuilderConfiguration) {
-            initializePool();
-        }
+	if (dirtyBuilderConfiguration) {
+	    initializePool();
+	}
 
-        synchronized (this) {
-            version = getPoolVersion();
-            if (!builderPool.isEmpty()) {
-                builder = builderPool.pop().get();
-            }
-            // Will be null if either the stack was empty, or the SoftReference
-            // has been garbage-collected
-            if (builder == null) {
-                builder = createBuilder();
-            }
-        }
+	synchronized (this) {
+	    version = getPoolVersion();
+	    if (!builderPool.isEmpty()) {
+		builder = builderPool.pop().get();
+	    }
+	    // Will be null if either the stack was empty, or the SoftReference
+	    // has been garbage-collected
+	    if (builder == null) {
+		builder = createBuilder();
+	    }
+	}
 
-        if (builder != null) {
-            return new DocumentBuilderProxy(builder, this, version);
-        }
+	if (builder != null) {
+	    return new DocumentBuilderProxy(builder, this, version);
+	}
 
-        return null;
+	return null;
     }
 
     /**
      * {@inheritDoc}
      */
     public void returnBuilder(DocumentBuilder builder) {
-        if (!(builder instanceof DocumentBuilderProxy)) {
-            return;
-        }
+	if (!(builder instanceof DocumentBuilderProxy)) {
+	    return;
+	}
 
-        DocumentBuilderProxy proxiedBuilder = (DocumentBuilderProxy) builder;
-        if (proxiedBuilder.getOwningPool() != this) {
-            return;
-        }
+	DocumentBuilderProxy proxiedBuilder = (DocumentBuilderProxy) builder;
+	if (proxiedBuilder.getOwningPool() != this) {
+	    return;
+	}
 
-        synchronized (this) {
-            if (proxiedBuilder.isReturned()) {
-                return;
-            }
+	synchronized (this) {
+	    if (proxiedBuilder.isReturned()) {
+		return;
+	    }
 
-            if (proxiedBuilder.getPoolVersion() != poolVersion) {
-                return;
-            }
+	    if (proxiedBuilder.getPoolVersion() != poolVersion) {
+		return;
+	    }
 
-            DocumentBuilder unwrappedBuilder = proxiedBuilder.getProxiedBuilder();
-            unwrappedBuilder.reset();
-            SoftReference<DocumentBuilder> builderReference = new SoftReference<DocumentBuilder>(unwrappedBuilder);
+	    DocumentBuilder unwrappedBuilder = proxiedBuilder.getProxiedBuilder();
+	    unwrappedBuilder.reset();
+	    SoftReference<DocumentBuilder> builderReference = new SoftReference<DocumentBuilder>(
+		    unwrappedBuilder);
 
-            if (builderPool.size() < maxPoolSize) {
-                proxiedBuilder.setReturned(true);
-                builderPool.push(builderReference);
-            }
-        }
+	    if (builderPool.size() < maxPoolSize) {
+		proxiedBuilder.setReturned(true);
+		builderPool.push(builderReference);
+	    }
+	}
     }
 
     /**
      * {@inheritDoc}
      */
     public Document newDocument() throws XmlParserException {
-        DocumentBuilder builder = getBuilder();
-        Document document = builder.newDocument();
-        returnBuilder(builder);
-        return document;
+	DocumentBuilder builder = getBuilder();
+	Document document = builder.newDocument();
+	returnBuilder(builder);
+	return document;
     }
 
     /**
      * {@inheritDoc}
      */
     public Document parse(InputStream input) throws XmlParserException {
-        DocumentBuilder builder = getBuilder();
-        try {
-            Document document = builder.parse(input);
-            return document;
-        } catch (SAXException e) {
-            throw new XmlParserException("Invalid XML", e);
-        } catch (IOException e) {
-            throw new XmlParserException("Unable to read XML from input stream", e);
-        } finally {
-            returnBuilder(builder);
-        }
+	DocumentBuilder builder = getBuilder();
+	try {
+	    Document document = builder.parse(input);
+	    return document;
+	} catch (SAXException e) {
+	    throw new XmlParserException("Invalid XML", e);
+	} catch (IOException e) {
+	    throw new XmlParserException("Unable to read XML from input stream", e);
+	} finally {
+	    returnBuilder(builder);
+	}
     }
 
     /**
      * {@inheritDoc}
      */
     public Document parse(Reader input) throws XmlParserException {
-        DocumentBuilder builder = getBuilder();
-        try {
-            Document document = builder.parse(new InputSource(input));
-            return document;
-        } catch (SAXException e) {
-            throw new XmlParserException("Invalid XML", e);
-        } catch (IOException e) {
-            throw new XmlParserException("Unable to read XML from input stream", e);
-        } finally {
-            returnBuilder(builder);
-        }
+	DocumentBuilder builder = getBuilder();
+	try {
+	    Document document = builder.parse(new InputSource(input));
+	    return document;
+	} catch (SAXException e) {
+	    throw new XmlParserException("Invalid XML", e);
+	} catch (IOException e) {
+	    throw new XmlParserException("Unable to read XML from input stream", e);
+	} finally {
+	    returnBuilder(builder);
+	}
     }
 
     /**
@@ -326,25 +324,24 @@ public class XmlParserPool implements ParserPool {
      * @return max number of builders the pool will hold
      */
     public int getMaxPoolSize() {
-        return maxPoolSize;
+	return maxPoolSize;
     }
 
     /**
      * Sets the max number of builders the pool will hold.
      *
-     * @param newSize
-     *            max number of builders the pool will hold
+     * @param newSize max number of builders the pool will hold
      */
     public void setMaxPoolSize(int newSize) {
-        maxPoolSize = newSize;
+	maxPoolSize = newSize;
     }
 
     /**
      * Gets whether new builders will be created when the max pool size is reached.
      *
      * <p>
-     * <b>Note this method is deprecated and will be removed in the next release. It is also currently functionally
-     * non-operational.</b>
+     * <b>Note this method is deprecated and will be removed in the next release. It is also
+     * currently functionally non-operational.</b>
      * </p>
      *
      * @return whether new builders will be created when the max pool size is reached
@@ -353,25 +350,24 @@ public class XmlParserPool implements ParserPool {
      */
     @Deprecated
     public boolean getCreateBuildersAtPoolLimit() {
-        return true;
+	return true;
     }
 
     /**
      * Sets whether new builders will be created when the max pool size is reached.
      *
      * <p>
-     * <b>Note this method is deprecated and will be removed in the next release. It is also currently functionally
-     * non-operational.</b>
+     * <b>Note this method is deprecated and will be removed in the next release. It is also
+     * currently functionally non-operational.</b>
      * </p>
      *
-     * @param createBuilders
-     *            whether new builders will be created when the max pool size is reached
+     * @param createBuilders whether new builders will be created when the max pool size is reached
      *
      * @deprecated
      */
     @Deprecated
     public void setCreateBuildersAtPoolLimit(boolean createBuilders) {
-        // do nothing
+	// do nothing
     }
 
     /**
@@ -380,18 +376,17 @@ public class XmlParserPool implements ParserPool {
      * @return builder attributes used when creating builders
      */
     public Map<String, Object> getBuilderAttributes() {
-        return Collections.unmodifiableMap(builderAttributes);
+	return Collections.unmodifiableMap(builderAttributes);
     }
 
     /**
      * Sets the builder attributes used when creating builders.
      *
-     * @param newAttributes
-     *            builder attributes used when creating builders
+     * @param newAttributes builder attributes used when creating builders
      */
     public synchronized void setBuilderAttributes(Map<String, Object> newAttributes) {
-        builderAttributes = newAttributes;
-        dirtyBuilderConfiguration = true;
+	builderAttributes = newAttributes;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -400,18 +395,17 @@ public class XmlParserPool implements ParserPool {
      * @return whether the builders are coalescing
      */
     public boolean isCoalescing() {
-        return coalescing;
+	return coalescing;
     }
 
     /**
      * Sets whether the builders are coalescing.
      *
-     * @param isCoalescing
-     *            whether the builders are coalescing
+     * @param isCoalescing whether the builders are coalescing
      */
     public synchronized void setCoalescing(boolean isCoalescing) {
-        coalescing = isCoalescing;
-        dirtyBuilderConfiguration = true;
+	coalescing = isCoalescing;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -420,18 +414,17 @@ public class XmlParserPool implements ParserPool {
      * @return whether builders expand entity references
      */
     public boolean isExpandEntityReferences() {
-        return expandEntityReferences;
+	return expandEntityReferences;
     }
 
     /**
      * Sets whether builders expand entity references.
      *
-     * @param expand
-     *            whether builders expand entity references
+     * @param expand whether builders expand entity references
      */
     public synchronized void setExpandEntityReferences(boolean expand) {
-        expandEntityReferences = expand;
-        dirtyBuilderConfiguration = true;
+	expandEntityReferences = expand;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -440,18 +433,17 @@ public class XmlParserPool implements ParserPool {
      * @return the builders' features
      */
     public Map<String, Boolean> getBuilderFeatures() {
-        return Collections.unmodifiableMap(builderFeatures);
+	return Collections.unmodifiableMap(builderFeatures);
     }
 
     /**
      * Sets the the builders' features.
      *
-     * @param newFeatures
-     *            the builders' features
+     * @param newFeatures the builders' features
      */
     public synchronized void setBuilderFeatures(Map<String, Boolean> newFeatures) {
-        builderFeatures = newFeatures;
-        dirtyBuilderConfiguration = true;
+	builderFeatures = newFeatures;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -460,18 +452,17 @@ public class XmlParserPool implements ParserPool {
      * @return whether the builders ignore comments
      */
     public boolean getIgnoreComments() {
-        return ignoreComments;
+	return ignoreComments;
     }
 
     /**
      * Sets whether the builders ignore comments.
      *
-     * @param ignore
-     *            The ignoreComments to set.
+     * @param ignore The ignoreComments to set.
      */
     public synchronized void setIgnoreComments(boolean ignore) {
-        ignoreComments = ignore;
-        dirtyBuilderConfiguration = true;
+	ignoreComments = ignore;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -480,18 +471,17 @@ public class XmlParserPool implements ParserPool {
      * @return whether the builders ignore element content whitespace
      */
     public boolean isIgnoreElementContentWhitespace() {
-        return ignoreElementContentWhitespace;
+	return ignoreElementContentWhitespace;
     }
 
     /**
      * Sets whether the builders ignore element content whitespace.
      *
-     * @param ignore
-     *            whether the builders ignore element content whitespace
+     * @param ignore whether the builders ignore element content whitespace
      */
     public synchronized void setIgnoreElementContentWhitespace(boolean ignore) {
-        ignoreElementContentWhitespace = ignore;
-        dirtyBuilderConfiguration = true;
+	ignoreElementContentWhitespace = ignore;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -500,39 +490,38 @@ public class XmlParserPool implements ParserPool {
      * @return whether the builders are namespace aware
      */
     public boolean isNamespaceAware() {
-        return namespaceAware;
+	return namespaceAware;
     }
 
     /**
      * Sets whether the builders are namespace aware.
      *
-     * @param isNamespaceAware
-     *            whether the builders are namespace aware
+     * @param isNamespaceAware whether the builders are namespace aware
      */
     public synchronized void setNamespaceAware(boolean isNamespaceAware) {
-        namespaceAware = isNamespaceAware;
-        dirtyBuilderConfiguration = true;
+	namespaceAware = isNamespaceAware;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
      * {@inheritDoc}
      */
     public Schema getSchema() {
-        return schema;
+	return schema;
     }
 
     /**
      * {@inheritDoc}
      */
     public synchronized void setSchema(Schema newSchema) {
-        schema = newSchema;
-        if (schema != null) {
-            setNamespaceAware(true);
-            builderAttributes.remove("http://java.sun.com/xml/jaxp/properties/schemaSource");
-            builderAttributes.remove("http://java.sun.com/xml/jaxp/properties/schemaLanguage");
-        }
+	schema = newSchema;
+	if (schema != null) {
+	    setNamespaceAware(true);
+	    builderAttributes.remove("http://java.sun.com/xml/jaxp/properties/schemaSource");
+	    builderAttributes.remove("http://java.sun.com/xml/jaxp/properties/schemaLanguage");
+	}
 
-        dirtyBuilderConfiguration = true;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -541,18 +530,17 @@ public class XmlParserPool implements ParserPool {
      * @return whether the builders are validating
      */
     public boolean isDTDValidating() {
-        return dtdValidating;
+	return dtdValidating;
     }
 
     /**
      * Sets whether the builders are validating.
      *
-     * @param isValidating
-     *            whether the builders are validating
+     * @param isValidating whether the builders are validating
      */
     public synchronized void setDTDValidating(boolean isValidating) {
-        dtdValidating = isValidating;
-        dirtyBuilderConfiguration = true;
+	dtdValidating = isValidating;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -561,18 +549,17 @@ public class XmlParserPool implements ParserPool {
      * @return whether the builders are XInclude aware
      */
     public boolean isXincludeAware() {
-        return xincludeAware;
+	return xincludeAware;
     }
 
     /**
      * Sets whether the builders are XInclude aware.
      *
-     * @param isXIncludeAware
-     *            whether the builders are XInclude aware
+     * @param isXIncludeAware whether the builders are XInclude aware
      */
     public synchronized void setXincludeAware(boolean isXIncludeAware) {
-        xincludeAware = isXIncludeAware;
-        dirtyBuilderConfiguration = true;
+	xincludeAware = isXIncludeAware;
+	dirtyBuilderConfiguration = true;
     }
 
     /**
@@ -581,7 +568,7 @@ public class XmlParserPool implements ParserPool {
      * @return current pool version
      */
     protected long getPoolVersion() {
-        return poolVersion;
+	return poolVersion;
     }
 
     /**
@@ -590,93 +577,91 @@ public class XmlParserPool implements ParserPool {
      * @return current pool storage size
      */
     protected int getPoolSize() {
-        return builderPool.size();
+	return builderPool.size();
     }
 
     /**
      * Initializes the pool with a new set of configuration options.
      *
-     * @throws XmlParserException
-     *             thrown if there is a problem initialzing the pool
+     * @throws XmlParserException thrown if there is a problem initialzing the pool
      */
     protected synchronized void initializePool() throws XmlParserException {
-        if (!dirtyBuilderConfiguration) {
-            // in case the pool was initialized by some other thread
-            return;
-        }
-        // DISABILITO LA VALIDAZIONE DI UN DTD ESTERNO
-        builderFeatures.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
-        // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
-        String FEATURE = "http://xml.org/sax/features/external-general-entities";
-        builderFeatures.put(FEATURE, false);
+	if (!dirtyBuilderConfiguration) {
+	    // in case the pool was initialized by some other thread
+	    return;
+	}
+	// DISABILITO LA VALIDAZIONE DI UN DTD ESTERNO
+	builderFeatures.put("http://apache.org/xml/features/nonvalidating/load-external-dtd",
+		false);
+	// Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
+	// Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
+	String FEATURE = "http://xml.org/sax/features/external-general-entities";
+	builderFeatures.put(FEATURE, false);
 
-        // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-parameter-entities
-        // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities
-        FEATURE = "http://xml.org/sax/features/external-parameter-entities";
-        builderFeatures.put(FEATURE, false);
+	// Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-parameter-entities
+	// Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities
+	FEATURE = "http://xml.org/sax/features/external-parameter-entities";
+	builderFeatures.put(FEATURE, false);
 
-        DocumentBuilderFactory newFactory = DocumentBuilderFactory.newInstance();
-        setAttributes(newFactory, builderAttributes);
-        setFeatures(newFactory, builderFeatures);
-        newFactory.setCoalescing(coalescing);
-        newFactory.setExpandEntityReferences(expandEntityReferences);
-        newFactory.setIgnoringComments(ignoreComments);
-        newFactory.setIgnoringElementContentWhitespace(ignoreElementContentWhitespace);
-        newFactory.setNamespaceAware(namespaceAware);
-        newFactory.setSchema(schema);
-        newFactory.setValidating(dtdValidating);
-        newFactory.setXIncludeAware(xincludeAware);
-        poolVersion++;
-        dirtyBuilderConfiguration = false;
-        builderFactory = newFactory;
-        builderPool.clear();
+	DocumentBuilderFactory newFactory = DocumentBuilderFactory.newInstance();
+	setAttributes(newFactory, builderAttributes);
+	setFeatures(newFactory, builderFeatures);
+	newFactory.setCoalescing(coalescing);
+	newFactory.setExpandEntityReferences(expandEntityReferences);
+	newFactory.setIgnoringComments(ignoreComments);
+	newFactory.setIgnoringElementContentWhitespace(ignoreElementContentWhitespace);
+	newFactory.setNamespaceAware(namespaceAware);
+	newFactory.setSchema(schema);
+	newFactory.setValidating(dtdValidating);
+	newFactory.setXIncludeAware(xincludeAware);
+	poolVersion++;
+	dirtyBuilderConfiguration = false;
+	builderFactory = newFactory;
+	builderPool.clear();
     }
 
     /**
      * Sets document builder attributes. If an attribute is not supported it is ignored.
      *
-     * @param factory
-     *            document builder factory upon which the attribute will be set
-     * @param attributes
-     *            the set of attributes to be set
+     * @param factory    document builder factory upon which the attribute will be set
+     * @param attributes the set of attributes to be set
      */
     protected void setAttributes(DocumentBuilderFactory factory, Map<String, Object> attributes) {
-        if (attributes == null || attributes.isEmpty()) {
-            return;
-        }
+	if (attributes == null || attributes.isEmpty()) {
+	    return;
+	}
 
-        for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
-            try {
-                log.debug("Setting DocumentBuilderFactory attribute " + attribute.getKey());
-                factory.setAttribute(attribute.getKey(), attribute.getValue());
-            } catch (IllegalArgumentException e) {
-                log.warn("DocumentBuilderFactory attribute " + attribute.getKey() + " is not supported");
-            }
-        }
+	for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
+	    try {
+		log.debug("Setting DocumentBuilderFactory attribute " + attribute.getKey());
+		factory.setAttribute(attribute.getKey(), attribute.getValue());
+	    } catch (IllegalArgumentException e) {
+		log.warn("DocumentBuilderFactory attribute " + attribute.getKey()
+			+ " is not supported");
+	    }
+	}
     }
 
     /**
      * Sets document builder features. If an features is not supported it is ignored.
      *
-     * @param factory
-     *            document builder factory upon which the attribute will be set
-     * @param features
-     *            the set of features to be set
+     * @param factory  document builder factory upon which the attribute will be set
+     * @param features the set of features to be set
      */
     protected void setFeatures(DocumentBuilderFactory factory, Map<String, Boolean> features) {
-        if (features == null || features.isEmpty()) {
-            return;
-        }
+	if (features == null || features.isEmpty()) {
+	    return;
+	}
 
-        for (Map.Entry<String, Boolean> feature : features.entrySet()) {
-            try {
-                log.debug("Setting DocumentBuilderFactory attribute " + feature.getKey());
-                factory.setFeature(feature.getKey(), feature.getValue());
-            } catch (ParserConfigurationException e) {
-                log.warn("DocumentBuilderFactory feature " + feature.getKey() + " is not supported");
-            }
-        }
+	for (Map.Entry<String, Boolean> feature : features.entrySet()) {
+	    try {
+		log.debug("Setting DocumentBuilderFactory attribute " + feature.getKey());
+		factory.setFeature(feature.getKey(), feature.getValue());
+	    } catch (ParserConfigurationException e) {
+		log.warn(
+			"DocumentBuilderFactory feature " + feature.getKey() + " is not supported");
+	    }
+	}
     }
 
     /**
@@ -684,26 +669,25 @@ public class XmlParserPool implements ParserPool {
      *
      * @return newly created document builder
      *
-     * @throws XmlParserException
-     *             thrown if their is a configuration error with the builder factory
+     * @throws XmlParserException thrown if their is a configuration error with the builder factory
      */
     protected DocumentBuilder createBuilder() throws XmlParserException {
-        try {
-            DocumentBuilder builder = builderFactory.newDocumentBuilder();
+	try {
+	    DocumentBuilder builder = builderFactory.newDocumentBuilder();
 
-            if (entityResolver != null) {
-                builder.setEntityResolver(entityResolver);
-            }
+	    if (entityResolver != null) {
+		builder.setEntityResolver(entityResolver);
+	    }
 
-            if (errorHandler != null) {
-                builder.setErrorHandler(errorHandler);
-            }
+	    if (errorHandler != null) {
+		builder.setErrorHandler(errorHandler);
+	    }
 
-            return builder;
-        } catch (ParserConfigurationException e) {
-            log.error("Unable to create new document builder", e);
-            throw new XmlParserException("Unable to create new document builder", e);
-        }
+	    return builder;
+	} catch (ParserConfigurationException e) {
+	    log.error("Unable to create new document builder", e);
+	    throw new XmlParserException("Unable to create new document builder", e);
+	}
     }
 
     /**
@@ -711,221 +695,219 @@ public class XmlParserPool implements ParserPool {
      */
     protected class DocumentBuilderProxy extends DocumentBuilder {
 
-        /**
-         * Builder being proxied.
-         */
-        private DocumentBuilder builder;
+	/**
+	 * Builder being proxied.
+	 */
+	private DocumentBuilder builder;
 
-        /**
-         * Pool that owns this parser.
-         */
-        private ParserPool owningPool;
+	/**
+	 * Pool that owns this parser.
+	 */
+	private ParserPool owningPool;
 
-        /**
-         * Version of the pool when this proxy was created.
-         */
-        private long owningPoolVersion;
+	/**
+	 * Version of the pool when this proxy was created.
+	 */
+	private long owningPoolVersion;
 
-        /**
-         * Track accounting state of whether this builder has been returned to the owning pool.
-         */
-        private boolean returned;
+	/**
+	 * Track accounting state of whether this builder has been returned to the owning pool.
+	 */
+	private boolean returned;
 
-        /**
-         * Constructor.
-         *
-         * @param target
-         *            document builder to proxy
-         * @param owner
-         *            the owning pool
-         * @param version
-         *            the owning pool's version
-         */
-        public DocumentBuilderProxy(DocumentBuilder target, XmlParserPool owner, long version) {
-            owningPoolVersion = version;
-            owningPool = owner;
-            builder = target;
-            returned = false;
-        }
+	/**
+	 * Constructor.
+	 *
+	 * @param target  document builder to proxy
+	 * @param owner   the owning pool
+	 * @param version the owning pool's version
+	 */
+	public DocumentBuilderProxy(DocumentBuilder target, XmlParserPool owner, long version) {
+	    owningPoolVersion = version;
+	    owningPool = owner;
+	    builder = target;
+	    returned = false;
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public DOMImplementation getDOMImplementation() {
-            checkValidState();
-            return builder.getDOMImplementation();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public DOMImplementation getDOMImplementation() {
+	    checkValidState();
+	    return builder.getDOMImplementation();
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Schema getSchema() {
-            checkValidState();
-            return builder.getSchema();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Schema getSchema() {
+	    checkValidState();
+	    return builder.getSchema();
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public boolean isNamespaceAware() {
-            checkValidState();
-            return builder.isNamespaceAware();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isNamespaceAware() {
+	    checkValidState();
+	    return builder.isNamespaceAware();
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public boolean isValidating() {
-            checkValidState();
-            return builder.isValidating();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isValidating() {
+	    checkValidState();
+	    return builder.isValidating();
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public boolean isXIncludeAware() {
-            checkValidState();
-            return builder.isXIncludeAware();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isXIncludeAware() {
+	    checkValidState();
+	    return builder.isXIncludeAware();
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Document newDocument() {
-            checkValidState();
-            return builder.newDocument();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Document newDocument() {
+	    checkValidState();
+	    return builder.newDocument();
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Document parse(File f) throws SAXException, IOException {
-            checkValidState();
-            return builder.parse(f);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Document parse(File f) throws SAXException, IOException {
+	    checkValidState();
+	    return builder.parse(f);
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Document parse(InputSource is) throws SAXException, IOException {
-            checkValidState();
-            return builder.parse(is);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Document parse(InputSource is) throws SAXException, IOException {
+	    checkValidState();
+	    return builder.parse(is);
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Document parse(InputStream is) throws SAXException, IOException {
-            checkValidState();
-            return builder.parse(is);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Document parse(InputStream is) throws SAXException, IOException {
+	    checkValidState();
+	    return builder.parse(is);
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Document parse(InputStream is, String systemId) throws SAXException, IOException {
-            checkValidState();
-            return builder.parse(is, systemId);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Document parse(InputStream is, String systemId) throws SAXException, IOException {
+	    checkValidState();
+	    return builder.parse(is, systemId);
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public Document parse(String uri) throws SAXException, IOException {
-            checkValidState();
-            return builder.parse(uri);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Document parse(String uri) throws SAXException, IOException {
+	    checkValidState();
+	    return builder.parse(uri);
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public void reset() {
-            // ignore, entity resolver and error handler can't be changed
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void reset() {
+	    // ignore, entity resolver and error handler can't be changed
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public void setEntityResolver(EntityResolver er) {
-            checkValidState();
-            return;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setEntityResolver(EntityResolver er) {
+	    checkValidState();
+	    return;
+	}
 
-        /**
-         * {@inheritDoc}
-         */
-        public void setErrorHandler(ErrorHandler eh) {
-            checkValidState();
-            return;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setErrorHandler(ErrorHandler eh) {
+	    checkValidState();
+	    return;
+	}
 
-        /**
-         * Gets the pool that owns this parser.
-         *
-         * @return pool that owns this parser
-         */
-        protected ParserPool getOwningPool() {
-            return owningPool;
-        }
+	/**
+	 * Gets the pool that owns this parser.
+	 *
+	 * @return pool that owns this parser
+	 */
+	protected ParserPool getOwningPool() {
+	    return owningPool;
+	}
 
-        /**
-         * Gets the version of the pool that owns this parser at the time of the proxy's creation.
-         *
-         * @return version of the pool that owns this parser at the time of the proxy's creation
-         */
-        protected long getPoolVersion() {
-            return owningPoolVersion;
-        }
+	/**
+	 * Gets the version of the pool that owns this parser at the time of the proxy's creation.
+	 *
+	 * @return version of the pool that owns this parser at the time of the proxy's creation
+	 */
+	protected long getPoolVersion() {
+	    return owningPoolVersion;
+	}
 
-        /**
-         * Gets the proxied document builder.
-         *
-         * @return proxied document builder
-         */
-        protected DocumentBuilder getProxiedBuilder() {
-            return builder;
-        }
+	/**
+	 * Gets the proxied document builder.
+	 *
+	 * @return proxied document builder
+	 */
+	protected DocumentBuilder getProxiedBuilder() {
+	    return builder;
+	}
 
-        /**
-         * Check accounting state as to whether this parser has been returned to the owning pool.
-         *
-         * @return true if parser has been returned to the owning pool, otherwise false
-         */
-        protected boolean isReturned() {
-            return returned;
-        }
+	/**
+	 * Check accounting state as to whether this parser has been returned to the owning pool.
+	 *
+	 * @return true if parser has been returned to the owning pool, otherwise false
+	 */
+	protected boolean isReturned() {
+	    return returned;
+	}
 
-        /**
-         * Set accounting state as to whether this parser has been returned to the owning pool.
-         *
-         * @param isReturned
-         *            set true to indicate that parser has been returned to the owning pool
-         */
-        protected void setReturned(boolean isReturned) {
-            this.returned = isReturned;
-        }
+	/**
+	 * Set accounting state as to whether this parser has been returned to the owning pool.
+	 *
+	 * @param isReturned set true to indicate that parser has been returned to the owning pool
+	 */
+	protected void setReturned(boolean isReturned) {
+	    this.returned = isReturned;
+	}
 
-        /**
-         * Check whether the parser is in a valid and usable state, and if not, throw a runtime exception.
-         *
-         * @throws IllegalStateException
-         *             thrown if the parser is in a state such that it can not be used
-         */
-        protected void checkValidState() throws IllegalStateException {
-            if (isReturned()) {
-                throw new IllegalStateException("DocumentBuilderProxy has already been returned to its owning pool");
-            }
-        }
+	/**
+	 * Check whether the parser is in a valid and usable state, and if not, throw a runtime
+	 * exception.
+	 *
+	 * @throws IllegalStateException thrown if the parser is in a state such that it can not be
+	 *                               used
+	 */
+	protected void checkValidState() throws IllegalStateException {
+	    if (isReturned()) {
+		throw new IllegalStateException(
+			"DocumentBuilderProxy has already been returned to its owning pool");
+	    }
+	}
 
-        /**
-         * {@inheritDoc}
-         *
-         * @throws java.lang.Throwable
-         */
-        @Override
-        protected void finalize() throws Throwable {
-            owningPool.returnBuilder(this);
-            super.finalize();
-        }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws java.lang.Throwable
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+	    owningPool.returnBuilder(this);
+	    super.finalize();
+	}
     }
 }

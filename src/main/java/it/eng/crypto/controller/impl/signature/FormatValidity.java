@@ -1,27 +1,17 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.controller.impl.signature;
-
-import it.eng.crypto.controller.bean.InputSignerBean;
-import it.eng.crypto.controller.bean.OutputSignerBean;
-import it.eng.crypto.controller.bean.ValidationInfos;
-import it.eng.crypto.controller.exception.ExceptionController;
-import it.eng.crypto.data.signature.ISignature;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,15 +21,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
+
+import it.eng.crypto.controller.bean.InputSignerBean;
+import it.eng.crypto.controller.bean.OutputSignerBean;
+import it.eng.crypto.controller.bean.ValidationInfos;
+import it.eng.crypto.controller.exception.ExceptionController;
+import it.eng.crypto.data.signature.ISignature;
 
 /**
  * Effettua due tipi di controlli:
  * <ul>
- * <li>Recupera il formato della busta tramite la chiamata al metodo {@link it.eng.crypto.data.AbstractSigner#getFormat
- * getFormat} del signer dalla busta,</li>
- * <li>Confronta líeventuale riferimento temporale configurata nel bena di input con la data di validit‡ configurata nel
- * campo validityProperties</li>
+ * <li>Recupera il formato della busta tramite la chiamata al metodo
+ * {@link it.eng.crypto.data.AbstractSigner#getFormat getFormat} del signer dalla busta,</li>
+ * <li>Confronta l'eventuale riferimento temporale configurata nel bena di input con la data di
+ * validit√† configurata nel campo validityProperties</li>
  * </ul>
  *
  * @author Administrator
@@ -48,124 +43,133 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
 public class FormatValidity extends AbstractSignerController {
 
     /**
-     * Propriet‡ restituita dal metodo
-     * {@link it.eng.crypto.controller.impl.signature.CertificateReliability#getCheckProperty getCheckProperty}
+     * Propriet√† restituita dal metodo
+     * {@link it.eng.crypto.controller.impl.signature.CertificateReliability#getCheckProperty
+     * getCheckProperty}
      */
     public static final String FORMAT_VALIDITY_CHECK = "performFormatValidity";
 
     public String getCheckProperty() {
-        return FORMAT_VALIDITY_CHECK;
+	return FORMAT_VALIDITY_CHECK;
     }
 
     private Properties validityProperties;
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     /**
-     * Recupera i periodi di validit‡ associati a ciascun formato di firma
+     * Recupera i periodi di validit√† associati a ciascun formato di firma
      *
      * @return
      */
     public Properties getValidityProperties() {
-        return validityProperties;
+	return validityProperties;
     }
 
     /**
-     * Definisce i periodi di validit‡ di ciascun formato di firma
+     * Definisce i periodi di validit√† di ciascun formato di firma
      *
      * @param validityProperties
      */
     public void setValidityProperties(Properties validityProperties) {
-        this.validityProperties = validityProperties;
+	this.validityProperties = validityProperties;
     }
 
     /**
-     * Recupera il formato di data utilizzato per indicare i periodi di validit‡
+     * Recupera il formato di data utilizzato per indicare i periodi di validit√†
      *
      * @return
      */
     public DateFormat getDateFormat() {
-        return dateFormat;
+	return dateFormat;
     }
 
     /**
-     * Definisce il formato di data utilizzato per indicare i periodi di validit‡
+     * Definisce il formato di data utilizzato per indicare i periodi di validit√†
      *
      * @return
      */
     public void setDateFormat(DateFormat dateFormat) {
-        this.dateFormat = dateFormat;
+	this.dateFormat = dateFormat;
     }
 
-    public boolean execute(InputSignerBean input, OutputSignerBean output) throws ExceptionController {
+    public boolean execute(InputSignerBean input, OutputSignerBean output)
+	    throws ExceptionController {
 
-        // DONE ! - TODO Forse da spostare per ogni firma, da verificare ... Setto il formato della busta
-        output.setProperty(OutputSignerBean.ENVELOPE_FORMAT_PROPERTY, input.getSigner().getFormat().toString());
+	// DONE ! - TODO Forse da spostare per ogni firma, da verificare ... Setto il formato della
+	// busta
+	output.setProperty(OutputSignerBean.ENVELOPE_FORMAT_PROPERTY,
+		input.getSigner().getFormat().toString());
 
-        boolean result = true;
+	boolean result = true;
 
-        // DONE ! Sposto la verifica del formato per singola firma
-        // String format = input.getSigner().getFormat().toString();
-        // String validity = validityProperties.getProperty(format);
+	// DONE ! Sposto la verifica del formato per singola firma
+	// String format = input.getSigner().getFormat().toString();
+	// String validity = validityProperties.getProperty(format);
 
-        // DocumentAndTimeStampInfoBean timeStampInfo= input.getDocumentAndTimeStampInfo();
-        // recupero il riferimento temporale dal timestamptoken
+	// DocumentAndTimeStampInfoBean timeStampInfo= input.getDocumentAndTimeStampInfo();
+	// recupero il riferimento temporale dal timestamptoken
 
-        List<ISignature> signatures = null;
-        if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
-            signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
-            Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
-            result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures);
-            output.setProperty(OutputSignerBean.FORMAT_VALIDITY_PROPERTY, validationInfosMap);
-        }
-        return result;
+	List<ISignature> signatures = null;
+	if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
+	    signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
+	    Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
+	    result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures);
+	    output.setProperty(OutputSignerBean.FORMAT_VALIDITY_PROPERTY, validationInfosMap);
+	}
+	return result;
 
     }
 
-    private boolean populateValidationInfosMapFromSignatureList(Map<ISignature, ValidationInfos> validationInfosMap,
-            List<ISignature> signatures) {
-        boolean result = true;
-        if (signatures == null || signatures.size() == 0) // PerchË la busta sia valida deve esserci almeno una firma
-        {
-            return false;
-        }
+    private boolean populateValidationInfosMapFromSignatureList(
+	    Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures) {
+	boolean result = true;
+	if (signatures == null || signatures.size() == 0) // Perch√® la busta sia valida deve
+							  // esserci
+							  // almeno una firma
+	{
+	    return false;
+	}
 
-        for (ISignature signature : signatures) {
-            // Verifica del formato per singola firma
-            // Verifico che la firma non si MD5, in tal caso non valida
-            if (signature.getSigAlgorithm() != null && signature.getSigAlgorithm().startsWith("MD5")) {
-                ValidationInfos validationInfos = new ValidationInfos();
-                validationInfos
-                        .addError("L'algoritmo di firma non Ë valido. Gli algoritmi ammessi sono SHA-1 o SHA-256");
-                result = false;
-                validationInfosMap.put(signature, validationInfos);
-            } else {
-                String validity = validityProperties.getProperty(signature.getFormatoFirma().name());
-                if (validity != null) {
-                    ValidationInfos validationInfos = new ValidationInfos();
-                    try {
-                        Date date = dateFormat.parse(validity);
-                        if (date.before(signature.getReferenceDate())) {
-                            validationInfos.addError(
-                                    "Il formato di firma utilizzato Ë scaduto in data " + dateFormatter.format(date)
-                                            + ", antecedente al riferimento temporale considerato: "
-                                            + dateFormatter.format(signature.getReferenceDate()));
-                            result = false;
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        validationInfos.addError(
-                                "Non Ë stato possibile verificare la scadenza della data, poichË il formato della data non Ë riconosciuto: "
-                                        + dateFormatter.format(validity));
-                        result = false;
-                    }
-                    validationInfosMap.put(signature, validationInfos);
-                }
-            }
-            if (performCounterSignaturesCheck) {
-                List<ISignature> counterSignatures = signature.getCounterSignatures();
-                populateValidationInfosMapFromSignatureList(validationInfosMap, counterSignatures);
-            }
-        }
-        return result;
+	for (ISignature signature : signatures) {
+	    // Verifica del formato per singola firma
+	    // Verifico che la firma non si MD5, in tal caso non valida
+	    if (signature.getSigAlgorithm() != null
+		    && signature.getSigAlgorithm().startsWith("MD5")) {
+		ValidationInfos validationInfos = new ValidationInfos();
+		validationInfos.addError(
+			"L'algoritmo di firma non √® valido. Gli algoritmi ammessi sono SHA-1 o SHA-256");
+		result = false;
+		validationInfosMap.put(signature, validationInfos);
+	    } else {
+		String validity = validityProperties
+			.getProperty(signature.getFormatoFirma().name());
+		if (validity != null) {
+		    ValidationInfos validationInfos = new ValidationInfos();
+		    try {
+			Date date = dateFormat.parse(validity);
+			if (date.before(signature.getReferenceDate())) {
+			    validationInfos
+				    .addError("Il formato di firma utilizzato √® scaduto in data "
+					    + dateFormatter.format(date)
+					    + ", antecedente al riferimento temporale considerato: "
+					    + dateFormatter.format(signature.getReferenceDate()));
+			    result = false;
+			}
+		    } catch (ParseException e) {
+			e.printStackTrace();
+			validationInfos.addError(
+				"Non √® stato possibile verificare la scadenza della data, poich√® il formato della data non √® riconosciuto: "
+					+ dateFormatter.format(validity));
+			result = false;
+		    }
+		    validationInfosMap.put(signature, validationInfos);
+		}
+	    }
+	    if (performCounterSignaturesCheck) {
+		List<ISignature> counterSignatures = signature.getCounterSignatures();
+		populateValidationInfosMapFromSignatureList(validationInfosMap, counterSignatures);
+	    }
+	}
+	return result;
     }
 }

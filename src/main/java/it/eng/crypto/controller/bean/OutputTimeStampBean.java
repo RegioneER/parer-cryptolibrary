@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.controller.bean;
@@ -32,37 +28,36 @@ public class OutputTimeStampBean extends OutputBean {
      * @return the documentAndTimeStampInfos
      */
     public List<DocumentAndTimeStampInfoBean> getDocumentAndTimeStampInfos() {
-        return documentAndTimeStampInfos;
+	return documentAndTimeStampInfos;
     }
 
     /**
-     * @param documentAndTimeStampInfos
-     *            the documentAndTimeStampInfos to set
+     * @param documentAndTimeStampInfos the documentAndTimeStampInfos to set
      */
-    public void setDocumentAndTimeStampInfos(List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfos) {
-        this.documentAndTimeStampInfos = documentAndTimeStampInfos;
+    public void setDocumentAndTimeStampInfos(
+	    List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfos) {
+	this.documentAndTimeStampInfos = documentAndTimeStampInfos;
     }
 
     /**
      * @return the signer
      */
     public AbstractSigner getSigner() {
-        return signer;
+	return signer;
     }
 
     /**
-     * @param signer
-     *            the signer to set
+     * @param signer the signer to set
      */
     public void setSigner(AbstractSigner signer) {
-        this.signer = signer;
+	this.signer = signer;
     }
 
     public Map getComplianceChecks() {
-        return complianceChecks;
+	return complianceChecks;
     }
 
     public void setComplianceChecks(Map complianceChecks) {
-        this.complianceChecks = complianceChecks;
+	this.complianceChecks = complianceChecks;
     }
 }
