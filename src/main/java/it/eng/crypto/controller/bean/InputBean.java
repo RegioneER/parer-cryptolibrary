@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.controller.bean;
@@ -31,41 +27,38 @@ public class InputBean {
     private boolean checkCAOnline;
 
     public boolean isCheckCAOnline() {
-        return checkCAOnline;
+	return checkCAOnline;
     }
 
     public void setCheckCAOnline(boolean checkCAOnline) {
-        this.checkCAOnline = checkCAOnline;
+	this.checkCAOnline = checkCAOnline;
     }
 
     /**
      * Recupera il valore di un flag di controllo
      *
-     * @param property
-     *            nome del flag da recuperare
+     * @param property nome del flag da recuperare
      *
      * @return il valore del flag
      */
     public Boolean getFlag(String property) {
-        if (checks != null && checks.containsKey(property)) {
-            return checks.get(property);
-        }
-        return false;
+	if (checks != null && checks.containsKey(property)) {
+	    return checks.get(property);
+	}
+	return false;
     }
 
     /**
      * Definisce il valore di un flag di controllo
      *
-     * @param property
-     *            nome del flag da settare
-     * @param value
-     *            valore del flag
+     * @param property nome del flag da settare
+     * @param value    valore del flag
      */
     public void setFlag(String property, Boolean value) {
-        if (checks == null) {
-            checks = new HashMap<String, Boolean>();
-        }
-        checks.put(property, value);
+	if (checks == null) {
+	    checks = new HashMap<String, Boolean>();
+	}
+	checks.put(property, value);
     }
 
     /**
@@ -74,7 +67,7 @@ public class InputBean {
      * @return
      */
     public Map<String, Boolean> getChecks() {
-        return checks;
+	return checks;
     }
 
     /**
@@ -83,7 +76,7 @@ public class InputBean {
      * @param checks
      */
     public void setChecks(Map<String, Boolean> checks) {
-        this.checks = checks;
+	this.checks = checks;
     }
 
     /**
@@ -92,7 +85,7 @@ public class InputBean {
      * @return
      */
     public CRL getCrl() {
-        return crl;
+	return crl;
     }
 
     /**
@@ -101,6 +94,6 @@ public class InputBean {
      * @param crl
      */
     public void setCrl(CRL crl) {
-        this.crl = crl;
+	this.crl = crl;
     }
 }

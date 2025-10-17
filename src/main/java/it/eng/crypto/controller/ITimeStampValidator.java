@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.controller;
@@ -24,7 +20,8 @@ import it.eng.crypto.controller.bean.TimeStampValidityBean;
 import org.bouncycastle.tsp.TimeStampToken;
 
 /**
- * Definisce l'interfaccia di una classe che implementa i controlli sulla validit‡ temporale di una marca.
+ * Definisce l'interfaccia di una classe che implementa i controlli sulla validit√† temporale di una
+ * marca.
  *
  * @author Stefano Zennaro
  *
@@ -32,50 +29,47 @@ import org.bouncycastle.tsp.TimeStampToken;
 public interface ITimeStampValidator {
 
     /**
-     * Controlla se il timeStamp in input Ë attualmente valido rispetto al periodo di validit‡ specificato in input. Una
-     * tipica implementazione prevede il recupero della data attuale da una fonte attendibile e successivamente il suo
-     * confronto con la data riportata nella marca temporale tenendo in considerazione il periodo di validit‡.
+     * Controlla se il timeStamp in input √® attualmente valido rispetto al periodo di validit√†
+     * specificato in input. Una tipica implementazione prevede il recupero della data attuale da
+     * una fonte attendibile e successivamente il suo confronto con la data riportata nella marca
+     * temporale tenendo in considerazione il periodo di validit√†.
      *
      * @param timeStamp
      * @param timeStampValidity
      *
-     * @return true se la marca temporale in input Ë attualmente valida
+     * @return true se la marca temporale in input √® attualmente valida
      */
-    public boolean isTimeStampCurrentlyValid(TimeStampToken timeStamp, TimeStampValidityBean timeStampValidity);
+    public boolean isTimeStampCurrentlyValid(TimeStampToken timeStamp,
+	    TimeStampValidityBean timeStampValidity);
 
     /**
-     * Controlla se il periodo di validit‡ di un timestamp Ë esteso correttamente da un ulteriore timestamp.<br/>
-     * Attenzione: il controllo di corretta associazione tra tra il timestamp e la sue estensione non Ë previsto e deve
-     * essere implementato a parte.
+     * Controlla se il periodo di validit√† di un timestamp √® esteso correttamente da un ulteriore
+     * timestamp.<br/>
+     * Attenzione: il controllo di corretta associazione tra tra il timestamp e la sue estensione
+     * non √® previsto e deve essere implementato a parte.
      *
-     * @param timeStampToValidate
-     *            timestamp su cui validare l'estensione
-     * @param timeStampToValidateValidity
-     *            periodo di validit‡ del timestamp da validare
-     * @param timeStampExtension
-     *            estensione del timestamp
-     * @param timeStampExtensionValidity
-     *            periodo di validit‡ dell'estensione del timestamp
+     * @param timeStampToValidate         timestamp su cui validare l'estensione
+     * @param timeStampToValidateValidity periodo di validit√† del timestamp da validare
+     * @param timeStampExtension          estensione del timestamp
+     * @param timeStampExtensionValidity  periodo di validit√† dell'estensione del timestamp
      *
      * @return
      */
     public boolean isTimeStampExtended(TimeStampToken timeStampToValidate,
-            TimeStampValidityBean timeStampToValidateValidity, TimeStampToken timeStampExtension,
-            TimeStampValidityBean timeStampExtensionValidity);
+	    TimeStampValidityBean timeStampToValidateValidity, TimeStampToken timeStampExtension,
+	    TimeStampValidityBean timeStampExtensionValidity);
 
     /**
-     * Controlla se il timestamp in input era valido nella data specificata rispetto al suo periodo di validit‡.
-     * Verifica cioË se il riferimento temporale ricade nel periodo di validit‡ del timestamp
+     * Controlla se il timestamp in input era valido nella data specificata rispetto al suo periodo
+     * di validit√†. Verifica cio√® se il riferimento temporale ricade nel periodo di validit√† del
+     * timestamp
      *
-     * @param timeStamp
-     *            timestamp da validare
-     * @param timeStampValidity
-     *            periodo di validit‡ del timestamp
-     * @param referenceDate
-     *            data di riferimento
+     * @param timeStamp         timestamp da validare
+     * @param timeStampValidity periodo di validit√† del timestamp
+     * @param referenceDate     data di riferimento
      *
      * @return
      */
-    public boolean isTimeStampValidAtDate(TimeStampToken timeStamp, TimeStampValidityBean timeStampValidity,
-            Date referenceDate);
+    public boolean isTimeStampValidAtDate(TimeStampToken timeStamp,
+	    TimeStampValidityBean timeStampValidity, Date referenceDate);
 }

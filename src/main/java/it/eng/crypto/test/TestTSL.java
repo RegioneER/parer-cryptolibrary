@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.test;
@@ -55,71 +51,74 @@ import be.fedict.eid.tsl.TrustServiceProvider;
 public class TestTSL {
 
     public static void main(String[] args) {
-        // List<X509Certificate> qualifiedCertificates = new ArrayList<X509Certificate>();
-        Map<Principal, X509Certificate> qualifiedCertificates = new HashMap<Principal, X509Certificate>();
-        try {
-            // Modifica per adeguamento EIDAS vedi
-            // http://www.agid.gov.it/agenda-digitale/infrastrutture-architetture/firme-elettroniche/certificati
-            // String urlString = "https://applicazioni.cnipa.gov.it/TSL/IT_TSL_signed.xml";
-            String urlString = "https://eidas.agid.gov.it/TL/TSL-IT.xml";
-            // HttpsURL url = new HttpsURL(urlString);
-            HttpGet method = new HttpGet(urlString);
+	// List<X509Certificate> qualifiedCertificates = new ArrayList<X509Certificate>();
+	Map<Principal, X509Certificate> qualifiedCertificates = new HashMap<Principal, X509Certificate>();
+	try {
+	    // Modifica per adeguamento EIDAS vedi
+	    // http://www.agid.gov.it/agenda-digitale/infrastrutture-architetture/firme-elettroniche/certificati
+	    // String urlString = "https://applicazioni.cnipa.gov.it/TSL/IT_TSL_signed.xml";
+	    String urlString = "https://eidas.agid.gov.it/TL/TSL-IT.xml";
+	    // HttpsURL url = new HttpsURL(urlString);
+	    HttpGet method = new HttpGet(urlString);
 
-            ApplicationContext context = new ClassPathXmlApplicationContext("ControllerConfig.xml");
-            CryptoConfiguration config = (CryptoConfiguration) context.getBean(CryptoConstants.CRYPTO_CONFIGURATION);
+	    ApplicationContext context = new ClassPathXmlApplicationContext("ControllerConfig.xml");
+	    CryptoConfiguration config = (CryptoConfiguration) context
+		    .getBean(CryptoConstants.CRYPTO_CONFIGURATION);
 
-            DefaultHttpClient httpclient = new DefaultHttpClient();
-            if (config.isProxy()) {
-                Credentials credential = config.isNTLSAuth()
-                        ? new NTCredentials(config.getProxyUser(), config.getProxyPassword(), config.getUserHost(),
-                                config.getUserDomain())
-                        : new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword());
-                HttpHost proxy = new HttpHost(config.getProxyHost(), config.getProxyPort());
-                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-                httpclient.getCredentialsProvider().setCredentials(new AuthScope(proxy.getHostName(), proxy.getPort()),
-                        credential);
+	    DefaultHttpClient httpclient = new DefaultHttpClient();
+	    if (config.isProxy()) {
+		Credentials credential = config.isNTLSAuth()
+			? new NTCredentials(config.getProxyUser(), config.getProxyPassword(),
+				config.getUserHost(), config.getUserDomain())
+			: new UsernamePasswordCredentials(config.getProxyUser(),
+				config.getProxyPassword());
+		HttpHost proxy = new HttpHost(config.getProxyHost(), config.getProxyPort());
+		httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+		httpclient.getCredentialsProvider().setCredentials(
+			new AuthScope(proxy.getHostName(), proxy.getPort()), credential);
 
-            }
-            HttpResponse response = httpclient.execute(method);
+	    }
+	    HttpResponse response = httpclient.execute(method);
 
-            java.io.InputStream is = response.getEntity().getContent();
+	    java.io.InputStream is = response.getEntity().getContent();
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            DocumentBuilder docBuilder = factory.newDocumentBuilder();
+	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    factory.setNamespaceAware(true);
+	    DocumentBuilder docBuilder = factory.newDocumentBuilder();
 
-            Document doc = docBuilder.parse(is);
+	    Document doc = docBuilder.parse(is);
 
-            is.close();
+	    is.close();
 
-            TrustServiceList trustServiceList = TrustServiceListFactory.newInstance(doc);
-            List<TrustServiceProvider> trustServiceProviders = trustServiceList.getTrustServiceProviders();
+	    TrustServiceList trustServiceList = TrustServiceListFactory.newInstance(doc);
+	    List<TrustServiceProvider> trustServiceProviders = trustServiceList
+		    .getTrustServiceProviders();
 
-            for (TrustServiceProvider trustServiceProvider : trustServiceProviders) {
-                List<TrustService> trustServices = trustServiceProvider.getTrustServices();
-                for (TrustService trustService : trustServices) {
-                    X509Certificate certificate = trustService.getServiceDigitalIdentity();
-                    // qualifiedCertificates.add(certificate);
-                    qualifiedCertificates.put(certificate.getSubjectX500Principal(), certificate);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	    for (TrustServiceProvider trustServiceProvider : trustServiceProviders) {
+		List<TrustService> trustServices = trustServiceProvider.getTrustServices();
+		for (TrustService trustService : trustServices) {
+		    X509Certificate certificate = trustService.getServiceDigitalIdentity();
+		    // qualifiedCertificates.add(certificate);
+		    qualifiedCertificates.put(certificate.getSubjectX500Principal(), certificate);
+		}
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
 
-        Set<Principal> principals = qualifiedCertificates.keySet();
-        for (Principal principal : principals) {
-            System.out.println(principal);
-        }
+	Set<Principal> principals = qualifiedCertificates.keySet();
+	for (Principal principal : principals) {
+	    System.out.println(principal);
+	}
 
     }
 
     public static String print(InputStream in) throws IOException {
-        StringBuffer out = new StringBuffer();
-        byte[] b = new byte[4096];
-        for (int n; (n = in.read(b)) != -1;) {
-            out.append(new String(b, 0, n));
-        }
-        return out.toString();
+	StringBuffer out = new StringBuffer();
+	byte[] b = new byte[4096];
+	for (int n; (n = in.read(b)) != -1;) {
+	    out.append(new String(b, 0, n));
+	}
+	return out.toString();
     }
 }

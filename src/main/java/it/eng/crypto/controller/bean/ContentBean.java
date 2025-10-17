@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.controller.bean;
@@ -20,8 +16,8 @@ package it.eng.crypto.controller.bean;
 import java.io.File;
 
 /**
- * Bean d'appoggio contenente il riferimento ai file sbustati e informazioni sul fatto che questi possano contenere a
- * loro volta delle firme
+ * Bean d'appoggio contenente il riferimento ai file sbustati e informazioni sul fatto che questi
+ * possano contenere a loro volta delle firme
  *
  * @author Stefano Zennaro
  *
@@ -37,7 +33,7 @@ public class ContentBean {
      * @return il contenuto sbustato
      */
     public File getContentFile() {
-        return contentFile;
+	return contentFile;
     }
 
     /**
@@ -46,25 +42,25 @@ public class ContentBean {
      * @param contentFile
      */
     public void setContentFile(File contentFile) {
-        this.contentFile = contentFile;
+	this.contentFile = contentFile;
     }
 
     /**
-     * Restituisce true se il contenuto può essere ulteriormente firmato
+     * Restituisce true se il contenuto puÃ² essere ulteriormente firmato
      *
      * @return
      */
     public boolean isPossiblySigned() {
-        return possiblySigned;
+	return possiblySigned;
     }
 
     /**
-     * Definisce se il contenuto può essere ulteriormente firmato
+     * Definisce se il contenuto puÃ² essere ulteriormente firmato
      *
      * @param possiblySigned
      */
     public void setPossiblySigned(boolean possiblySigned) {
-        this.possiblySigned = possiblySigned;
+	this.possiblySigned = possiblySigned;
     }
 
 }

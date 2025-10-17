@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.bean;
@@ -39,21 +35,22 @@ public class ConfigBean implements Serializable {
     private BigDecimal niOrdUrlDistribCrl;
 
     /**
-     * Recupera il nome dell'entit‡ associata al certificato cosÏ come riportato nel Distinguished Name (RFC2459)
+     * Recupera il nome dell'entit√† associata al certificato cos√¨ come riportato nel Distinguished
+     * Name (RFC2459)
      *
      * @return
      */
     public String getSubjectDN() {
-        return subjectDN;
+	return subjectDN;
     }
 
     /**
-     * Definisce il nome dell'entit‡ associata al certificato
+     * Definisce il nome dell'entit√† associata al certificato
      *
      * @return
      */
     public void setSubjectDN(String subjectDN) {
-        this.subjectDN = subjectDN;
+	this.subjectDN = subjectDN;
     }
 
     /**
@@ -62,7 +59,7 @@ public class ConfigBean implements Serializable {
      * @return
      */
     public String getCrlURL() {
-        return crlURL;
+	return crlURL;
     }
 
     /**
@@ -71,7 +68,7 @@ public class ConfigBean implements Serializable {
      * @param crlURL
      */
     public void setCrlURL(String crlURL) {
-        this.crlURL = crlURL;
+	this.crlURL = crlURL;
     }
 
     /**
@@ -80,7 +77,7 @@ public class ConfigBean implements Serializable {
      * @return
      */
     public String getSchedule() {
-        return schedule;
+	return schedule;
     }
 
     /**
@@ -89,22 +86,22 @@ public class ConfigBean implements Serializable {
      * @param schedule
      */
     public void setSchedule(String schedule) {
-        this.schedule = schedule;
+	this.schedule = schedule;
     }
 
     public BigDecimal getNiOrdUrlDistribCrl() {
-        return niOrdUrlDistribCrl;
+	return niOrdUrlDistribCrl;
     }
 
     public void setNiOrdUrlDistribCrl(BigDecimal niOrdUrlDistribCrl) {
-        this.niOrdUrlDistribCrl = niOrdUrlDistribCrl;
+	this.niOrdUrlDistribCrl = niOrdUrlDistribCrl;
     }
 
     public String getKeyId() {
-        return keyId;
+	return keyId;
     }
 
     public void setKeyId(String keyId) {
-        this.keyId = keyId;
+	this.keyId = keyId;
     }
 }

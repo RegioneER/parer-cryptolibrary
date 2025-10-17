@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.crypto.bean;
@@ -23,7 +19,8 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 
 /**
- * Bean di utilit‡ che consente di memorizzare le informazioni relative a una singola firma. Vengono memorizzati:
+ * Bean di utilit√† che consente di memorizzare le informazioni relative a una singola firma. Vengono
+ * memorizzati:
  * <ul>
  * <li>certificato di firma</li>
  * <li>emittente del certificato di firma</li>
@@ -54,17 +51,16 @@ public class SignerBean {
      * @return emittente del certificato di firma
      */
     public X500Principal getIusser() {
-        return iusser;
+	return iusser;
     }
 
     /**
      * Definisce l'emittente del certificato di firma
      *
-     * @param iusser
-     *            emittente del certificato di firma
+     * @param iusser emittente del certificato di firma
      */
     public void setIusser(X500Principal iusser) {
-        this.iusser = iusser;
+	this.iusser = iusser;
     }
 
     /**
@@ -73,17 +69,16 @@ public class SignerBean {
      * @return firmatario
      */
     public Principal getSubject() {
-        return subject;
+	return subject;
     }
 
     /**
      * Definisce il firmatario
      *
-     * @param subject
-     *            firmatario
+     * @param subject firmatario
      */
     public void setSubject(Principal subject) {
-        this.subject = subject;
+	this.subject = subject;
     }
 
     /**
@@ -92,21 +87,21 @@ public class SignerBean {
      * @return certificato di firma
      */
     public X509Certificate getCertificate() {
-        return certificate;
+	return certificate;
     }
 
     /**
      * Definisce il certificato di firma
      *
-     * @param certificate
-     *            certificato di firma
+     * @param certificate certificato di firma
      */
     public void setCertificate(X509Certificate certificate) {
-        this.certificate = certificate;
+	this.certificate = certificate;
     }
 
     public String toString() {
-        // return "certificate:\n" + certificate + ",\nissuer:\n" + iusser + ",\nsubject:\n" + subject;
-        return "certificate:\n" + certificate + ",\nsubject:\n" + subject;
+	// return "certificate:\n" + certificate + ",\nissuer:\n" + iusser + ",\nsubject:\n" +
+	// subject;
+	return "certificate:\n" + certificate + ",\nsubject:\n" + subject;
     }
 }
