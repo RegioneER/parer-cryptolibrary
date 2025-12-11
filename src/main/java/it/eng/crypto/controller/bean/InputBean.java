@@ -24,15 +24,18 @@ public class InputBean {
     // Lista delle crl
     private CRL crl;
 
+    // Timeout connessione HTTP per recupero CRL
+    private int httpCrlTimeoutConnection;
+
+    // Timeout socket HTTP per recupero CRL
+    private int httpCrlSocketTimeout;
+    
+    // Timeout connessione LDAP per recupero CRL
+    private int ldapCrlTimeoutConnection;
+
+
     private boolean checkCAOnline;
 
-    public boolean isCheckCAOnline() {
-	return checkCAOnline;
-    }
-
-    public void setCheckCAOnline(boolean checkCAOnline) {
-	this.checkCAOnline = checkCAOnline;
-    }
 
     /**
      * Recupera il valore di un flag di controllo
@@ -42,10 +45,10 @@ public class InputBean {
      * @return il valore del flag
      */
     public Boolean getFlag(String property) {
-	if (checks != null && checks.containsKey(property)) {
-	    return checks.get(property);
-	}
-	return false;
+        if (checks != null && checks.containsKey(property)) {
+            return checks.get(property);
+        }
+        return false;
     }
 
     /**
@@ -55,10 +58,10 @@ public class InputBean {
      * @param value    valore del flag
      */
     public void setFlag(String property, Boolean value) {
-	if (checks == null) {
-	    checks = new HashMap<String, Boolean>();
-	}
-	checks.put(property, value);
+        if (checks == null) {
+            checks = new HashMap<String, Boolean>();
+        }
+        checks.put(property, value);
     }
 
     /**
@@ -67,7 +70,7 @@ public class InputBean {
      * @return
      */
     public Map<String, Boolean> getChecks() {
-	return checks;
+        return checks;
     }
 
     /**
@@ -76,7 +79,7 @@ public class InputBean {
      * @param checks
      */
     public void setChecks(Map<String, Boolean> checks) {
-	this.checks = checks;
+        this.checks = checks;
     }
 
     /**
@@ -85,7 +88,7 @@ public class InputBean {
      * @return
      */
     public CRL getCrl() {
-	return crl;
+        return crl;
     }
 
     /**
@@ -94,6 +97,42 @@ public class InputBean {
      * @param crl
      */
     public void setCrl(CRL crl) {
-	this.crl = crl;
+        this.crl = crl;
     }
+    
+    public boolean isCheckCAOnline() {
+        return checkCAOnline;
+    }
+
+    public void setCheckCAOnline(boolean checkCAOnline) {
+        this.checkCAOnline = checkCAOnline;
+    }
+    
+    // Getter e Setter timeout connessione CRL
+    public int getHttpCrlTimeoutConnection() {
+	return httpCrlTimeoutConnection;
+    }
+
+    public void setHttpCrlTimeoutConnection(int httpCrlTimeoutConnection) {
+	this.httpCrlTimeoutConnection = httpCrlTimeoutConnection;
+    }
+
+    public int getLdapCrlTimeoutConnection() {
+	return ldapCrlTimeoutConnection;
+    }
+
+    public void setLdapCrlTimeoutConnection(int ldapCrlTimeoutConnection) {
+	this.ldapCrlTimeoutConnection = ldapCrlTimeoutConnection;
+    }
+
+    public int getHttpCrlSocketTimeout() {
+	return httpCrlSocketTimeout;
+    }
+
+    public void setHttpCrlSocketTimeout(int httpCrlSocketTimeout) {
+	this.httpCrlSocketTimeout = httpCrlSocketTimeout;
+    }
+
+
+
 }

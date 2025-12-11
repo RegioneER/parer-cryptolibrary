@@ -41,7 +41,7 @@ public interface IConfigStorage {
      * @return
      */
     public ConfigBean retriveConfig(String subjectDN, String keyId, BigDecimal numOrdine)
-	    throws CryptoStorageException;
+            throws CryptoStorageException;
 
     /**
      * Elimina la configurazione in base al subjectDN.
@@ -49,7 +49,7 @@ public interface IConfigStorage {
      * @param subjectDN
      */
     public void deleteConfig(String subjectDN, String keyId, BigDecimal numOrdine)
-	    throws CryptoStorageException;
+            throws CryptoStorageException;
 
     /**
      * Recupera la configurazione esistente per subjectDN.

@@ -45,82 +45,82 @@ public class PDFSignature implements ISignature {
     private byte[] signature;
 
     public PDFSignature(PdfPKCS7 pkcs, byte[] signature, SignerType formatoFirma) {
-	this.formatoFirma = formatoFirma;
-	// this.cms = cms;
-	this.signature = signature;
-	this.pkcs7 = pkcs;
-	this.signerBean = new SignerBean();
-	X509Certificate certificate = pkcs7.getSigningCertificate();
-	signerBean.setCertificate(certificate);
-	signerBean.setIusser(certificate.getIssuerX500Principal());
-	signerBean.setSubject(certificate.getSubjectX500Principal());
-	counterSignatures = new ArrayList<ISignature>();
+        this.formatoFirma = formatoFirma;
+        // this.cms = cms;
+        this.signature = signature;
+        this.pkcs7 = pkcs;
+        this.signerBean = new SignerBean();
+        X509Certificate certificate = pkcs7.getSigningCertificate();
+        signerBean.setCertificate(certificate);
+        signerBean.setIusser(certificate.getIssuerX500Principal());
+        signerBean.setSubject(certificate.getSubjectX500Principal());
+        counterSignatures = new ArrayList<ISignature>();
     }
 
     /*
      * TODO: da implementare..
      */
     public List<ISignature> getCounterSignatures() {
-	return counterSignatures;
+        return counterSignatures;
     }
 
     public byte[] getSignatureBytes() {
-	// TODO : il byte[] della firma è ottenibile solo utilizzando BC (La firma è nel campo
-	// privato "byte[] digest"
-	// contenuto nella classe PdfPCKS7 di iText): performance e uso risorse non ottimali
+        // TODO : il byte[] della firma è ottenibile solo utilizzando BC (La firma è nel campo
+        // privato "byte[] digest"
+        // contenuto nella classe PdfPCKS7 di iText): performance e uso risorse non ottimali
 
-	// Verificare se con firme multiple dal dizionario viene ritornata solo la firma
-	// rappresentata da questo oggetto
+        // Verificare se con firme multiple dal dizionario viene ritornata solo la firma
+        // rappresentata da questo oggetto
 
-	return signature;// ((List<SignerInformation>)
-			 // cms.getSignerInfos().getSigners()).get(0).getSignature();
+        return signature;// ((List<SignerInformation>)
+        // cms.getSignerInfos().getSigners()).get(0).getSignature();
 
-	// return pdfDict.get(PdfName.CONTENTS).getBytes();
+        // return pdfDict.get(PdfName.CONTENTS).getBytes();
     }
 
     public SignerBean getSignerBean() {
-	return signerBean;
+        return signerBean;
     }
 
     public ValidationInfos verify() {
-	ValidationInfos validationInfos = new ValidationInfos();
-	boolean result = false;
-	try {
-	    result = pkcs7.verify();
-	} catch (GeneralSecurityException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	if (!result) {
-	    validationInfos.addError("La firma non corrisponde al contenuto firmato");
-	}
-	return validationInfos;
+        ValidationInfos validationInfos = new ValidationInfos();
+        boolean result = false;
+        try {
+            result = pkcs7.verify();
+        } catch (GeneralSecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if (!result) {
+            validationInfos.addError("La firma non corrisponde al contenuto firmato");
+        }
+        return validationInfos;
     }
 
     @Override
     public Date getDateSignature() {
-	if (pkcs7.getSignDate() != null) {
-	    return pkcs7.getSignDate().getTime();
-	} else {
-	    return null;
-	}
+        if (pkcs7.getSignDate() != null) {
+            return pkcs7.getSignDate().getTime();
+        } else {
+            return null;
+        }
 
     }
 
     @Override
     public TimeStampToken getTimeStamp() {
-	return pkcs7.getTimeStampToken();// getTimeStampDate().getTime();
+        return pkcs7.getTimeStampToken();// getTimeStampDate().getTime();
 
     }
 
     @Override
     public Date getReferenceDate() {
-	return this.referenceDate;
+        return this.referenceDate;
     }
 
     @Override
     public void setReferenceDate(Date referenceDate) {
-	this.referenceDate = referenceDate;
+        this.referenceDate = referenceDate;
     }
 
     /**
@@ -132,28 +132,28 @@ public class PDFSignature implements ISignature {
      */
     @Override
     public String getSigAlgorithm() {
-	String alg = this.pkcs7.getDigestAlgorithm();
-	if (this.pkcs7.getHashAlgorithm() == null) {
-	    alg = "SHA1withRSA";
-	}
-	return alg;
+        String alg = this.pkcs7.getDigestAlgorithm();
+        if (this.pkcs7.getHashAlgorithm() == null) {
+            alg = "SHA1withRSA";
+        }
+        return alg;
     }
 
     @Override
     public String getReferenceDateType() {
-	return this.referenceDateType;
+        return this.referenceDateType;
     }
 
     @Override
     public void setReferenceDateType(String referenceDateType) {
-	this.referenceDateType = referenceDateType;
+        this.referenceDateType = referenceDateType;
     }
 
     public SignerType getFormatoFirma() {
-	return formatoFirma;
+        return formatoFirma;
     }
 
     public void setFormatoFirma(SignerType formatoFirma) {
-	this.formatoFirma = formatoFirma;
+        this.formatoFirma = formatoFirma;
     }
 }

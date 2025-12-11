@@ -52,48 +52,48 @@ public class TestParseCRL {
     private static String urlDistribuzione = "http://onsitecrl.arubapec.trustitalia.it/ArubaPECSpACertificationAuthority/LatestCRL.crl";
 
     private static X509CRL ricercaCrlByProxyHTTP(String url, CryptoConfiguration configuration)
-	    throws Exception {
-	DefaultHttpClient httpclient = new DefaultHttpClient();
-	Credentials credential = new UsernamePasswordCredentials(configuration.getProxyUser(),
-		configuration.getProxyPassword());
-	AuthScope scope = new AuthScope(configuration.getProxyHost(), configuration.getProxyPort());
-	HttpHost proxy = new HttpHost(configuration.getProxyHost(), configuration.getProxyPort());
-	httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-	httpclient.getCredentialsProvider().setCredentials(scope, credential);
+            throws Exception {
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        Credentials credential = new UsernamePasswordCredentials(configuration.getProxyUser(),
+                configuration.getProxyPassword());
+        AuthScope scope = new AuthScope(configuration.getProxyHost(), configuration.getProxyPort());
+        HttpHost proxy = new HttpHost(configuration.getProxyHost(), configuration.getProxyPort());
+        httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        httpclient.getCredentialsProvider().setCredentials(scope, credential);
 
-	HttpPost method = new HttpPost(url);
-	HttpResponse httpResponse = httpclient.execute(method);
+        HttpPost method = new HttpPost(url);
+        HttpResponse httpResponse = httpclient.execute(method);
 
-	if (httpResponse.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_FORBIDDEN) {
-	    method.abort();
-	    HttpGet getmethod = new HttpGet(url);
-	    httpResponse = httpclient.execute(getmethod);
-	}
-	// java.io.InputStream in = httpResponse.getEntity().getContent();
-	return parse(EntityUtils.toByteArray(httpResponse.getEntity()));
+        if (httpResponse.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_FORBIDDEN) {
+            method.abort();
+            HttpGet getmethod = new HttpGet(url);
+            httpResponse = httpclient.execute(getmethod);
+        }
+        // java.io.InputStream in = httpResponse.getEntity().getContent();
+        return parse(EntityUtils.toByteArray(httpResponse.getEntity()));
     }
 
     private static X509CRL parse(byte[] crlEnc) throws Exception {
-	if (crlEnc == null) {
-	    return null;
-	}
-	byte[] crlData;
-	try {
-	    org.bouncycastle.util.encoders.Base64 dec = new org.bouncycastle.util.encoders.Base64();
-	    crlData = dec.decode(crlEnc);
-	} catch (Exception e) {
-	    crlData = crlEnc;
-	}
-	CertificateFactory cf = CertificateFactory.getInstance("X.509", "BC");
-	return (X509CRL) cf.generateCRL(new ByteArrayInputStream(crlData));
+        if (crlEnc == null) {
+            return null;
+        }
+        byte[] crlData;
+        try {
+            org.bouncycastle.util.encoders.Base64 dec = new org.bouncycastle.util.encoders.Base64();
+            crlData = dec.decode(crlEnc);
+        } catch (Exception e) {
+            crlData = crlEnc;
+        }
+        CertificateFactory cf = CertificateFactory.getInstance("X.509", "BC");
+        return (X509CRL) cf.generateCRL(new ByteArrayInputStream(crlData));
     }
 
     protected static void checkCRL(X509CRL crl) {
-	Set<X509CRLEntry> entries = (Set<X509CRLEntry>) crl.getRevokedCertificates();
-	for (X509CRLEntry crlEntry : entries) {
-	    System.out.println("revocation date: " + crlEntry.getRevocationDate() + " SN: "
-		    + crlEntry.getSerialNumber());
-	}
+        Set<X509CRLEntry> entries = (Set<X509CRLEntry>) crl.getRevokedCertificates();
+        for (X509CRLEntry crlEntry : entries) {
+            System.out.println("revocation date: " + crlEntry.getRevocationDate() + " SN: "
+                    + crlEntry.getSerialNumber());
+        }
     }
 
     /**
@@ -101,34 +101,34 @@ public class TestParseCRL {
      */
     public static void main(String[] args) {
 
-	// ApplicationContext context = new ClassPathXmlApplicationContext("ControllerConfig.xml");
-	// CryptoConfiguration config = (CryptoConfiguration)
-	// context.getBean(CryptoConstants.CRYPTO_CONFIGURATION);
-	//
-	// try {
-	// X509CRL crl = ricercaCrlByProxyHTTP(urlDistribuzione, config);
-	// checkCRL(crl);
-	// } catch (Exception e1) {
-	// // TODO Auto-generated catch block
-	// e1.printStackTrace();
-	// }
-	Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-	File file = new File(filePath);
-	try {
-	    FileInputStream fis = new FileInputStream(file);
-	    byte[] content = IOUtils.toByteArray(fis);
-	    X509CRL crl = parse(content);
-	    checkCRL(crl);
-	} catch (FileNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+        // ApplicationContext context = new ClassPathXmlApplicationContext("ControllerConfig.xml");
+        // CryptoConfiguration config = (CryptoConfiguration)
+        // context.getBean(CryptoConstants.CRYPTO_CONFIGURATION);
+        //
+        // try {
+        // X509CRL crl = ricercaCrlByProxyHTTP(urlDistribuzione, config);
+        // checkCRL(crl);
+        // } catch (Exception e1) {
+        // // TODO Auto-generated catch block
+        // e1.printStackTrace();
+        // }
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        File file = new File(filePath);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] content = IOUtils.toByteArray(fis);
+            X509CRL crl = parse(content);
+            checkCRL(crl);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 }

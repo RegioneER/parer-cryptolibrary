@@ -83,31 +83,31 @@ public class P7MSigner extends AbstractSigner {
     protected SignerType type = null;
 
     protected boolean isSignedType(CMSSignedData signedData, ValidationInfos complianceCheck) {
-	// Resetto il signer
-	reset();
-	// cmsSignedData = null;
+        // Resetto il signer
+        reset();
+        // cmsSignedData = null;
 
-	boolean signed = false;
-	SignerInformationStore signersStore = signedData.getSignerInfos();
-	Collection<SignerInformation> signers = signersStore.getSigners();
-	if (signers == null || signers.isEmpty()) {
-	    complianceCheck.addWarning("La busta CMS non contiene firme");
-	    signed = false;
-	} else {
-	    // Controllo se l'algoritmo è di tipo SHA1
-	    for (SignerInformation signer : signers) {
-		if (!CMSSignedDataGenerator.DIGEST_MD5.equals(signer.getDigestAlgOID())
-			&& !CMSSignedDataGenerator.DIGEST_SHA1.equals(signer.getDigestAlgOID())
-			&& !CMSSignedDataGenerator.DIGEST_SHA256.equals(signer.getDigestAlgOID())) {
-		    signed = false;
-		    complianceCheck.setWarnings(new String[] {
-			    "Almeno una firma nella busta non utilizza MD5, SHA-1 o SHA-256" });
-		    break;
-		}
-		signed = true;
-	    }
-	}
-	return signed;
+        boolean signed = false;
+        SignerInformationStore signersStore = signedData.getSignerInfos();
+        Collection<SignerInformation> signers = signersStore.getSigners();
+        if (signers == null || signers.isEmpty()) {
+            complianceCheck.addWarning("La busta CMS non contiene firme");
+            signed = false;
+        } else {
+            // Controllo se l'algoritmo è di tipo SHA1
+            for (SignerInformation signer : signers) {
+                if (!CMSSignedDataGenerator.DIGEST_MD5.equals(signer.getDigestAlgOID())
+                        && !CMSSignedDataGenerator.DIGEST_SHA1.equals(signer.getDigestAlgOID())
+                        && !CMSSignedDataGenerator.DIGEST_SHA256.equals(signer.getDigestAlgOID())) {
+                    signed = false;
+                    complianceCheck.setWarnings(new String[] {
+                            "Almeno una firma nella busta non utilizza MD5, SHA-1 o SHA-256" });
+                    break;
+                }
+                signed = true;
+            }
+        }
+        return signed;
     }
 
     /**
@@ -116,149 +116,149 @@ public class P7MSigner extends AbstractSigner {
      */
     @Override
     public boolean isSignedType(File file, ValidationInfos complianceCheck) {
-	boolean signed = false;
-	InputStream stream = null;
-	// CMSProcessable process = new CMSProcessableFile(file);
-	// byte[] out = (byte[]) process.getContent();
+        boolean signed = false;
+        InputStream stream = null;
+        // CMSProcessable process = new CMSProcessableFile(file);
+        // byte[] out = (byte[]) process.getContent();
 
-	PEMParser pr = null;
+        PEMParser pr = null;
 
-	try {
-	    pr = new PEMParser(new FileReader(file));
-	    ContentInfo ci = (ContentInfo) pr.readObject();
-	    if (ci != null) {
-		cmsSignedData = new CMSSignedData(ci);
-	    }
-	} catch (IOException | CMSException ex) {
-	} finally {
-	    if (pr != null) {
-		IOUtils.closeQuietly(pr);
-	    }
-	}
-	try {
-	    if (cmsSignedData == null) {
-		logger.debug("Il file non è in formato PEM");
-		try {
-		    stream = FileUtils.openInputStream(file);
-		    cmsSignedData = new CMSSignedData(new BufferedInputStream(stream));
-		} catch (CMSException e) {
-		    if (stream != null) {
-			IOUtils.closeQuietly(stream);
-		    }
-		    logger.debug("Il file non è in formato DER");
-		    stream = FileUtils.openInputStream(file);
-		    cmsSignedData = new CMSSignedData(new Base64InputStream(stream));
-		}
+        try {
+            pr = new PEMParser(new FileReader(file));
+            ContentInfo ci = (ContentInfo) pr.readObject();
+            if (ci != null) {
+                cmsSignedData = new CMSSignedData(ci);
+            }
+        } catch (IOException | CMSException ex) {
+        } finally {
+            if (pr != null) {
+                IOUtils.closeQuietly(pr);
+            }
+        }
+        try {
+            if (cmsSignedData == null) {
+                logger.debug("Il file non è in formato PEM");
+                try {
+                    stream = FileUtils.openInputStream(file);
+                    cmsSignedData = new CMSSignedData(new BufferedInputStream(stream));
+                } catch (CMSException e) {
+                    if (stream != null) {
+                        IOUtils.closeQuietly(stream);
+                    }
+                    logger.debug("Il file non è in formato DER");
+                    stream = FileUtils.openInputStream(file);
+                    cmsSignedData = new CMSSignedData(new Base64InputStream(stream));
+                }
 
-	    }
-	    // CMSTypedStream cmsTypedStream = cmsSignedData.getSignedContent();
-	    // cmsTypedStream.drain();
+            }
+            // CMSTypedStream cmsTypedStream = cmsSignedData.getSignedContent();
+            // cmsTypedStream.drain();
 
-	    signed = isSignedType(cmsSignedData, complianceCheck);
-	} catch (Exception e) {
-	    logger.debug("Il file non è in formato BASE64");
-	    signed = false;
-	} finally {
-	    if (stream != null) {
-		IOUtils.closeQuietly(stream);
-	    }
-	}
-	return signed;
+            signed = isSignedType(cmsSignedData, complianceCheck);
+        } catch (Exception e) {
+            logger.debug("Il file non è in formato BASE64");
+            signed = false;
+        } finally {
+            if (stream != null) {
+                IOUtils.closeQuietly(stream);
+            }
+        }
+        return signed;
     }
 
     @Override
     public boolean isSignedType(byte[] content, ValidationInfos complianceCheck) {
-	boolean signed = false;
-	try {
-	    cmsSignedData = new CMSSignedData(content);
-	    signed = isSignedType(cmsSignedData, complianceCheck);
-	} catch (CMSException e) {
-	    signed = false;
-	}
-	return signed;
+        boolean signed = false;
+        try {
+            cmsSignedData = new CMSSignedData(content);
+            signed = isSignedType(cmsSignedData, complianceCheck);
+        } catch (CMSException e) {
+            signed = false;
+        }
+        return signed;
     }
 
     @Override
     public TimeStampToken[] getTimeStampTokens() {
-	// Ritorna sempre null in quanto il file p7m non ha un TimeStampToken al suo interno.
-	return null;
+        // Ritorna sempre null in quanto il file p7m non ha un TimeStampToken al suo interno.
+        return null;
     }
 
     @Override
     public SignerType getFormat() {
-	return SignerType.P7M;
+        return SignerType.P7M;
     }
 
     /**
      * Ritorna il contenuto non firmato da una struttura di tipo CMSSigned
      */
     public static InputStream getCMSSignedDataUnsignedContent(CMSSignedData sd) {
-	Object content = sd.getSignedContent().getContent();
-	if (content instanceof byte[]) {
-	    // Recupero il contenuto della busta
-	    return new ByteArrayInputStream((byte[]) sd.getSignedContent().getContent());
-	} else if (content instanceof InputStream) {
-	    return (InputStream) content;
-	}
-	return null;
+        Object content = sd.getSignedContent().getContent();
+        if (content instanceof byte[]) {
+            // Recupero il contenuto della busta
+            return new ByteArrayInputStream((byte[]) sd.getSignedContent().getContent());
+        } else if (content instanceof InputStream) {
+            return (InputStream) content;
+        }
+        return null;
     }
 
     protected void writeExtractedContentToFile() throws IOException, CMSException {
-	alreadyExtractedFile = File.createTempFile("content-p7m-signer-",
-		getEnclosedEnvelopeExtension());
-	try (FileOutputStream fos = new FileOutputStream(alreadyExtractedFile)) {
-	    if (cmsSignedData.getSignedContent() != null) {
-		cmsSignedData.getSignedContent().write(fos);
-	    }
-	}
+        alreadyExtractedFile = File.createTempFile("content-p7m-signer-",
+                getEnclosedEnvelopeExtension());
+        try (FileOutputStream fos = new FileOutputStream(alreadyExtractedFile)) {
+            if (cmsSignedData.getSignedContent() != null) {
+                cmsSignedData.getSignedContent().write(fos);
+            }
+        }
     }
 
     @Override
     public InputStream getUnsignedContent() {
-	try (FileInputStream fis = FileUtils.openInputStream(file)) {
-	    File detachedFile = getDetachedFile();
-	    // Si tratta della firma di un file detached?
-	    if (detachedFile != null) {
-		return FileUtils.openInputStream(detachedFile);
-	    } else {
-		if (cmsSignedData == null) {
-		    cmsSignedData = new CMSSignedData(fis);
-		} else {
-		    // TODO modificato (da testare)
-		    // return getCMSSignedDataUnsignedContent(cmsSignedData);
-		    writeExtractedContentToFile();
-		    return null;
-		}
-	    }
-	} catch (Exception e) {
-	    logger.error("Eccezione generica", e);
-	}
-	return null;
+        try (FileInputStream fis = FileUtils.openInputStream(file)) {
+            File detachedFile = getDetachedFile();
+            // Si tratta della firma di un file detached?
+            if (detachedFile != null) {
+                return FileUtils.openInputStream(detachedFile);
+            } else {
+                if (cmsSignedData == null) {
+                    cmsSignedData = new CMSSignedData(fis);
+                } else {
+                    // TODO modificato (da testare)
+                    // return getCMSSignedDataUnsignedContent(cmsSignedData);
+                    writeExtractedContentToFile();
+                    return null;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Eccezione generica", e);
+        }
+        return null;
     }
 
     @Override
     public byte[] getUnsignedContentDigest(MessageDigest digestAlgorithm) {
-	InputStream unsignedContent = this.getUnsignedContent();
-	byte[] buff = new byte[Byte.SIZE * 512];
-	int length = -1;
-	digestAlgorithm.reset();
-	try {
-	    while ((length = unsignedContent.read(buff)) != -1) {
-		digestAlgorithm.update(buff, 0, length);
-	    }
-	    return digestAlgorithm.digest();
-	} catch (IOException e) {
-	    logger.error("Eccezione IO", e);
-	} finally {
-	    if (unsignedContent != null) {
-		try {
-		    unsignedContent.close();
-		} catch (IOException e) {
-		    logger.error("Eccezione IO", e);
-		}
-	    }
-	}
-	return null;
+        InputStream unsignedContent = this.getUnsignedContent();
+        byte[] buff = new byte[Byte.SIZE * 512];
+        int length = -1;
+        digestAlgorithm.reset();
+        try {
+            while ((length = unsignedContent.read(buff)) != -1) {
+                digestAlgorithm.update(buff, 0, length);
+            }
+            return digestAlgorithm.digest();
+        } catch (IOException e) {
+            logger.error("Eccezione IO", e);
+        } finally {
+            if (unsignedContent != null) {
+                try {
+                    unsignedContent.close();
+                } catch (IOException e) {
+                    logger.error("Eccezione IO", e);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -271,301 +271,302 @@ public class P7MSigner extends AbstractSigner {
      * @return la lista di firme
      */
     public static List<ISignature> getISigneturesFromCMSSignedData(CMSSignedData signedData,
-	    List<File> detachedContent, SignerType type, boolean isPDF, boolean isDetached) {
+            List<File> detachedContent, SignerType type, boolean isPDF, boolean isDetached) {
 
-	List<ISignature> result = new ArrayList<ISignature>();
+        List<ISignature> result = new ArrayList<ISignature>();
 
-	Collection<Certificate> certificates = null;
-	CertStore store = null;
+        Collection<Certificate> certificates = null;
+        CertStore store = null;
 
-	try {
-	    Store certStore = signedData.getCertificates();
-	    Collection<X509CertificateHolder> certHolders = certStore.getMatches(null);
-	    certificates = new ArrayList<>();
-	    JcaX509CertificateConverter converter = new JcaX509CertificateConverter()
-		    .setProvider("BC");
-	    for (X509CertificateHolder holder : certHolders) {
-		certificates.add(converter.getCertificate(holder));
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+        try {
+            Store certStore = signedData.getCertificates();
+            Collection<X509CertificateHolder> certHolders = certStore.getMatches(null);
+            certificates = new ArrayList<>();
+            JcaX509CertificateConverter converter = new JcaX509CertificateConverter()
+                    .setProvider("BC");
+            for (X509CertificateHolder holder : certHolders) {
+                certificates.add(converter.getCertificate(holder));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	Collection<SignerInformation> signers = (Collection<SignerInformation>) signedData
-		.getSignerInfos().getSigners();
-	for (SignerInformation signer : signers) {
-	    SignerId signerID = signer.getSID();
-	    ISignature signature = getISignatureFromSignerInformationAndCertificates(signer,
-		    certificates, detachedContent, isPDF, isDetached);
-	    if (signature == null) {
-		try {
-		    Collection certCollection = signedData.getCertificates().getMatches(signerID);
-		    Iterator certIt = certCollection.iterator();
-		    X509CertificateHolder certHolder = (X509CertificateHolder) certIt.next();
-		    X509Certificate cert = new JcaX509CertificateConverter().setProvider("BC")
-			    .getCertificate(certHolder);
-		    CMSSignature cmsSignature = new CMSSignature(signer, cert,
-			    P7MSigner.getType(signer, isPDF, isDetached));
-		    cmsSignature.setDetachedFiles(detachedContent);
-		    cmsSignature.setCounterSignatures(new ArrayList<ISignature>());
-		    signature = cmsSignature;
-		} catch (Exception ex) {
-		    logger.error("Non è stato possibile generare il certificato X509 dalla firma");
-		}
-	    }
-	    if (signature != null) {
-		// Sovrascrivo il tipo di firma se mi è stata passata in input (caso M7M, TSR)
-		if (type != null) {
-		    signature.setFormatoFirma(type);
-		}
-		result.add(signature);
-	    }
-	}
-	return result;
+        Collection<SignerInformation> signers = (Collection<SignerInformation>) signedData
+                .getSignerInfos().getSigners();
+        for (SignerInformation signer : signers) {
+            SignerId signerID = signer.getSID();
+            ISignature signature = getISignatureFromSignerInformationAndCertificates(signer,
+                    certificates, detachedContent, isPDF, isDetached);
+            if (signature == null) {
+                try {
+                    Collection certCollection = signedData.getCertificates().getMatches(signerID);
+                    Iterator certIt = certCollection.iterator();
+                    X509CertificateHolder certHolder = (X509CertificateHolder) certIt.next();
+                    X509Certificate cert = new JcaX509CertificateConverter().setProvider("BC")
+                            .getCertificate(certHolder);
+                    CMSSignature cmsSignature = new CMSSignature(signer, cert,
+                            P7MSigner.getType(signer, isPDF, isDetached));
+                    cmsSignature.setDetachedFiles(detachedContent);
+                    cmsSignature.setCounterSignatures(new ArrayList<ISignature>());
+                    signature = cmsSignature;
+                } catch (Exception ex) {
+                    logger.error("Non è stato possibile generare il certificato X509 dalla firma");
+                }
+            }
+            if (signature != null) {
+                // Sovrascrivo il tipo di firma se mi è stata passata in input (caso M7M, TSR)
+                if (type != null) {
+                    signature.setFormatoFirma(type);
+                }
+                result.add(signature);
+            }
+        }
+        return result;
     }
 
     public static ISignature getISignatureFromSignerInformationAndCertificates(
-	    SignerInformation signer, Collection<Certificate> certificates,
-	    List<File> detachedContent, boolean isPDF, boolean isDetached) {
+            SignerInformation signer, Collection<Certificate> certificates,
+            List<File> detachedContent, boolean isPDF, boolean isDetached) {
 
-	SignerId signerID = signer.getSID();
+        SignerId signerID = signer.getSID();
 
-	AttributeTable signedTable = signer.getSignedAttributes();
-	Attribute signingCertificateV2Attr = null;
-	Attribute signingCertificateAttr = null;
-	if (signedTable != null) {
-	    signingCertificateV2Attr = (Attribute) signedTable.toHashtable()
-		    .get(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
-	    signingCertificateAttr = (Attribute) signedTable.toHashtable()
-		    .get(PKCSObjectIdentifiers.id_aa_signingCertificate);
-	}
+        AttributeTable signedTable = signer.getSignedAttributes();
+        Attribute signingCertificateV2Attr = null;
+        Attribute signingCertificateAttr = null;
+        if (signedTable != null) {
+            signingCertificateV2Attr = (Attribute) signedTable.toHashtable()
+                    .get(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
+            signingCertificateAttr = (Attribute) signedTable.toHashtable()
+                    .get(PKCSObjectIdentifiers.id_aa_signingCertificate);
+        }
 
-	// Hash da utilizzare per identificare il certificato di firma
-	byte[] certHash = null;
-	String certHashAlgorithmOid = null;
+        // Hash da utilizzare per identificare il certificato di firma
+        byte[] certHash = null;
+        String certHashAlgorithmOid = null;
 
-	try {
-	    if (signingCertificateV2Attr != null) {
+        try {
+            if (signingCertificateV2Attr != null) {
 
-		// Cerca di recuperare l'hash del certificato da una struttura 'ben fatta'
-		try {
-		    SigningCertificateV2 signingCertificateV2 = SigningCertificateV2
-			    .getInstance(signingCertificateV2Attr.getAttrValues().getObjectAt(0));
-		    if (signingCertificateV2 != null) {
-			ESSCertIDv2[] essCertsV2 = signingCertificateV2.getCerts();
-			ESSCertIDv2 essCertV2 = essCertsV2[0];
-			certHash = essCertV2.getCertHash();
-			certHashAlgorithmOid = essCertV2.getHashAlgorithm().getAlgorithm().getId();
-		    }
-		} catch (Exception e) {
+                // Cerca di recuperare l'hash del certificato da una struttura 'ben fatta'
+                try {
+                    SigningCertificateV2 signingCertificateV2 = SigningCertificateV2
+                            .getInstance(signingCertificateV2Attr.getAttrValues().getObjectAt(0));
+                    if (signingCertificateV2 != null) {
+                        ESSCertIDv2[] essCertsV2 = signingCertificateV2.getCerts();
+                        ESSCertIDv2 essCertV2 = essCertsV2[0];
+                        certHash = essCertV2.getCertHash();
+                        certHashAlgorithmOid = essCertV2.getHashAlgorithm().getAlgorithm().getId();
+                    }
+                } catch (Exception e) {
 
-		    // Se c'è stato un errore, cerca di recuperare l'hash dal contenuto stesso
-		    ASN1Sequence signingCertificateV2Encoded = (ASN1Sequence) signingCertificateV2Attr
-			    .getAttrValues().getObjectAt(0);
-		    ASN1Sequence signingCertificateV2Certs = ASN1Sequence
-			    .getInstance(signingCertificateV2Encoded.getObjectAt(0));
-		    certHash = ASN1OctetString.getInstance(
-			    signingCertificateV2Certs.getObjectAt(0).toASN1Primitive().getEncoded())
-			    .getOctets();
-		    // Di default l'algoritmo di hash viene posto a SHA-256
-		    certHashAlgorithmOid = CMSSignedDataGenerator.DIGEST_SHA256;
-		}
-	    } else if (signingCertificateAttr != null) {
-		// Cerca di recuperare l'hash del certificato da una struttura 'ben fatta'
-		try {
-		    SigningCertificate signingCertificate = SigningCertificate
-			    .getInstance(signingCertificateAttr.getAttrValues().getObjectAt(0));
-		    if (signingCertificateAttr != null) {
-			ESSCertID[] essCertsV2 = signingCertificate.getCerts();
-			ESSCertID essCert = essCertsV2[0];
-			certHash = essCert.getCertHash();
-			certHashAlgorithmOid = CMSSignedDataGenerator.DIGEST_SHA1;
-		    }
-		} catch (Exception e) {
+                    // Se c'è stato un errore, cerca di recuperare l'hash dal contenuto stesso
+                    ASN1Sequence signingCertificateV2Encoded = (ASN1Sequence) signingCertificateV2Attr
+                            .getAttrValues().getObjectAt(0);
+                    ASN1Sequence signingCertificateV2Certs = ASN1Sequence
+                            .getInstance(signingCertificateV2Encoded.getObjectAt(0));
+                    certHash = ASN1OctetString.getInstance(
+                            signingCertificateV2Certs.getObjectAt(0).toASN1Primitive().getEncoded())
+                            .getOctets();
+                    // Di default l'algoritmo di hash viene posto a SHA-256
+                    certHashAlgorithmOid = CMSSignedDataGenerator.DIGEST_SHA256;
+                }
+            } else if (signingCertificateAttr != null) {
+                // Cerca di recuperare l'hash del certificato da una struttura 'ben fatta'
+                try {
+                    SigningCertificate signingCertificate = SigningCertificate
+                            .getInstance(signingCertificateAttr.getAttrValues().getObjectAt(0));
+                    if (signingCertificateAttr != null) {
+                        ESSCertID[] essCertsV2 = signingCertificate.getCerts();
+                        ESSCertID essCert = essCertsV2[0];
+                        certHash = essCert.getCertHash();
+                        certHashAlgorithmOid = CMSSignedDataGenerator.DIGEST_SHA1;
+                    }
+                } catch (Exception e) {
 
-		    // Se c'� stato un errore, cerca di recuperare l'hash dal contenuto stesso
-		    ASN1Sequence signingCertificateEncoded = (ASN1Sequence) signingCertificateAttr
-			    .getAttrValues().getObjectAt(0);
-		    ASN1Sequence signingCertificateCerts = ASN1Sequence
-			    .getInstance(signingCertificateEncoded.getObjectAt(0));
-		    certHash = ASN1OctetString.getInstance(
-			    signingCertificateCerts.getObjectAt(0).toASN1Primitive().getEncoded())
-			    .getOctets();
-		    certHashAlgorithmOid = CMSSignedDataGenerator.DIGEST_SHA1;
-		}
-	    }
-	} catch (Exception e) {
-	    // C'è stato un errore durante la decodifica degli attributi contenenti
-	    // l'hash del certificato di firma
-	    // e.printStackTrace();
-	}
+                    // Se c'� stato un errore, cerca di recuperare l'hash dal contenuto stesso
+                    ASN1Sequence signingCertificateEncoded = (ASN1Sequence) signingCertificateAttr
+                            .getAttrValues().getObjectAt(0);
+                    ASN1Sequence signingCertificateCerts = ASN1Sequence
+                            .getInstance(signingCertificateEncoded.getObjectAt(0));
+                    certHash = ASN1OctetString.getInstance(
+                            signingCertificateCerts.getObjectAt(0).toASN1Primitive().getEncoded())
+                            .getOctets();
+                    certHashAlgorithmOid = CMSSignedDataGenerator.DIGEST_SHA1;
+                }
+            }
+        } catch (Exception e) {
+            // C'è stato un errore durante la decodifica degli attributi contenenti
+            // l'hash del certificato di firma
+            // e.printStackTrace();
+        }
 
-	for (Certificate certificate : certificates) {
-	    boolean correctCertificate = false;
-	    // Identifica il certificato dal suo hash
-	    if (certHash != null) {
-		try {
-		    MessageDigest digest = MessageDigest.getInstance(certHashAlgorithmOid);
-		    if (digest == null) {
-			return null;
-		    }
-		    byte[] computedCertificateHash = digest.digest(certificate.getEncoded());
-		    if (org.bouncycastle.util.Arrays.areEqual(certHash, computedCertificateHash)) {
-			correctCertificate = true;
-		    }
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-	    } else if (certificate instanceof X509Certificate
-		    && new X500Name(((X509Certificate) certificate).getIssuerX500Principal().getName())
-		        .equals(signerID.getIssuer())
-		    && signerID.getSerialNumber()
-		        .equals(((X509Certificate) certificate).getSerialNumber())) {
-		    correctCertificate = true;
-		}
+        for (Certificate certificate : certificates) {
+            boolean correctCertificate = false;
+            // Identifica il certificato dal suo hash
+            if (certHash != null) {
+                try {
+                    MessageDigest digest = MessageDigest.getInstance(certHashAlgorithmOid);
+                    if (digest == null) {
+                        return null;
+                    }
+                    byte[] computedCertificateHash = digest.digest(certificate.getEncoded());
+                    if (org.bouncycastle.util.Arrays.areEqual(certHash, computedCertificateHash)) {
+                        correctCertificate = true;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (certificate instanceof X509Certificate
+                    && new X500Name(
+                            ((X509Certificate) certificate).getIssuerX500Principal().getName())
+                            .equals(signerID.getIssuer())
+                    && signerID.getSerialNumber()
+                            .equals(((X509Certificate) certificate).getSerialNumber())) {
+                correctCertificate = true;
+            }
 
-	    if (correctCertificate) {
-		CMSSignature cmsSignature = new CMSSignature(signer, (X509Certificate) certificate,
-			P7MSigner.getType(signer, isPDF, isDetached));
-		cmsSignature.setDetachedFiles(detachedContent);
+            if (correctCertificate) {
+                CMSSignature cmsSignature = new CMSSignature(signer, (X509Certificate) certificate,
+                        P7MSigner.getType(signer, isPDF, isDetached));
+                cmsSignature.setDetachedFiles(detachedContent);
 
-		// Aggiorno la lista delle controfirme
-		SignerInformationStore counterSignaturesStore = signer.getCounterSignatures();
-		Collection<? extends SignerInformation> counterSignaturesInfo = counterSignaturesStore
-			.getSigners();
-		if (counterSignaturesInfo != null) {
-		    List<ISignature> counterSignatures = new ArrayList<ISignature>();
-		    for (SignerInformation counterSignatureInfo : counterSignaturesInfo) {
-			counterSignatures.add(getISignatureFromSignerInformationAndCertificates(
-				counterSignatureInfo, certificates, null, isPDF, isDetached));
-		    }
-		    cmsSignature.setCounterSignatures(counterSignatures);
-		}
+                // Aggiorno la lista delle controfirme
+                SignerInformationStore counterSignaturesStore = signer.getCounterSignatures();
+                Collection<? extends SignerInformation> counterSignaturesInfo = counterSignaturesStore
+                        .getSigners();
+                if (counterSignaturesInfo != null) {
+                    List<ISignature> counterSignatures = new ArrayList<ISignature>();
+                    for (SignerInformation counterSignatureInfo : counterSignaturesInfo) {
+                        counterSignatures.add(getISignatureFromSignerInformationAndCertificates(
+                                counterSignatureInfo, certificates, null, isPDF, isDetached));
+                    }
+                    cmsSignature.setCounterSignatures(counterSignatures);
+                }
 
-		return cmsSignature;
-	    }
-	}
-	return null;
+                return cmsSignature;
+            }
+        }
+        return null;
     }
 
     @Override
     public List<ISignature> getSignatures() {
-	boolean isDetached = cmsSignedData.getSignedContent() == null;
-	if (detachedFiles != null && !detachedFiles.isEmpty()) {
-	    CMSTypedData detachedCMS = new CMSProcessableFile(detachedFiles.get(0));
-	    try {
-		cmsSignedData = new CMSSignedData(detachedCMS, cmsSignedData.toASN1Structure());
-	    } catch (CMSException e) {
-		return new ArrayList<>(); // emtpy list
-	    }
-	    isDetached = true;
-	}
-	return getISigneturesFromCMSSignedData(cmsSignedData, detachedFiles, null, false,
-		isDetached);
+        boolean isDetached = cmsSignedData.getSignedContent() == null;
+        if (detachedFiles != null && !detachedFiles.isEmpty()) {
+            CMSTypedData detachedCMS = new CMSProcessableFile(detachedFiles.get(0));
+            try {
+                cmsSignedData = new CMSSignedData(detachedCMS, cmsSignedData.toASN1Structure());
+            } catch (CMSException e) {
+                return new ArrayList<>(); // emtpy list
+            }
+            isDetached = true;
+        }
+        return getISigneturesFromCMSSignedData(cmsSignedData, detachedFiles, null, false,
+                isDetached);
     }
 
     @Override
     public boolean canContentBeSigned() {
-	return true;
+        return true;
     }
 
     public static Collection<CRL> getCRLsFromCMSSignedData(CMSSignedData cmsSignedData) {
-	Store store;
-	Collection<CRL> crls = null;
-	try {
-	    store = cmsSignedData.getCRLs();
-	    crls = store.getMatches(null);
-	    // crls = cmsSignedData.getCRLs().getMatches(null);
-	    return crls;
-	} catch (Exception e) {
-	    return null;
-	}
+        Store store;
+        Collection<CRL> crls = null;
+        try {
+            store = cmsSignedData.getCRLs();
+            crls = store.getMatches(null);
+            // crls = cmsSignedData.getCRLs().getMatches(null);
+            return crls;
+        } catch (Exception e) {
+            return null;
+        }
 
     }
 
     public static Collection<X509Certificate> getCertificatesFromCMSSignedData(
-	    CMSSignedData cmsSignedData) {
-	try {
-	    Store certStore = cmsSignedData.getCertificates();
-	    Collection<X509CertificateHolder> certHolders = certStore.getMatches(null);
-	    Collection<X509Certificate> certs = new ArrayList<>();
-	    JcaX509CertificateConverter converter = new JcaX509CertificateConverter()
-		    .setProvider("BC");
-	    for (X509CertificateHolder holder : certHolders) {
-		certs.add(converter.getCertificate(holder));
-	    }
-	    return certs;
-	} catch (Exception e) {
-	    return null;
-	}
+            CMSSignedData cmsSignedData) {
+        try {
+            Store certStore = cmsSignedData.getCertificates();
+            Collection<X509CertificateHolder> certHolders = certStore.getMatches(null);
+            Collection<X509Certificate> certs = new ArrayList<>();
+            JcaX509CertificateConverter converter = new JcaX509CertificateConverter()
+                    .setProvider("BC");
+            for (X509CertificateHolder holder : certHolders) {
+                certs.add(converter.getCertificate(holder));
+            }
+            return certs;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public Collection<CRL> getEmbeddedCRLs() {
-	if (cmsSignedData == null) {
-	    try (FileInputStream fis = FileUtils.openInputStream(file)) {
-		cmsSignedData = new CMSSignedData(fis);
-		return getCRLsFromCMSSignedData(cmsSignedData);
-	    } catch (Exception e) {
-	    }
-	}
-	return getCRLsFromCMSSignedData(cmsSignedData);
+        if (cmsSignedData == null) {
+            try (FileInputStream fis = FileUtils.openInputStream(file)) {
+                cmsSignedData = new CMSSignedData(fis);
+                return getCRLsFromCMSSignedData(cmsSignedData);
+            } catch (Exception e) {
+            }
+        }
+        return getCRLsFromCMSSignedData(cmsSignedData);
     }
 
     @Override
     public Collection<? extends Certificate> getEmbeddedCertificates() {
-	if (cmsSignedData == null) {
-	    try (FileInputStream fis = FileUtils.openInputStream(file)) {
-		cmsSignedData = new CMSSignedData(fis);
+        if (cmsSignedData == null) {
+            try (FileInputStream fis = FileUtils.openInputStream(file)) {
+                cmsSignedData = new CMSSignedData(fis);
 
-	    } catch (Exception e) {
-	    }
-	}
-	return getCertificatesFromCMSSignedData(cmsSignedData);
+            } catch (Exception e) {
+            }
+        }
+        return getCertificatesFromCMSSignedData(cmsSignedData);
     }
 
     protected static SignerType getType(SignerInformation signer, boolean isPDF,
-	    boolean isDetached) {
-	// Controllo se l'algoritmo è di tipo SHA256 e che sia presente l'attributo contenente il
-	// certificato
-	boolean signed = true;
-	SignerType type = isPDF ? SignerType.PDF_DSIG
-		: (isDetached ? SignerType.P7S : SignerType.P7M);
-	AttributeTable signedTable = signer.getSignedAttributes();
-	if (isPDF && CMSSignedDataGenerator.DIGEST_SHA256.equals(signer.getDigestAlgOID())) {
-	    type = SignerType.PADES;
-	}
-	if (signedTable != null) {
-	    boolean certv2 = signedTable.toHashtable()
-		    .containsKey(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
-	    boolean cert = signedTable.toHashtable()
-		    .containsKey(PKCSObjectIdentifiers.id_aa_signingCertificate);
-	    if (CMSSignedDataGenerator.DIGEST_SHA256.equals(signer.getDigestAlgOID()) && !cert
-		    && certv2) {
-		type = isPDF ? SignerType.PADES_BES : SignerType.CADES_BES;
-		// TODO Controllo da verificare
-		AttributeTable unsignedTable = signer.getUnsignedAttributes();
-		if (unsignedTable != null
-			&& unsignedTable.toHashtable()
-				.containsKey(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
-			&& signed) {
-		    type = isPDF ? SignerType.PADES_T : SignerType.CADES_T;
-		    // Controllo se sono presenti gli atttibuti CRL negli attributi unsigned
-		    if (unsignedTable.toHashtable()
-			    .containsKey(PKCSObjectIdentifiers.id_aa_ets_certificateRefs)
-			    && unsignedTable.toHashtable().containsKey(
-				    PKCSObjectIdentifiers.id_aa_ets_revocationRefs)
-			    && signed) {
-			type = isPDF ? SignerType.PADES_C : SignerType.CADES_C;
-		    }
-		}
-	    }
-	}
-	return type;
+            boolean isDetached) {
+        // Controllo se l'algoritmo è di tipo SHA256 e che sia presente l'attributo contenente il
+        // certificato
+        boolean signed = true;
+        SignerType type = isPDF ? SignerType.PDF_DSIG
+                : (isDetached ? SignerType.P7S : SignerType.P7M);
+        AttributeTable signedTable = signer.getSignedAttributes();
+        if (isPDF && CMSSignedDataGenerator.DIGEST_SHA256.equals(signer.getDigestAlgOID())) {
+            type = SignerType.PADES;
+        }
+        if (signedTable != null) {
+            boolean certv2 = signedTable.toHashtable()
+                    .containsKey(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
+            boolean cert = signedTable.toHashtable()
+                    .containsKey(PKCSObjectIdentifiers.id_aa_signingCertificate);
+            if (CMSSignedDataGenerator.DIGEST_SHA256.equals(signer.getDigestAlgOID()) && !cert
+                    && certv2) {
+                type = isPDF ? SignerType.PADES_BES : SignerType.CADES_BES;
+                // TODO Controllo da verificare
+                AttributeTable unsignedTable = signer.getUnsignedAttributes();
+                if (unsignedTable != null
+                        && unsignedTable.toHashtable()
+                                .containsKey(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
+                        && signed) {
+                    type = isPDF ? SignerType.PADES_T : SignerType.CADES_T;
+                    // Controllo se sono presenti gli atttibuti CRL negli attributi unsigned
+                    if (unsignedTable.toHashtable()
+                            .containsKey(PKCSObjectIdentifiers.id_aa_ets_certificateRefs)
+                            && unsignedTable.toHashtable().containsKey(
+                                    PKCSObjectIdentifiers.id_aa_ets_revocationRefs)
+                            && signed) {
+                        type = isPDF ? SignerType.PADES_C : SignerType.CADES_C;
+                    }
+                }
+            }
+        }
+        return type;
     }
 
     @Override
     public SignerType getTimeStampFormat() {
-	return SignerType.P7M;
+        return SignerType.P7M;
     }
 }

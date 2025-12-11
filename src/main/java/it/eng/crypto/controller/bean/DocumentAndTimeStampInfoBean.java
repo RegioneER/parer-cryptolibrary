@@ -56,7 +56,7 @@ import org.bouncycastle.util.Store;
  * @author Stefano Zennaro
  *
  */
-public class DocumentAndTimeStampInfoBean {
+public class DocumentAndTimeStampInfoBean extends InputBean {
 
     /**
      * OID dell'algoritmo di digest del timestamp
@@ -110,7 +110,7 @@ public class DocumentAndTimeStampInfoBean {
      */
     public enum TimeStampTokenType {
 
-	EMBEDDED, DETACHED, EMBEDDED_M7M, EMBEDDED_TSD
+        EMBEDDED, DETACHED, EMBEDDED_M7M, EMBEDDED_TSD
     };
 
     private TimeStampTokenType timeStampTokenType;
@@ -129,12 +129,12 @@ public class DocumentAndTimeStampInfoBean {
      * @return true se il certificato del timestamp è attualmente valido
      */
     public boolean isCurrentlyValid() {
-	try {
-	    getCertificateFromSignerId(timeStampToken.getSID()).checkValidity();
-	} catch (CertificateException | IOException e) {
-	    return false;
-	}
-	return true;
+        try {
+            getCertificateFromSignerId(timeStampToken.getSID()).checkValidity();
+        } catch (CertificateException | IOException e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -148,27 +148,27 @@ public class DocumentAndTimeStampInfoBean {
      * @return true se il certificato del timestamp era valido alla data considerata
      */
     public boolean isValidAtDate(Date date) {
-	try {
-	    getCertificateFromSignerId(timeStampToken.getSID()).checkValidity(date);
-	} catch (CertificateException | IOException e) {
-	    return false;
-	}
-	return true;
+        try {
+            getCertificateFromSignerId(timeStampToken.getSID()).checkValidity(date);
+        } catch (CertificateException | IOException e) {
+            return false;
+        }
+        return true;
     }
 
     @SuppressWarnings("unchecked")
     private X509Certificate getCertificateFromSignerId(SignerId signerId)
-	    throws CertificateException, IOException {
-	Store<X509CertificateHolder> certStore = timeStampToken.getCertificates();
-	Collection<X509CertificateHolder> certs = certStore.getMatches(signerId);
-	if (!certs.isEmpty()) {
-	    X509CertificateHolder certHolder = certs.iterator().next();
-	    CertificateFactory certFactory = java.security.cert.CertificateFactory
-		    .getInstance("X.509");
-	    return (X509Certificate) certFactory
-		    .generateCertificate(new ByteArrayInputStream(certHolder.getEncoded()));
-	}
-	throw new CertificateException("No certificate found for SignerId " + signerId);
+            throws CertificateException, IOException {
+        Store<X509CertificateHolder> certStore = timeStampToken.getCertificates();
+        Collection<X509CertificateHolder> certs = certStore.getMatches(signerId);
+        if (!certs.isEmpty()) {
+            X509CertificateHolder certHolder = certs.iterator().next();
+            CertificateFactory certFactory = java.security.cert.CertificateFactory
+                    .getInstance("X.509");
+            return (X509Certificate) certFactory
+                    .generateCertificate(new ByteArrayInputStream(certHolder.getEncoded()));
+        }
+        throw new CertificateException("No certificate found for SignerId " + signerId);
     }
 
     /**
@@ -177,7 +177,7 @@ public class DocumentAndTimeStampInfoBean {
      * @return le informazioni sulla marca temporale
      */
     public HashMap getValidityInfo() {
-	return tokenInfos;
+        return tokenInfos;
     }
 
     /**
@@ -186,7 +186,7 @@ public class DocumentAndTimeStampInfoBean {
      * @return il file della marca temporale
      */
     public File getAssociatedFile() {
-	return associatedFile;
+        return associatedFile;
     }
 
     /**
@@ -195,7 +195,7 @@ public class DocumentAndTimeStampInfoBean {
      * @param associatedFile i file firmati dalla marca temporale
      */
     public void setAssociatedFile(File associatedFile) {
-	this.associatedFile = associatedFile;
+        this.associatedFile = associatedFile;
     }
 
     /**
@@ -204,7 +204,7 @@ public class DocumentAndTimeStampInfoBean {
      * @return il timestamp
      */
     public TimeStampToken getTimeStampToken() {
-	return timeStampToken;
+        return timeStampToken;
     }
 
     /**
@@ -213,7 +213,7 @@ public class DocumentAndTimeStampInfoBean {
      * @param timeStampToken
      */
     public void setTimeStampToken(TimeStampToken timeStampToken) {
-	this.timeStampToken = timeStampToken;
+        this.timeStampToken = timeStampToken;
     }
 
     /**
@@ -223,10 +223,10 @@ public class DocumentAndTimeStampInfoBean {
      * @param value valore della proprietà
      */
     public void setProperty(String name, Object value) {
-	if (tokenInfos == null) {
-	    tokenInfos = new HashMap<String, Object>();
-	}
-	tokenInfos.put(name, value);
+        if (tokenInfos == null) {
+            tokenInfos = new HashMap<String, Object>();
+        }
+        tokenInfos.put(name, value);
     }
 
     /**
@@ -235,7 +235,7 @@ public class DocumentAndTimeStampInfoBean {
      * @return il tipo di timestamp
      */
     public TimeStampTokenType getTimeStampTokenType() {
-	return timeStampTokenType;
+        return timeStampTokenType;
     }
 
     /**
@@ -244,7 +244,7 @@ public class DocumentAndTimeStampInfoBean {
      * @param timeStampTokenType
      */
     public void setTimeStampTokenType(TimeStampTokenType timeStampTokenType) {
-	this.timeStampTokenType = timeStampTokenType;
+        this.timeStampTokenType = timeStampTokenType;
     }
 
     /**
@@ -259,11 +259,11 @@ public class DocumentAndTimeStampInfoBean {
      * </ul>
      */
     public String toString() {
-	return " Associated File: " + associatedFile + ",\n timeStampToken: " + timeStampToken
-		+ ",\n timeStampTokenType: " + getTimeStampTokenType()
-		+ (timeStampExtensionChain == null ? ""
-			: ",\n timeStampExtensions: " + timeStampExtensionChain)
-		+ ", \n tokenInfos: " + tokenInfos + ",\n validationInfos: " + validationInfos;
+        return " Associated File: " + associatedFile + ",\n timeStampToken: " + timeStampToken
+                + ",\n timeStampTokenType: " + getTimeStampTokenType()
+                + (timeStampExtensionChain == null ? ""
+                        : ",\n timeStampExtensions: " + timeStampExtensionChain)
+                + ", \n tokenInfos: " + tokenInfos + ",\n validationInfos: " + validationInfos;
     }
 
     /**
@@ -272,7 +272,7 @@ public class DocumentAndTimeStampInfoBean {
      * @return l'esito delle verifiche della marca
      */
     public ValidationInfos getValidationInfos() {
-	return validationInfos;
+        return validationInfos;
     }
 
     /**
@@ -281,7 +281,7 @@ public class DocumentAndTimeStampInfoBean {
      * @param validationInfos
      */
     public void setValidationInfos(ValidationInfos validationInfos) {
-	this.validationInfos = validationInfos;
+        this.validationInfos = validationInfos;
     }
 
     /**
@@ -290,7 +290,7 @@ public class DocumentAndTimeStampInfoBean {
      * @return la lista delleestensioni della marca temporale
      */
     public List<TimeStampToken> getTimeStampExtensionChain() {
-	return timeStampExtensionChain;
+        return timeStampExtensionChain;
     }
 
     /**
@@ -299,24 +299,24 @@ public class DocumentAndTimeStampInfoBean {
      * @param timeStampExtensionChain lista delle estensioni della marca temporale
      */
     public void setTimeStampExtensionChain(List<TimeStampToken> timeStampExtensionChain) {
-	this.timeStampExtensionChain = timeStampExtensionChain;
+        this.timeStampExtensionChain = timeStampExtensionChain;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj instanceof TimeStampToken) {
-	    TimeStampToken tsToken = (TimeStampToken) obj;
-	    boolean equalsSN = tsToken.getTimeStampInfo().getSerialNumber()
-		    .equals(this.timeStampToken.getTimeStampInfo().getSerialNumber());
-	    boolean equalsTSA = tsToken.getSID().equals(this.timeStampToken.getSID());
-	    return (equalsSN && equalsTSA);
-	} else {
-	    return super.equals(obj);
-	}
+        if (obj instanceof TimeStampToken) {
+            TimeStampToken tsToken = (TimeStampToken) obj;
+            boolean equalsSN = tsToken.getTimeStampInfo().getSerialNumber()
+                    .equals(this.timeStampToken.getTimeStampInfo().getSerialNumber());
+            boolean equalsTSA = tsToken.getSID().equals(this.timeStampToken.getSID());
+            return (equalsSN && equalsTSA);
+        } else {
+            return super.equals(obj);
+        }
     }
 
     @Override
     public int hashCode() {
-	return this.timeStampToken.hashCode();
+        return this.timeStampToken.hashCode();
     }
 }

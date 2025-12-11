@@ -75,302 +75,302 @@ public class CMSSignature implements ISignature {
     private String referenceDateType;
 
     public CMSSignature(SignerInformation signerInformation, X509Certificate certificate,
-	    SignerType formatoFirma) {
-	this.formatoFirma = formatoFirma;
-	this.detachedFiles = null;
-	this.signerInformation = signerInformation;
-	SignerBean signerBean = new SignerBean();
-	signerBean.setCertificate(certificate);
-	signerBean.setIusser(certificate.getIssuerX500Principal());
-	signerBean.setSubject(certificate.getSubjectX500Principal());
-	this.signerBean = signerBean;
-	// this.certificate = certificate;
+            SignerType formatoFirma) {
+        this.formatoFirma = formatoFirma;
+        this.detachedFiles = null;
+        this.signerInformation = signerInformation;
+        SignerBean signerBean = new SignerBean();
+        signerBean.setCertificate(certificate);
+        signerBean.setIusser(certificate.getIssuerX500Principal());
+        signerBean.setSubject(certificate.getSubjectX500Principal());
+        this.signerBean = signerBean;
+        // this.certificate = certificate;
     }
 
     public CMSSignature(SignerInformation signerInformation, X509Certificate certificate,
-	    List<File> detachedFiles, SignerType formatoFirma) {
-	this(signerInformation, certificate, formatoFirma);
-	this.formatoFirma = formatoFirma;
-	this.detachedFiles = detachedFiles;
+            List<File> detachedFiles, SignerType formatoFirma) {
+        this(signerInformation, certificate, formatoFirma);
+        this.formatoFirma = formatoFirma;
+        this.detachedFiles = detachedFiles;
     }
 
     public byte[] getSignatureBytes() {
-	return signerInformation.getSignature();
+        return signerInformation.getSignature();
     }
 
     public SignerBean getSignerBean() {
-	return signerBean;
+        return signerBean;
     }
 
     public ValidationInfos verify() {
-	ValidationInfos validationInfos = new ValidationInfos();
-	try {
-	    if (!signerInformation.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC")
-		    .build(signerBean.getCertificate().getPublicKey()))) {
+        ValidationInfos validationInfos = new ValidationInfos();
+        try {
+            if (!signerInformation.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC")
+                    .build(signerBean.getCertificate().getPublicKey()))) {
 
-		validationInfos.addError("La firma non corrisponde al contenuto firmato");
-	    }
-	} catch (Exception e) {
-	    validationInfos.addError(e.getMessage());
-	}
+                validationInfos.addError("La firma non corrisponde al contenuto firmato");
+            }
+        } catch (Exception e) {
+            validationInfos.addError(e.getMessage());
+        }
 
-	return validationInfos;
+        return validationInfos;
     }
 
     public SignerInformation getSignerInformation() {
-	return signerInformation;
+        return signerInformation;
     }
 
     public void setSignerInformation(SignerInformation signerInformation,
-	    CMSSignedData cmsSignedData) {
-	this.signerInformation = signerInformation;
-	SignerId signerId = signerInformation.getSID();
-	try {
-	    this.signerBean.setCertificate(getCertificateFromSignerId(cmsSignedData, signerId));
-	} catch (GeneralSecurityException | IOException e) {
-	    this.signerBean.setCertificate(null);
-	}
-	// this.certificate = signerId.getCertificate();
+            CMSSignedData cmsSignedData) {
+        this.signerInformation = signerInformation;
+        SignerId signerId = signerInformation.getSID();
+        try {
+            this.signerBean.setCertificate(getCertificateFromSignerId(cmsSignedData, signerId));
+        } catch (GeneralSecurityException | IOException e) {
+            this.signerBean.setCertificate(null);
+        }
+        // this.certificate = signerId.getCertificate();
     }
 
     @SuppressWarnings("unchecked")
     private X509Certificate getCertificateFromSignerId(CMSSignedData cmsSignedData,
-	    SignerId signerId) throws GeneralSecurityException, IOException {
-	Store<X509CertificateHolder> certStore = cmsSignedData.getCertificates();
-	Collection<X509CertificateHolder> matches = certStore.getMatches(signerId);
-	if (!matches.isEmpty()) {
-	    X509CertificateHolder certHolder = matches.iterator().next();
-	    CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-	    return (X509Certificate) certFactory
-		    .generateCertificate(new ByteArrayInputStream(certHolder.getEncoded()));
-	}
-	return null;
+            SignerId signerId) throws GeneralSecurityException, IOException {
+        Store<X509CertificateHolder> certStore = cmsSignedData.getCertificates();
+        Collection<X509CertificateHolder> matches = certStore.getMatches(signerId);
+        if (!matches.isEmpty()) {
+            X509CertificateHolder certHolder = matches.iterator().next();
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            return (X509Certificate) certFactory
+                    .generateCertificate(new ByteArrayInputStream(certHolder.getEncoded()));
+        }
+        return null;
     }
 
     public String toString() {
-	return "Signature: " + signerInformation == null ? "" : getSignerBean().toString();
+        return "Signature: " + signerInformation == null ? "" : getSignerBean().toString();
     }
 
     public void setCounterSignatures(List<ISignature> counterSignatures) {
-	this.counterSignatures = counterSignatures;
+        this.counterSignatures = counterSignatures;
     }
 
     public List<ISignature> getCounterSignatures() {
-	return counterSignatures;
+        return counterSignatures;
     }
 
     public List<File> getDetachedFiles() {
-	return detachedFiles;
+        return detachedFiles;
     }
 
     public void setDetachedFiles(List<File> detachedFiles) {
-	this.detachedFiles = detachedFiles;
+        this.detachedFiles = detachedFiles;
     }
 
     @Deprecated
     protected ValidationInfos verifyDetachedContent(SignerInformation signerInformation,
-	    InputStream detachedContent) {
-	ValidationInfos validationInfos = new ValidationInfos();
+            InputStream detachedContent) {
+        ValidationInfos validationInfos = new ValidationInfos();
 
-	String digestAlgorithmOID = signerInformation.getDigestAlgOID();
-	MessageDigest contentDigestAlgorithm;
-	try {
-	    contentDigestAlgorithm = MessageDigest.getInstance(digestAlgorithmOID);
+        String digestAlgorithmOID = signerInformation.getDigestAlgOID();
+        MessageDigest contentDigestAlgorithm;
+        try {
+            contentDigestAlgorithm = MessageDigest.getInstance(digestAlgorithmOID);
 
-	    // Impronta del contenuto esterno
-	    byte[] hashedDetachedData = null;
-	    // Impronta degli attributi firmati
-	    byte[] hashedSignedAttributes = null;
-	    // Contenuto decifrato della firma
-	    byte[] decodedSignature = null;
-	    // Attributo firmato digest
-	    byte[] digestSignedAttribute = null;
+            // Impronta del contenuto esterno
+            byte[] hashedDetachedData = null;
+            // Impronta degli attributi firmati
+            byte[] hashedSignedAttributes = null;
+            // Contenuto decifrato della firma
+            byte[] decodedSignature = null;
+            // Attributo firmato digest
+            byte[] digestSignedAttribute = null;
 
-	    byte[] buff = new byte[Byte.SIZE * 512];
-	    int length = -1;
-	    contentDigestAlgorithm.reset();
-	    while ((length = detachedContent.read(buff)) != -1) {
-		contentDigestAlgorithm.update(buff, 0, length);
-	    }
-	    hashedDetachedData = contentDigestAlgorithm.digest();
+            byte[] buff = new byte[Byte.SIZE * 512];
+            int length = -1;
+            contentDigestAlgorithm.reset();
+            while ((length = detachedContent.read(buff)) != -1) {
+                contentDigestAlgorithm.update(buff, 0, length);
+            }
+            hashedDetachedData = contentDigestAlgorithm.digest();
 
-	    // hashedDetachedData = contentDigestAlgorithm.digest(detachedContent);
-	    AttributeTable signedAttributeTable = signerInformation.getSignedAttributes();
-	    if (signerInformation.getEncodedSignedAttributes() != null) {
-		hashedSignedAttributes = contentDigestAlgorithm
-			.digest(signerInformation.getEncodedSignedAttributes());
-	    }
-	    digestAlgorithmOID = signerInformation.getEncryptionAlgOID();
-	    byte[] signature = signerInformation.getSignature();
-	    Cipher cipher = null;
-	    String algorithmName = null;
-	    if (PKCSObjectIdentifiers.rsaEncryption.getId().equals(digestAlgorithmOID)) {
-		algorithmName = "RSA/ECB/PKCS1Padding";
-	    } else if (PKCSObjectIdentifiers.sha1WithRSAEncryption.getId()
-		    .equals(digestAlgorithmOID)) {
-		algorithmName = "RSA/ECB/PKCS1Padding";
-	    } else {
-		algorithmName = digestAlgorithmOID;
-	    }
-	    cipher = Cipher.getInstance(algorithmName, "BC");
-	    cipher.init(Cipher.DECRYPT_MODE, signerBean.getCertificate().getPublicKey());
-	    byte[] decryptedSignature = cipher.doFinal(signature);
+            // hashedDetachedData = contentDigestAlgorithm.digest(detachedContent);
+            AttributeTable signedAttributeTable = signerInformation.getSignedAttributes();
+            if (signerInformation.getEncodedSignedAttributes() != null) {
+                hashedSignedAttributes = contentDigestAlgorithm
+                        .digest(signerInformation.getEncodedSignedAttributes());
+            }
+            digestAlgorithmOID = signerInformation.getEncryptionAlgOID();
+            byte[] signature = signerInformation.getSignature();
+            Cipher cipher = null;
+            String algorithmName = null;
+            if (PKCSObjectIdentifiers.rsaEncryption.getId().equals(digestAlgorithmOID)) {
+                algorithmName = "RSA/ECB/PKCS1Padding";
+            } else if (PKCSObjectIdentifiers.sha1WithRSAEncryption.getId()
+                    .equals(digestAlgorithmOID)) {
+                algorithmName = "RSA/ECB/PKCS1Padding";
+            } else {
+                algorithmName = digestAlgorithmOID;
+            }
+            cipher = Cipher.getInstance(algorithmName, "BC");
+            cipher.init(Cipher.DECRYPT_MODE, signerBean.getCertificate().getPublicKey());
+            byte[] decryptedSignature = cipher.doFinal(signature);
 
-	    ASN1InputStream asn1is = new ASN1InputStream(decryptedSignature);
-	    ASN1Sequence asn1Seq = (ASN1Sequence) asn1is.readObject();
+            ASN1InputStream asn1is = new ASN1InputStream(decryptedSignature);
+            ASN1Sequence asn1Seq = (ASN1Sequence) asn1is.readObject();
 
-	    Enumeration<? extends ASN1Primitive> objs = asn1Seq.getObjects();
-	    while (objs.hasMoreElements()) {
-		ASN1Primitive derObject = objs.nextElement();
-		if (derObject instanceof ASN1OctetString) {
-		    ASN1OctetString octectString = (ASN1OctetString) derObject;
-		    decodedSignature = octectString.getOctets();
-		    break;
-		}
-	    }
-	    boolean signatureVerified = Arrays.constantTimeAreEqual(decodedSignature,
-		    hashedSignedAttributes);
-	    if (!signatureVerified) {
-		validationInfos.addError("La firma non è valida: l'hash degli attributi firmati è "
-			+ hashedSignedAttributes
-			+ " mentre la firma è stata apposta su un contenuto con hash: "
-			+ decodedSignature);
-	    } else {
-		Attribute digestAttribute = signedAttributeTable
-			.get(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
-		ASN1Set values = digestAttribute.getAttrValues();
-		ASN1Primitive derObject = values.getObjectAt(0).toASN1Primitive();
-		if (derObject instanceof ASN1OctetString) {
-		    ASN1OctetString octectString = (ASN1OctetString) derObject;
-		    digestSignedAttribute = octectString.getOctets();
-		}
+            Enumeration<? extends ASN1Primitive> objs = asn1Seq.getObjects();
+            while (objs.hasMoreElements()) {
+                ASN1Primitive derObject = objs.nextElement();
+                if (derObject instanceof ASN1OctetString) {
+                    ASN1OctetString octectString = (ASN1OctetString) derObject;
+                    decodedSignature = octectString.getOctets();
+                    break;
+                }
+            }
+            boolean signatureVerified = Arrays.constantTimeAreEqual(decodedSignature,
+                    hashedSignedAttributes);
+            if (!signatureVerified) {
+                validationInfos.addError("La firma non è valida: l'hash degli attributi firmati è "
+                        + hashedSignedAttributes
+                        + " mentre la firma è stata apposta su un contenuto con hash: "
+                        + decodedSignature);
+            } else {
+                Attribute digestAttribute = signedAttributeTable
+                        .get(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
+                ASN1Set values = digestAttribute.getAttrValues();
+                ASN1Primitive derObject = values.getObjectAt(0).toASN1Primitive();
+                if (derObject instanceof ASN1OctetString) {
+                    ASN1OctetString octectString = (ASN1OctetString) derObject;
+                    digestSignedAttribute = octectString.getOctets();
+                }
 
-		boolean contentDigestVerified = Arrays.constantTimeAreEqual(hashedDetachedData,
-			digestSignedAttribute);
-		if (!contentDigestVerified) {
-		    validationInfos
-			    .addError("La firma è valida ma non è associata al file corretto");
-		}
-	    }
-	    asn1is.close();
-	} catch (NoSuchAlgorithmException e) {
-	    validationInfos
-		    .addError("Impossibile validare la firma poichè l'algoritmo non è supportato: "
-			    + digestAlgorithmOID);
-	} catch (IOException e) {
-	    validationInfos
-		    .addError("Errore durante la validazione della firma: " + e.getMessage());
-	} catch (GeneralSecurityException e) {
-	    validationInfos.addError("Impossibile decifrare la firma: " + e.getMessage());
-	}
+                boolean contentDigestVerified = Arrays.constantTimeAreEqual(hashedDetachedData,
+                        digestSignedAttribute);
+                if (!contentDigestVerified) {
+                    validationInfos
+                            .addError("La firma è valida ma non è associata al file corretto");
+                }
+            }
+            asn1is.close();
+        } catch (NoSuchAlgorithmException e) {
+            validationInfos
+                    .addError("Impossibile validare la firma poichè l'algoritmo non è supportato: "
+                            + digestAlgorithmOID);
+        } catch (IOException e) {
+            validationInfos
+                    .addError("Errore durante la validazione della firma: " + e.getMessage());
+        } catch (GeneralSecurityException e) {
+            validationInfos.addError("Impossibile decifrare la firma: " + e.getMessage());
+        }
 
-	return validationInfos;
+        return validationInfos;
     }
 
     @Override
     public Date getDateSignature() {
-	if (signerInformation != null && signerInformation.getSignedAttributes() != null
-		&& signerInformation.getSignedAttributes()
-			.get(PKCSObjectIdentifiers.pkcs_9_at_signingTime) != null) {
+        if (signerInformation != null && signerInformation.getSignedAttributes() != null
+                && signerInformation.getSignedAttributes()
+                        .get(PKCSObjectIdentifiers.pkcs_9_at_signingTime) != null) {
 
-	    DLSet set = (DLSet) signerInformation.getSignedAttributes()
-		    .get(PKCSObjectIdentifiers.pkcs_9_at_signingTime).getAttrValues();
-	    DERGeneralizedTime dergt = null;
-	    ASN1UTCTime dertime = null;
-	    Enumeration e = set.getObjects();
-	    while (e.hasMoreElements()) {
-		Object o = e.nextElement();
-		if (o instanceof DERGeneralizedTime) {
-		    dergt = (DERGeneralizedTime) o;
-		}
-		if (o instanceof DERUTCTime) {
-		    dertime = (DERUTCTime) o;
-		}
-		// new case !
-		if (o instanceof ASN1UTCTime) {
-		    dertime = (ASN1UTCTime) o;
-		}
-	    }
-	    try {
-		if (dergt != null && !dergt.toString().isEmpty()) {
-		    return dergt.getDate();
-		}
-		if (dertime != null && !dertime.toString().isEmpty()) {
-		    return dertime.getDate();
-		}
+            DLSet set = (DLSet) signerInformation.getSignedAttributes()
+                    .get(PKCSObjectIdentifiers.pkcs_9_at_signingTime).getAttrValues();
+            DERGeneralizedTime dergt = null;
+            ASN1UTCTime dertime = null;
+            Enumeration e = set.getObjects();
+            while (e.hasMoreElements()) {
+                Object o = e.nextElement();
+                if (o instanceof DERGeneralizedTime) {
+                    dergt = (DERGeneralizedTime) o;
+                }
+                if (o instanceof DERUTCTime) {
+                    dertime = (DERUTCTime) o;
+                }
+                // new case !
+                if (o instanceof ASN1UTCTime) {
+                    dertime = (ASN1UTCTime) o;
+                }
+            }
+            try {
+                if (dergt != null && !dergt.toString().isEmpty()) {
+                    return dergt.getDate();
+                }
+                if (dertime != null && !dertime.toString().isEmpty()) {
+                    return dertime.getDate();
+                }
 
-	    } catch (ParseException ex) {
-		return null;
-	    }
-	}
-	return null;
+            } catch (ParseException ex) {
+                return null;
+            }
+        }
+        return null;
 
     }
 
     @Override
     public TimeStampToken getTimeStamp() {
-	AttributeTable table = signerInformation.getUnsignedAttributes();
-	if (table == null) {
-	    return null;
-	}
-	Attribute attribute = (Attribute) table.toHashtable()
-		.get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken);
-	// Attribute attribute = (Attribute) table.toHashtable().get(new
-	// DERObjectIdentifier("1.2.840.113549.1.9.16.2.47"));
-	if (attribute != null && attribute.getAttrValues() != null) {
-	    TimeStampToken timestamptoken = null;
-	    try {
-		timestamptoken = new TimeStampToken(new CMSSignedData(
-			attribute.getAttrValues().getObjectAt(0).toASN1Primitive().getEncoded()));
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	    if (timestamptoken != null) {
-		return timestamptoken;// .getTimeStampInfo().getGenTime();
-	    }
-	}
-	return null;
+        AttributeTable table = signerInformation.getUnsignedAttributes();
+        if (table == null) {
+            return null;
+        }
+        Attribute attribute = (Attribute) table.toHashtable()
+                .get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken);
+        // Attribute attribute = (Attribute) table.toHashtable().get(new
+        // DERObjectIdentifier("1.2.840.113549.1.9.16.2.47"));
+        if (attribute != null && attribute.getAttrValues() != null) {
+            TimeStampToken timestamptoken = null;
+            try {
+                timestamptoken = new TimeStampToken(new CMSSignedData(
+                        attribute.getAttrValues().getObjectAt(0).toASN1Primitive().getEncoded()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (timestamptoken != null) {
+                return timestamptoken;// .getTimeStampInfo().getGenTime();
+            }
+        }
+        return null;
 
     }
 
     @Override
     public Date getReferenceDate() {
 
-	return this.referenceDate;
+        return this.referenceDate;
     }
 
     public void setDateTimeStamp(Date dateTimeStamp) {
-	this.dateTimeStamp = dateTimeStamp;
+        this.dateTimeStamp = dateTimeStamp;
     }
 
     @Override
     public void setReferenceDate(Date referenceDate) {
-	this.referenceDate = referenceDate;
+        this.referenceDate = referenceDate;
     }
 
     @Override
     public String getSigAlgorithm() {
-	return OIDsMapConstants.getDigestNames().get(this.signerInformation.getDigestAlgOID())
-		+ "with" + OIDsMapConstants.getAlgorithmNames()
-			.get(this.signerInformation.getEncryptionAlgOID());
+        return OIDsMapConstants.getDigestNames().get(this.signerInformation.getDigestAlgOID())
+                + "with" + OIDsMapConstants.getAlgorithmNames()
+                        .get(this.signerInformation.getEncryptionAlgOID());
 
     }
 
     @Override
     public String getReferenceDateType() {
-	return this.referenceDateType;
+        return this.referenceDateType;
     }
 
     @Override
     public void setReferenceDateType(String referenceDateType) {
-	this.referenceDateType = referenceDateType;
+        this.referenceDateType = referenceDateType;
     }
 
     public SignerType getFormatoFirma() {
-	return formatoFirma;
+        return formatoFirma;
     }
 
     public void setFormatoFirma(SignerType formatoFirma) {
-	this.formatoFirma = formatoFirma;
+        this.formatoFirma = formatoFirma;
     }
 }

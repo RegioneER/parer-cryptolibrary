@@ -26,15 +26,15 @@ import java.util.Locale;
 public abstract class AbstractTimeStampController extends AbstractController {
 
     public boolean execute(InputBean input, OutputBean output) throws ExceptionController {
-	if (input instanceof InputTimeStampBean && output instanceof OutputTimeStampBean)
-	    return execute((InputTimeStampBean) input, (OutputTimeStampBean) output);
-	return false;
+        if (input instanceof InputTimeStampBean && output instanceof OutputTimeStampBean)
+            return execute((InputTimeStampBean) input, (OutputTimeStampBean) output);
+        return false;
     }
 
     protected DateFormat dateFormatter = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG,
-	    DateFormat.LONG, Locale.ITALY);
+            DateFormat.LONG, Locale.ITALY);
 
     public abstract boolean execute(InputTimeStampBean input, OutputTimeStampBean output)
-	    throws ExceptionController;
+            throws ExceptionController;
 
 }

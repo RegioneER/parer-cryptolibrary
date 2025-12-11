@@ -17,6 +17,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.security.NoSuchProviderException;
 import java.security.Principal;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -94,18 +96,18 @@ public class SignerUtil {
 
     public enum EnumSigner {
 
-	CMSSigner, M7MSigner, P7MSigner, PdfSigner, TsrSigner, XMLSigner
+        CMSSigner, M7MSigner, P7MSigner, PdfSigner, TsrSigner, XMLSigner
     }
 
     Logger log = LoggerFactory.getLogger(SignerUtil.class);
     private ApplicationContext context;
 
     private SignerUtil(ApplicationContext applicationContext) {
-	context = applicationContext;
-	if (context == null) {
-	    context = new ClassPathXmlApplicationContext("VerificheControllerConfig.xml");
-	}
-	CryptoSingleton.getInstance().setContext(context);
+        context = applicationContext;
+        if (context == null) {
+            context = new ClassPathXmlApplicationContext("VerificheControllerConfig.xml");
+        }
+        CryptoSingleton.getInstance().setContext(context);
     }
 
     /**
@@ -114,7 +116,7 @@ public class SignerUtil {
      * @return nuova istanza della classe
      */
     public static SignerUtil newInstance() {
-	return new SignerUtil(CryptoSignerApplicationContextProvider.getContext());
+        return new SignerUtil(CryptoSignerApplicationContextProvider.getContext());
     }
 
     /**
@@ -125,7 +127,7 @@ public class SignerUtil {
      * @return nuova istanza della classe
      */
     public static SignerUtil newInstance(ApplicationContext applicationContext) {
-	return new SignerUtil(applicationContext);
+        return new SignerUtil(applicationContext);
     }
 
     /**
@@ -139,29 +141,29 @@ public class SignerUtil {
      * @throws CryptoSignerException
      */
     public AbstractSigner getSignerManager(File file) throws CryptoSignerException {
-	// Controllo che tipo di Signer Utilizzare
-	Map<String, ValidationInfos> complianceChecks = null;
-	DataSigner dataSigner = context.getBean("DataSigner", DataSigner.class);
-	for (AbstractSigner signer : dataSigner.getSignersManager()) {
+        // Controllo che tipo di Signer Utilizzare
+        Map<String, ValidationInfos> complianceChecks = null;
+        DataSigner dataSigner = context.getBean("DataSigner", DataSigner.class);
+        for (AbstractSigner signer : dataSigner.getSignersManager()) {
 
-	    // AbstractSigner newSigner = signer.getClass().newInstance();
-	    ValidationInfos vi = new ValidationInfos();
-	    if (signer.isSignedType(file, vi)) {
-		signer.setFile(file);
-		return signer;
-	    }
-	    // aggiungo alla mappa i controlli di conformità
-	    if (!vi.isValid(true)) {
-		if (complianceChecks == null) {
-		    complianceChecks = new HashMap<String, ValidationInfos>();
-		}
-		complianceChecks.put(signer.getClass().getSimpleName(), vi);
-	    }
+            // AbstractSigner newSigner = signer.getClass().newInstance();
+            ValidationInfos vi = new ValidationInfos();
+            if (signer.isSignedType(file, vi)) {
+                signer.setFile(file);
+                return signer;
+            }
+            // aggiungo alla mappa i controlli di conformità
+            if (!vi.isValid(true)) {
+                if (complianceChecks == null) {
+                    complianceChecks = new HashMap<String, ValidationInfos>();
+                }
+                complianceChecks.put(signer.getClass().getSimpleName(), vi);
+            }
 
-	}
-	// Se sono arrivato fino a qui lancio una eccezione;
-	throw new CryptoSignerException(
-		"Nessun Manager Signer Trovato per il file specificato: " + file, complianceChecks);
+        }
+        // Se sono arrivato fino a qui lancio una eccezione;
+        throw new CryptoSignerException(
+                "Nessun Manager Signer Trovato per il file specificato: " + file, complianceChecks);
 
     }
 
@@ -175,20 +177,20 @@ public class SignerUtil {
      * @throws IOException in caso di errore
      */
     public static String getAuthorityKeyId(X509CRL crl) throws IOException {
-	byte[] extvalue = crl.getExtensionValue("2.5.29.35");
-	if (extvalue == null) {
-	    return null;
-	}
-	DEROctetString oct = (DEROctetString) (new ASN1InputStream(
-		new ByteArrayInputStream(extvalue)).readObject());
-	AuthorityKeyIdentifier keyId = AuthorityKeyIdentifier.getInstance(
-		new ASN1InputStream(new ByteArrayInputStream(oct.getOctets())).readObject());
-	// AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
-	// (ASN1Sequence) new ASN1InputStream(new
-	// ByteArrayInputStream(oct.getOctets())).readObject());
-	byte[] authkeyId = keyId.getKeyIdentifier(); // new
-	// AuthorityKeyIdentifierStructure(pkcs7.getSigningCertificate()).getKeyIdentifier();
-	return Hex.encodeHexString(authkeyId);
+        byte[] extvalue = crl.getExtensionValue("2.5.29.35");
+        if (extvalue == null) {
+            return null;
+        }
+        DEROctetString oct = (DEROctetString) (new ASN1InputStream(
+                new ByteArrayInputStream(extvalue)).readObject());
+        AuthorityKeyIdentifier keyId = AuthorityKeyIdentifier.getInstance(
+                new ASN1InputStream(new ByteArrayInputStream(oct.getOctets())).readObject());
+        // AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
+        // (ASN1Sequence) new ASN1InputStream(new
+        // ByteArrayInputStream(oct.getOctets())).readObject());
+        byte[] authkeyId = keyId.getKeyIdentifier(); // new
+        // AuthorityKeyIdentifierStructure(pkcs7.getSigningCertificate()).getKeyIdentifier();
+        return Hex.encodeHexString(authkeyId);
     }
 
     /**
@@ -201,20 +203,20 @@ public class SignerUtil {
      * @throws IOException in caso di errore
      */
     public static String getAuthorityKeyId(X509Certificate cert) throws IOException {
-	byte[] extvalue = cert.getExtensionValue("2.5.29.35");
-	if (extvalue == null) {
-	    return null;
-	}
-	DEROctetString oct = (DEROctetString) (new ASN1InputStream(
-		new ByteArrayInputStream(extvalue)).readObject());
-	AuthorityKeyIdentifier keyId = AuthorityKeyIdentifier.getInstance(
-		new ASN1InputStream(new ByteArrayInputStream(oct.getOctets())).readObject());
-	// AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
-	// (ASN1Sequence) new ASN1InputStream(new
-	// ByteArrayInputStream(oct.getOctets())).readObject());
-	byte[] authkeyId = keyId.getKeyIdentifier(); // new
-	// AuthorityKeyIdentifierStructure(pkcs7.getSigningCertificate()).getKeyIdentifier();
-	return Hex.encodeHexString(authkeyId);
+        byte[] extvalue = cert.getExtensionValue("2.5.29.35");
+        if (extvalue == null) {
+            return null;
+        }
+        DEROctetString oct = (DEROctetString) (new ASN1InputStream(
+                new ByteArrayInputStream(extvalue)).readObject());
+        AuthorityKeyIdentifier keyId = AuthorityKeyIdentifier.getInstance(
+                new ASN1InputStream(new ByteArrayInputStream(oct.getOctets())).readObject());
+        // AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
+        // (ASN1Sequence) new ASN1InputStream(new
+        // ByteArrayInputStream(oct.getOctets())).readObject());
+        byte[] authkeyId = keyId.getKeyIdentifier(); // new
+        // AuthorityKeyIdentifierStructure(pkcs7.getSigningCertificate()).getKeyIdentifier();
+        return Hex.encodeHexString(authkeyId);
     }
 
     /**
@@ -227,16 +229,16 @@ public class SignerUtil {
      * @throws IOException in caso di errore
      */
     public static String getSubjectKeyId(X509Certificate cert) throws IOException {
-	byte[] extvalue = cert.getExtensionValue("2.5.29.14");
-	if (extvalue == null) {
-	    return null;
-	}
-	ASN1OctetString str = ASN1OctetString
-		.getInstance(new ASN1InputStream(new ByteArrayInputStream(extvalue)).readObject());
-	SubjectKeyIdentifier keyId = SubjectKeyIdentifier.getInstance(
-		new ASN1InputStream(new ByteArrayInputStream(str.getOctets())).readObject());
-	byte[] subjKeyId = keyId.getKeyIdentifier();
-	return Hex.encodeHexString(subjKeyId);
+        byte[] extvalue = cert.getExtensionValue("2.5.29.14");
+        if (extvalue == null) {
+            return null;
+        }
+        ASN1OctetString str = ASN1OctetString
+                .getInstance(new ASN1InputStream(new ByteArrayInputStream(extvalue)).readObject());
+        SubjectKeyIdentifier keyId = SubjectKeyIdentifier.getInstance(
+                new ASN1InputStream(new ByteArrayInputStream(str.getOctets())).readObject());
+        byte[] subjKeyId = keyId.getKeyIdentifier();
+        return Hex.encodeHexString(subjKeyId);
 
     }
 
@@ -251,71 +253,65 @@ public class SignerUtil {
      * @throws CryptoSignerException in caso di errore
      */
     public boolean validCertificateWithCRL(java.security.cert.X509Certificate certificate,
-	    X509CRL crl) throws CryptoSignerException {
-	boolean isValid = false;
-	try {
-	    certificate.checkValidity();
-	    if (!crl.isRevoked(certificate)) {
-		isValid = true;
-	    }
-	} catch (CertificateExpiredException e) {
-	    log.error("Certificato scaduto", e);
-	} catch (CertificateNotYetValidException e) {
-	    log.error("Certificato non ancora valido", e);
-	}
-	return isValid;
+            X509CRL crl) throws CryptoSignerException {
+        boolean isValid = false;
+        try {
+            certificate.checkValidity();
+            if (!crl.isRevoked(certificate)) {
+                isValid = true;
+            }
+        } catch (CertificateExpiredException e) {
+            log.error("Certificato scaduto", e);
+        } catch (CertificateNotYetValidException e) {
+            log.error("Certificato non ancora valido", e);
+        }
+        return isValid;
     }
 
     /**
+     * 
      * Recupera la CRL in base all'url passato in ingresso
-     *
+     * 
      * @param urls, lista di indirizzi delle CRL
-     *
+     * @param httpTimeoutConnection, timeout connessione HTTP
+     * @param httpSocketTimeout, timeout socket HTTP
+     * @param ldapTimeoutConnection, timeout connessione LDAP
      * @return oggetto CRL
-     *
      */
-    public X509CRL getCrlByURL(List<String> urls) {
+    public X509CRL getCrlByURL(List<String> urls, int httpTimeoutConnection, int httpSocketTimeout, int ldapTimeoutConnection) {
 
-	X509CRL mostRecentCrl = null;
-	for (String url : urls) {
-	    X509CRL crl = null;
-	    try {
-		CRLUtil util = new CRLUtil();
+        X509CRL mostRecentCrl = null;
+        for (String url : urls) {
+            X509CRL crl = null;
+            try {
+                CRLUtil util = new CRLUtil();
 
-		url = StringUtils.trim(url);
-		log.info("Scarico la CRL dall'URL: " + url);
+                url = StringUtils.trim(url);
+                log.info("Scarico la CRL dall'URL: {}",  url);
 
-		if (url.toUpperCase().startsWith("LDAP")) {
-		    crl = util.searchCrlByLDAP(url);
-		} else if (url.toUpperCase().startsWith("FILE")) {
-		    crl = util.ricercaCrlByFile(url);
-		} else if (url.toUpperCase().startsWith("HTTP")) {
-		    crl = util.ricercaCrlByProxyHTTP(url,
-			    CryptoSingleton.getInstance().getConfiguration());
-		} else {
-		    throw new CryptoSignerException("Protocollo di comunicazione non supportato!");
-		}
-		// log.info("getCrlByURL END");
-		log.info("CRL scaricata correttamente");
-	    } catch (CryptoSignerException e) {
-		log.warn("Si è verificato il seguente errore: " + e.toString() + ", "
-			+ (e.getCause() != null ? e.getCause().toString() : ""));
-	    } catch (NameNotFoundException e) {
-		log.error("Si è verificato il seguente errore: " + e.toString() + ", "
-			+ e.getMessage() + ", "
-			+ (e.getCause() != null ? e.getCause().getMessage() : ""));
-
-	    } catch (Exception e) {
-		log.error("Si è verificato il seguente errore: " + e.toString() + ", "
-			+ e.getMessage() + ", "
-			+ (e.getCause() != null ? e.getCause().getMessage() : ""), e);
-	    }
-	    if (crl != null && (mostRecentCrl == null
-		    || mostRecentCrl.getNextUpdate().before(crl.getNextUpdate()))) {
-		mostRecentCrl = crl;
-	    }
-	}
-	return mostRecentCrl;
+                if (url.toUpperCase().startsWith("LDAP")) {
+                    crl = util.searchCrlByLDAP(url, ldapTimeoutConnection);
+                } else if (url.toUpperCase().startsWith("FILE")) {
+                    crl = util.ricercaCrlByFile(url);
+                } else if (url.toUpperCase().startsWith("HTTP")) {
+                    crl = util.ricercaCrlByProxyHTTP(url,
+                            CryptoSingleton.getInstance().getConfiguration(), httpTimeoutConnection, httpSocketTimeout);
+                } else {
+                    throw new CryptoSignerException("Protocollo di comunicazione non supportato!");
+                }
+                // log.info("getCrlByURL END");
+                log.info("CRL scaricata correttamente");
+            } catch (CryptoSignerException e) {
+                log.warn("Si è verificato il seguente errore", e);            
+	    } catch (CertificateException | NoSuchProviderException | IOException | URISyntaxException e) {
+                log.error("Si è verificato il seguente errore", e);
+	    } 
+            if (crl != null && (mostRecentCrl == null
+                    || mostRecentCrl.getNextUpdate().before(crl.getNextUpdate()))) {
+                mostRecentCrl = crl;
+            }
+        }
+        return mostRecentCrl;
     }
 
     /**
@@ -328,215 +324,215 @@ public class SignerUtil {
      * @throws CryptoSignerException in caso di errore
      */
     public List<String> getURLCrlDistributionPoint(X509Certificate certificate)
-	    throws CryptoSignerException {
-	ASN1InputStream oAsnInStream = null;
-	ASN1InputStream oAsnInStream2 = null;
-	try {
-	    byte[] val1 = certificate.getExtensionValue("2.5.29.31");
-	    oAsnInStream = new ASN1InputStream(new ByteArrayInputStream(val1));
-	    ASN1Primitive derObj = oAsnInStream.readObject();
-	    DEROctetString dos = (DEROctetString) derObj;
-	    byte[] val2 = dos.getOctets();
-	    oAsnInStream2 = new ASN1InputStream(new ByteArrayInputStream(val2));
-	    ASN1Primitive derObj2 = oAsnInStream2.readObject();
-	    CRLUtil util = new CRLUtil();
-	    Vector<String> urls = (Vector<String>) util.getDERValue(derObj2);
-	    if (urls != null && !urls.isEmpty()) {
-		return new ArrayList<String>(urls);
-	    } else {
-		throw new Exception("Lista delle distribution point vuota o nulla");
-	    }
-	} catch (Exception e) {
-	    throw new CryptoSignerException("Errore nel recupero del distribution point della CRL",
-		    e);
-	} finally {
-	    IOUtils.closeQuietly(oAsnInStream);
-	    IOUtils.closeQuietly(oAsnInStream2);
-	}
+            throws CryptoSignerException {
+        ASN1InputStream oAsnInStream = null;
+        ASN1InputStream oAsnInStream2 = null;
+        try {
+            byte[] val1 = certificate.getExtensionValue("2.5.29.31");
+            oAsnInStream = new ASN1InputStream(new ByteArrayInputStream(val1));
+            ASN1Primitive derObj = oAsnInStream.readObject();
+            DEROctetString dos = (DEROctetString) derObj;
+            byte[] val2 = dos.getOctets();
+            oAsnInStream2 = new ASN1InputStream(new ByteArrayInputStream(val2));
+            ASN1Primitive derObj2 = oAsnInStream2.readObject();
+            CRLUtil util = new CRLUtil();
+            Vector<String> urls = (Vector<String>) util.getDERValue(derObj2);
+            if (urls != null && !urls.isEmpty()) {
+                return new ArrayList<String>(urls);
+            } else {
+                throw new Exception("Lista delle distribution point vuota o nulla");
+            }
+        } catch (Exception e) {
+            throw new CryptoSignerException("Errore nel recupero del distribution point della CRL",
+                    e);
+        } finally {
+            IOUtils.closeQuietly(oAsnInStream);
+            IOUtils.closeQuietly(oAsnInStream2);
+        }
     }
 
     private HttpResponse doGet(String urlString) throws IOException {
-	CryptoConfiguration cryptoConfiguration = context
-		.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
+        CryptoConfiguration cryptoConfiguration = context
+                .getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
 
-	HttpGet method = new HttpGet(urlString);
+        HttpGet method = new HttpGet(urlString);
 
-	DefaultHttpClient httpclient = new DefaultHttpClient();
-	if (cryptoConfiguration.isProxy()) {
-	    Credentials credential = cryptoConfiguration.isNTLSAuth()
-		    ? new NTCredentials(cryptoConfiguration.getProxyUser(),
-			    cryptoConfiguration.getProxyPassword(),
-			    cryptoConfiguration.getUserHost(), cryptoConfiguration.getUserDomain())
-		    : new UsernamePasswordCredentials(cryptoConfiguration.getProxyUser(),
-			    cryptoConfiguration.getProxyPassword());
-	    HttpHost proxy = new HttpHost(cryptoConfiguration.getProxyHost(),
-		    cryptoConfiguration.getProxyPort());
-	    httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-	    httpclient.getCredentialsProvider().setCredentials(
-		    new AuthScope(proxy.getHostName(), proxy.getPort()), credential);
-	}
-	return httpclient.execute(method);
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        if (cryptoConfiguration.isProxy()) {
+            Credentials credential = cryptoConfiguration.isNTLSAuth()
+                    ? new NTCredentials(cryptoConfiguration.getProxyUser(),
+                            cryptoConfiguration.getProxyPassword(),
+                            cryptoConfiguration.getUserHost(), cryptoConfiguration.getUserDomain())
+                    : new UsernamePasswordCredentials(cryptoConfiguration.getProxyUser(),
+                            cryptoConfiguration.getProxyPassword());
+            HttpHost proxy = new HttpHost(cryptoConfiguration.getProxyHost(),
+                    cryptoConfiguration.getProxyPort());
+            httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+            httpclient.getCredentialsProvider().setCredentials(
+                    new AuthScope(proxy.getHostName(), proxy.getPort()), credential);
+        }
+        return httpclient.execute(method);
 
     }
 
     private void addCertificateFromList(String localTrustedListUrl,
-	    Map<String, X509Certificate> qualifiedCertificates) {
-	boolean isPdf = false;
-	HttpEntity entity = null;
-	try {
-	    HttpResponse httpResponse = doGet(localTrustedListUrl);
-	    entity = httpResponse.getEntity();
-	    if (entity == null) {
-		// non posso far nulla se l'entity http non è compilata
-		return;
-	    }
-	    Header contentType = entity.getContentType();
-	    if (contentType != null) {
-		isPdf = contentType.getValue().equals("application/pdf");
-	    }
-	} catch (IOException ex) {
-	    log.warn("Errore nel parsing della Trusted list: ", ex);
-	}
-	if (entity == null) {
-	    // non posso far nulla se l'entity http non è compilata
-	    return;
-	}
-	try (InputStream is = entity.getContent()) {
-	    if (isPdf) {
-		addCertificateFromPdfList(qualifiedCertificates, is);
-	    } else {
-		addCertificateFromXmlList(qualifiedCertificates, is);
-	    }
-	} catch (IOException | CryptoSignerException ex) {
-	    log.warn("Errore nel parsing della Trusted list: ", ex);
-	}
+            Map<String, X509Certificate> qualifiedCertificates) {
+        boolean isPdf = false;
+        HttpEntity entity = null;
+        try {
+            HttpResponse httpResponse = doGet(localTrustedListUrl);
+            entity = httpResponse.getEntity();
+            if (entity == null) {
+                // non posso far nulla se l'entity http non è compilata
+                return;
+            }
+            Header contentType = entity.getContentType();
+            if (contentType != null) {
+                isPdf = contentType.getValue().equals("application/pdf");
+            }
+        } catch (IOException ex) {
+            log.warn("Errore nel parsing della Trusted list: ", ex);
+        }
+        if (entity == null) {
+            // non posso far nulla se l'entity http non è compilata
+            return;
+        }
+        try (InputStream is = entity.getContent()) {
+            if (isPdf) {
+                addCertificateFromPdfList(qualifiedCertificates, is);
+            } else {
+                addCertificateFromXmlList(qualifiedCertificates, is);
+            }
+        } catch (IOException | CryptoSignerException ex) {
+            log.warn("Errore nel parsing della Trusted list: ", ex);
+        }
 
     }
 
     private void addCertificateFromXmlList(Map<String, X509Certificate> qualifiedCertificates,
-	    InputStream xmlStream) throws CryptoSignerException {
-	try {
-	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	    factory.setNamespaceAware(true);
-	    DocumentBuilder docBuilder = factory.newDocumentBuilder();
+            InputStream xmlStream) throws CryptoSignerException {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = factory.newDocumentBuilder();
 
-	    Document docTsl = docBuilder.parse(xmlStream);
-	    addCertificateFromXmlList(qualifiedCertificates, docTsl);
+            Document docTsl = docBuilder.parse(xmlStream);
+            addCertificateFromXmlList(qualifiedCertificates, docTsl);
 
-	} catch (IOException | ParserConfigurationException | SAXException ex) {
+        } catch (IOException | ParserConfigurationException | SAXException ex) {
 
-	    throw new CryptoSignerException("Errore nel parsing dell'XML della Trusted list: ", ex);
-	}
+            throw new CryptoSignerException("Errore nel parsing dell'XML della Trusted list: ", ex);
+        }
     }
 
     private void addCertificateFromXmlList(Map<String, X509Certificate> qualifiedCertificates,
-	    Document docTsl) throws CryptoSignerException {
-	List<TrustServiceProvider> trustServiceProviders = null;
-	try {
+            Document docTsl) throws CryptoSignerException {
+        List<TrustServiceProvider> trustServiceProviders = null;
+        try {
 
-	    TrustServiceList trustServiceList = TrustServiceListFactory.newInstance(docTsl);
-	    trustServiceProviders = trustServiceList.getTrustServiceProviders();
+            TrustServiceList trustServiceList = TrustServiceListFactory.newInstance(docTsl);
+            trustServiceProviders = trustServiceList.getTrustServiceProviders();
 
-	} catch (IOException ex) {
+        } catch (IOException ex) {
 
-	    throw new CryptoSignerException("Errore nel parsing dell'XML della Trusted list: ", ex);
-	}
+            throw new CryptoSignerException("Errore nel parsing dell'XML della Trusted list: ", ex);
+        }
 
-	for (TrustServiceProvider trustServiceProvider : trustServiceProviders) {
-	    try {
+        for (TrustServiceProvider trustServiceProvider : trustServiceProviders) {
+            try {
 
-		List<TrustService> trustServices = trustServiceProvider.getTrustServices();
-		int idx = 0;
-		final int allCerts = trustServices.size();
-		for (TrustService trustService : trustServices) {
-		    X509Certificate certificate = trustService.getServiceDigitalIdentity();
-		    log.debug("TSP {}/{}: {} / Service: {} / Status: {}", (++idx), allCerts,
-			    trustServiceProvider.getName(), trustService.getName(),
-			    trustService.getStatus());
-		    qualifiedCertificates.put(certificate.getSubjectX500Principal().getName() + "|"
-			    + getSubjectKeyId(certificate), certificate);
-		}
-	    } catch (IOException | RuntimeException ex) {
-		log.warn(
-			"Errore durante la crezione del certificato presente nel TSP in formato XML. Continuo.",
-			ex);
-	    }
-	}
+                List<TrustService> trustServices = trustServiceProvider.getTrustServices();
+                int idx = 0;
+                final int allCerts = trustServices.size();
+                for (TrustService trustService : trustServices) {
+                    X509Certificate certificate = trustService.getServiceDigitalIdentity();
+                    log.debug("TSP {}/{}: {} / Service: {} / Status: {}", (++idx), allCerts,
+                            trustServiceProvider.getName(), trustService.getName(),
+                            trustService.getStatus());
+                    qualifiedCertificates.put(certificate.getSubjectX500Principal().getName() + "|"
+                            + getSubjectKeyId(certificate), certificate);
+                }
+            } catch (IOException | RuntimeException ex) {
+                log.warn(
+                        "Errore durante la crezione del certificato presente nel TSP in formato XML. Continuo.",
+                        ex);
+            }
+        }
     }
 
     private void addCertificateFromPdfList(Map<String, X509Certificate> qualifiedCertificates,
-	    InputStream pdfStream) throws CryptoSignerException {
-	PdfReader pdf = null;
-	PdfReaderContentParser parser = null;
-	try {
-	    pdf = new PdfReader(pdfStream);
-	    parser = new PdfReaderContentParser(pdf);
-	} catch (IOException ex) {
-	    throw new CryptoSignerException("Errore nel parsing dell PDF della Trusted list: ", ex);
-	}
+            InputStream pdfStream) throws CryptoSignerException {
+        PdfReader pdf = null;
+        PdfReaderContentParser parser = null;
+        try {
+            pdf = new PdfReader(pdfStream);
+            parser = new PdfReaderContentParser(pdf);
+        } catch (IOException ex) {
+            throw new CryptoSignerException("Errore nel parsing dell PDF della Trusted list: ", ex);
+        }
 
-	List<String> allPem = new ArrayList<>();
+        List<String> allPem = new ArrayList<>();
 
-	for (int i = 1; i <= pdf.getNumberOfPages(); i++) {
-	    try {
-		TextExtractionStrategy strategy = parser.processContent(i,
-			new SimpleTextExtractionStrategy());
-		String resultantText = strategy.getResultantText();
+        for (int i = 1; i <= pdf.getNumberOfPages(); i++) {
+            try {
+                TextExtractionStrategy strategy = parser.processContent(i,
+                        new SimpleTextExtractionStrategy());
+                String resultantText = strategy.getResultantText();
 
-		String[] stringArray = StringUtils.substringsBetween(resultantText,
-			"-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
-		if (stringArray != null && stringArray.length > 0) {
-		    for (String certificate : stringArray) {
-			allPem.add(certificate.replaceAll("\\s+", ""));
-		    }
+                String[] stringArray = StringUtils.substringsBetween(resultantText,
+                        "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
+                if (stringArray != null && stringArray.length > 0) {
+                    for (String certificate : stringArray) {
+                        allPem.add(certificate.replaceAll("\\s+", ""));
+                    }
 
-		}
-	    } catch (IOException ex) {
-		log.warn(
-			"Errore durante l'estrazione del PEM del certificato nel TSP in formato PDF dalla pagina {}",
-			i, ex);
-	    }
-	}
-	int idx = 0;
-	final int allCerts = allPem.size();
-	for (String pem : allPem) {
+                }
+            } catch (IOException ex) {
+                log.warn(
+                        "Errore durante l'estrazione del PEM del certificato nel TSP in formato PDF dalla pagina {}",
+                        i, ex);
+            }
+        }
+        int idx = 0;
+        final int allCerts = allPem.size();
+        for (String pem : allPem) {
 
-	    byte[] certificateBytes = null;
-	    try {
-		certificateBytes = Base64.getDecoder().decode(pem);
+            byte[] certificateBytes = null;
+            try {
+                certificateBytes = Base64.getDecoder().decode(pem);
 
-	    } catch (IllegalArgumentException ex) {
-		log.warn(
-			"Errore durante la lettura del base64 del certificato nel TSP in formato PDF",
-			ex);
-	    }
+            } catch (IllegalArgumentException ex) {
+                log.warn(
+                        "Errore durante la lettura del base64 del certificato nel TSP in formato PDF",
+                        ex);
+            }
 
-	    if (certificateBytes != null) {
+            if (certificateBytes != null) {
 
-		try (InputStream in = new ByteArrayInputStream(certificateBytes);) {
-		    CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		    X509Certificate certificate = (X509Certificate) certFactory
-			    .generateCertificate(in);
-		    log.debug("TSP {}/{} in formato PDF: {}", (++idx), allCerts,
-			    certificate.getSubjectX500Principal().getName());
-		    qualifiedCertificates.put(certificate.getSubjectX500Principal().getName() + "|"
-			    + getSubjectKeyId(certificate), certificate);
-		} catch (IOException | CertificateException | RuntimeException ex) {
-		    log.warn(
-			    "Errore durante la crezione del certificato presente nel TSP in formato PDF.Continuo.",
-			    ex);
-		}
-	    }
-	}
+                try (InputStream in = new ByteArrayInputStream(certificateBytes);) {
+                    CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+                    X509Certificate certificate = (X509Certificate) certFactory
+                            .generateCertificate(in);
+                    log.debug("TSP {}/{} in formato PDF: {}", (++idx), allCerts,
+                            certificate.getSubjectX500Principal().getName());
+                    qualifiedCertificates.put(certificate.getSubjectX500Principal().getName() + "|"
+                            + getSubjectKeyId(certificate), certificate);
+                } catch (IOException | CertificateException | RuntimeException ex) {
+                    log.warn(
+                            "Errore durante la crezione del certificato presente nel TSP in formato PDF.Continuo.",
+                            ex);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws CryptoSignerException {
-	SignerUtil me = newInstance();
-	Map<String, X509Certificate> qualifiedPrincipalsAndX509Certificates = me
-		.getQualifiedPrincipalsAndX509Certificates();
+        SignerUtil me = newInstance();
+        Map<String, X509Certificate> qualifiedPrincipalsAndX509Certificates = me
+                .getQualifiedPrincipalsAndX509Certificates();
 
-	qualifiedPrincipalsAndX509Certificates
-		.forEach((key, value) -> System.out.println(key + " " + value));
+        qualifiedPrincipalsAndX509Certificates
+                .forEach((key, value) -> System.out.println(key + " " + value));
     }
 
     /**
@@ -549,52 +545,52 @@ public class SignerUtil {
      * @throws CryptoSignerException in caso di errore
      */
     public Map<String, X509Certificate> getQualifiedPrincipalsAndX509Certificates()
-	    throws CryptoSignerException {
-	final long start = System.currentTimeMillis();
-	Map<String, X509Certificate> qualifiedCertificates = new HashMap<String, X509Certificate>();
-	HttpResponse response = null;
-	String urlString = null;
-	try {
-	    CryptoConfiguration cryptoConfiguration = context
-		    .getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
+            throws CryptoSignerException {
+        final long start = System.currentTimeMillis();
+        Map<String, X509Certificate> qualifiedCertificates = new HashMap<String, X509Certificate>();
+        HttpResponse response = null;
+        String urlString = null;
+        try {
+            CryptoConfiguration cryptoConfiguration = context
+                    .getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
 
-	    urlString = cryptoConfiguration.getQualifiedCertificatesURL();
-	    response = doGet(urlString);
-	} catch (BeansException | IOException e) {
-	    throw new CryptoSignerException("Errore nel recupero dei certificati accreditati: ", e);
-	}
-	try (InputStream is = response.getEntity().getContent();) {
-	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	    factory.setNamespaceAware(true);
-	    DocumentBuilder docBuilder = factory.newDocumentBuilder();
-	    Document mainLotl = docBuilder.parse(is);
-	    NodeList trustServiceProviderList = mainLotl
-		    .getElementsByTagName("TrustServiceProviderList");
-	    // Se non è una TSL è una LOTL (List Of Trusted List, usato da EIDAS)
-	    boolean isTSL = trustServiceProviderList.getLength() > 0;
-	    if (isTSL) {
-		log.info("L'URL principale è una TSL: {}", urlString);
-		addCertificateFromXmlList(qualifiedCertificates, mainLotl);
+            urlString = cryptoConfiguration.getQualifiedCertificatesURL();
+            response = doGet(urlString);
+        } catch (BeansException | IOException e) {
+            throw new CryptoSignerException("Errore nel recupero dei certificati accreditati: ", e);
+        }
+        try (InputStream is = response.getEntity().getContent();) {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = factory.newDocumentBuilder();
+            Document mainLotl = docBuilder.parse(is);
+            NodeList trustServiceProviderList = mainLotl
+                    .getElementsByTagName("TrustServiceProviderList");
+            // Se non è una TSL è una LOTL (List Of Trusted List, usato da EIDAS)
+            boolean isTSL = trustServiceProviderList.getLength() > 0;
+            if (isTSL) {
+                log.info("L'URL principale è una TSL: {}", urlString);
+                addCertificateFromXmlList(qualifiedCertificates, mainLotl);
 
-	    } else {
-		NodeList tslLocations = mainLotl.getElementsByTagName("TSLLocation");
-		for (int i = 0; i < tslLocations.getLength(); i++) {
-		    log.info("L'URL principale è una LOTL: {}", urlString);
-		    log.debug("LOTL: Recuperata lista {}/{}", (i + 1), tslLocations.getLength());
-		    Node tslLocation = tslLocations.item(i);
-		    String localTsl = tslLocation.getTextContent();
-		    addCertificateFromList(localTsl, qualifiedCertificates);
-		}
-	    }
+            } else {
+                NodeList tslLocations = mainLotl.getElementsByTagName("TSLLocation");
+                for (int i = 0; i < tslLocations.getLength(); i++) {
+                    log.info("L'URL principale è una LOTL: {}", urlString);
+                    log.debug("LOTL: Recuperata lista {}/{}", (i + 1), tslLocations.getLength());
+                    Node tslLocation = tslLocations.item(i);
+                    String localTsl = tslLocation.getTextContent();
+                    addCertificateFromList(localTsl, qualifiedCertificates);
+                }
+            }
 
-	} catch (IOException | SAXException | DOMException | ParserConfigurationException ex) {
-	    throw new CryptoSignerException("Errore nel recupero dei certificati accreditati: ",
-		    ex);
-	} finally {
-	    log.info("Recuperate tutte le CA accreditate in  "
-		    + (System.currentTimeMillis() - start) + " ms");
-	}
-	return qualifiedCertificates;
+        } catch (IOException | SAXException | DOMException | ParserConfigurationException ex) {
+            throw new CryptoSignerException("Errore nel recupero dei certificati accreditati: ",
+                    ex);
+        } finally {
+            log.info("Recuperate tutte le CA accreditate in  "
+                    + (System.currentTimeMillis() - start) + " ms");
+        }
+        return qualifiedCertificates;
     }
 
     /**
@@ -618,36 +614,36 @@ public class SignerUtil {
      * @return Certificato della CA oppure NULL
      */
     public X509Certificate getCACertificateOnline(X509Certificate signingCertificate,
-	    ICAStorage certificatesAuthorityStorage) {
-	try {
-	    final String authIdSignature = getAuthorityKeyId(signingCertificate);
-	    log.debug("Ricerca online della CA/TSA per il certificato con principal "
-		    + signingCertificate.getIssuerX500Principal().getName() + " e auth key ID "
-		    + authIdSignature);
+            ICAStorage certificatesAuthorityStorage) {
+        try {
+            final String authIdSignature = getAuthorityKeyId(signingCertificate);
+            log.debug("Ricerca online della CA/TSA per il certificato con principal "
+                    + signingCertificate.getIssuerX500Principal().getName() + " e auth key ID "
+                    + authIdSignature);
 
-	    Map<String, X509Certificate> qualifiedCertificates = getQualifiedPrincipalsAndX509Certificates();
-	    for (X509Certificate donwloadedCaCert : qualifiedCertificates.values()) {
-		try {
-		    certificatesAuthorityStorage.insertCA(donwloadedCaCert);
-		} catch (Exception ignore) {
-		    log.debug("Errore durante l'inserimento della CA ", ignore);
-		}
-		X500Principal issuerPrincipal = signingCertificate.getIssuerX500Principal();
-		if (donwloadedCaCert.getIssuerX500Principal().getName()
-			.equals(issuerPrincipal.getName())) {
-		    String subjectKeyId = getSubjectKeyId(donwloadedCaCert);
-		    if (authIdSignature.equals(subjectKeyId)) {
-			// qualifiedCertificate = donwloadedCaCert;
-			return donwloadedCaCert;
-		    }
-		}
+            Map<String, X509Certificate> qualifiedCertificates = getQualifiedPrincipalsAndX509Certificates();
+            for (X509Certificate donwloadedCaCert : qualifiedCertificates.values()) {
+                try {
+                    certificatesAuthorityStorage.insertCA(donwloadedCaCert);
+                } catch (Exception ignore) {
+                    log.debug("Errore durante l'inserimento della CA ", ignore);
+                }
+                X500Principal issuerPrincipal = signingCertificate.getIssuerX500Principal();
+                if (donwloadedCaCert.getIssuerX500Principal().getName()
+                        .equals(issuerPrincipal.getName())) {
+                    String subjectKeyId = getSubjectKeyId(donwloadedCaCert);
+                    if (authIdSignature.equals(subjectKeyId)) {
+                        // qualifiedCertificate = donwloadedCaCert;
+                        return donwloadedCaCert;
+                    }
+                }
 
-	    }
-	} catch (CryptoSignerException | IOException e) {
-	    log.debug("Errore durante il recupero del certificato dalla rete", e);
-	}
+            }
+        } catch (CryptoSignerException | IOException e) {
+            log.debug("Errore durante il recupero del certificato dalla rete", e);
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -659,37 +655,37 @@ public class SignerUtil {
      * @return la stringa esadecimale corrispondente al contenuto
      */
     public static String asHex(byte buf[]) {
-	StringBuilder strbuf = new StringBuilder(buf.length * 2);
+        StringBuilder strbuf = new StringBuilder(buf.length * 2);
 
-	for (int i = 0; i < buf.length; i++) {
-	    if (((int) buf[i] & 0xff) < 0x10) {
-		strbuf.append("0");
-	    }
-	    strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
-	}
-	return strbuf.toString();
+        for (int i = 0; i < buf.length; i++) {
+            if (((int) buf[i] & 0xff) < 0x10) {
+                strbuf.append("0");
+            }
+            strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
+        }
+        return strbuf.toString();
     }
 
     public static X509Certificate getCertificateFromCollection(Principal issuerPrincipal,
-	    Collection<? extends Certificate> certificates) {
-	X500Name x500Name = new X500Name(issuerPrincipal.getName());
-	synchronized (x500Name) {
-	    if (certificates != null) {
-		for (Certificate qualifiedCertificate : certificates) {
-		    if (qualifiedCertificate instanceof X509Certificate) {
-			X509Certificate x509Certificate = (X509Certificate) qualifiedCertificate;
-			Principal principal = x509Certificate.getSubjectX500Principal();
-			if (principal instanceof X509Principal) {
-			    X509Principal x509Principal = (X509Principal) principal;
-			    if (x509Principal.equals(x500Name)) {
-				return x509Certificate;
-			    }
-			}
-		    }
-		}
-	    }
-	}
-	return null;
+            Collection<? extends Certificate> certificates) {
+        X500Name x500Name = new X500Name(issuerPrincipal.getName());
+        synchronized (x500Name) {
+            if (certificates != null) {
+                for (Certificate qualifiedCertificate : certificates) {
+                    if (qualifiedCertificate instanceof X509Certificate) {
+                        X509Certificate x509Certificate = (X509Certificate) qualifiedCertificate;
+                        Principal principal = x509Certificate.getSubjectX500Principal();
+                        if (principal instanceof X509Principal) {
+                            X509Principal x509Principal = (X509Principal) principal;
+                            if (x509Principal.equals(x500Name)) {
+                                return x509Certificate;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /*
@@ -697,26 +693,26 @@ public class SignerUtil {
      */
     public static final SignerType enumSigner2SignerType(String formatoFirma) {
 
-	if (formatoFirma.equals("CMSSigner")) {
-	    return SignerType.P7M;
-	}
-	if (formatoFirma.equals("M7MSigner")) {
-	    return SignerType.M7M;
-	}
-	if (formatoFirma.equals("P7MSigner")) {
-	    return SignerType.P7M;
-	}
-	if (formatoFirma.equals("PdfSigner")) {
-	    return SignerType.PDF_DSIG;
-	}
-	if (formatoFirma.equals("TsrSigner")) {
-	    return SignerType.TSR;
-	}
-	if (formatoFirma.equals("XMLSigner")) {
-	    return SignerType.XML_DSIG;
-	}
+        if (formatoFirma.equals("CMSSigner")) {
+            return SignerType.P7M;
+        }
+        if (formatoFirma.equals("M7MSigner")) {
+            return SignerType.M7M;
+        }
+        if (formatoFirma.equals("P7MSigner")) {
+            return SignerType.P7M;
+        }
+        if (formatoFirma.equals("PdfSigner")) {
+            return SignerType.PDF_DSIG;
+        }
+        if (formatoFirma.equals("TsrSigner")) {
+            return SignerType.TSR;
+        }
+        if (formatoFirma.equals("XMLSigner")) {
+            return SignerType.XML_DSIG;
+        }
 
-	return null;
+        return null;
 
     }
 }

@@ -33,42 +33,42 @@ public class SignatureAssociation extends AbstractSignerController {
     public static final String SIGNATURE_ASSOCIATION_CHECK = "performSignatureAssociation";
 
     public String getCheckProperty() {
-	return SIGNATURE_ASSOCIATION_CHECK;
+        return SIGNATURE_ASSOCIATION_CHECK;
     }
 
     public boolean execute(InputSignerBean input, OutputSignerBean output)
-	    throws ExceptionController {
-	boolean result = true;
-	List<ISignature> signatures = null;
+            throws ExceptionController {
+        boolean result = true;
+        List<ISignature> signatures = null;
 
-	if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
-	    signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
-	    Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
-	    result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures);
-	    output.setProperty(OutputSignerBean.SIGNATURE_VALIDATION_PROPERTY, validationInfosMap);
-	}
-	return result;
+        if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
+            signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
+            Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
+            result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures);
+            output.setProperty(OutputSignerBean.SIGNATURE_VALIDATION_PROPERTY, validationInfosMap);
+        }
+        return result;
     }
 
     private boolean populateValidationInfosMapFromSignatureList(
-	    Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures) {
-	boolean result = true;
-	if (signatures == null || signatures.isEmpty())
-	    // Perchè la busta sia valida deve esserci almeno una firma
-	    return false;
-	for (ISignature signature : signatures) {
+            Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures) {
+        boolean result = true;
+        if (signatures == null || signatures.isEmpty())
+            // Perchè la busta sia valida deve esserci almeno una firma
+            return false;
+        for (ISignature signature : signatures) {
 
-	    ValidationInfos validationInfos = signature.verify();
+            ValidationInfos validationInfos = signature.verify();
 
-	    validationInfosMap.put(signature, validationInfos);
-	    result &= validationInfos.isValid();
-	    if (performCounterSignaturesCheck) {
-		List<ISignature> counterSignatures = signature.getCounterSignatures();
-		populateValidationInfosMapFromSignatureList(validationInfosMap, counterSignatures);
-	    }
+            validationInfosMap.put(signature, validationInfos);
+            result &= validationInfos.isValid();
+            if (performCounterSignaturesCheck) {
+                List<ISignature> counterSignatures = signature.getCounterSignatures();
+                populateValidationInfosMapFromSignatureList(validationInfosMap, counterSignatures);
+            }
 
-	}
-	return result;
+        }
+        return result;
     }
 
 }

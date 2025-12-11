@@ -26,10 +26,10 @@ import java.util.Map;
 public class TSAConfiguration {
 
     public TSAConfiguration(Map<String, String> map) {
-	TSAServiceURL = map.get("TSAServiceURL");
-	TSAAuthScope = map.get("TSAAuthScope");
-	TSAUser = map.get("TSAUser");
-	TSAPass = map.get("TSAPass");
+        TSAServiceURL = map.get("TSAServiceURL");
+        TSAAuthScope = map.get("TSAAuthScope");
+        TSAUser = map.get("TSAUser");
+        TSAPass = map.get("TSAPass");
     }
 
     /**
@@ -52,43 +52,43 @@ public class TSAConfiguration {
      * @return
      */
     public boolean isTSAAuth() {
-	boolean ret = false;
-	if (TSAUser != null && TSAPass != null && TSAAuthScope != null && !TSAUser.isEmpty()
-		&& !TSAPass.isEmpty() && !TSAAuthScope.isEmpty()) {
-	    ret = true;
-	}
-	return ret;
+        boolean ret = false;
+        if (TSAUser != null && TSAPass != null && TSAAuthScope != null && !TSAUser.isEmpty()
+                && !TSAPass.isEmpty() && !TSAAuthScope.isEmpty()) {
+            ret = true;
+        }
+        return ret;
     }
 
     public String getTSAServiceURL() {
-	return TSAServiceURL;
+        return TSAServiceURL;
     }
 
     public void setTSAServiceURL(String TSAServiceURL) {
-	this.TSAServiceURL = TSAServiceURL;
+        this.TSAServiceURL = TSAServiceURL;
     }
 
     public String getTSAPass() {
-	return TSAPass;
+        return TSAPass;
     }
 
     public void setTSAPass(String TSAPass) {
-	this.TSAPass = TSAPass;
+        this.TSAPass = TSAPass;
     }
 
     public String getTSAUser() {
-	return TSAUser;
+        return TSAUser;
     }
 
     public void setTSAUser(String TSAUser) {
-	this.TSAUser = TSAUser;
+        this.TSAUser = TSAUser;
     }
 
     public String getTSAAuthScope() {
-	return TSAAuthScope;
+        return TSAAuthScope;
     }
 
     public void setTSAAuthScope(String TSAAuthScope) {
-	this.TSAAuthScope = TSAAuthScope;
+        this.TSAAuthScope = TSAAuthScope;
     }
 }

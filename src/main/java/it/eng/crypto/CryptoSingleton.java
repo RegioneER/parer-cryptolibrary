@@ -33,10 +33,10 @@ public class CryptoSingleton {
     private static CryptoSingleton singleton = null;
 
     public static synchronized CryptoSingleton getInstance() {
-	if (singleton == null) {
-	    singleton = new CryptoSingleton();
-	}
-	return singleton;
+        if (singleton == null) {
+            singleton = new CryptoSingleton();
+        }
+        return singleton;
     }
 
     /**
@@ -50,7 +50,7 @@ public class CryptoSingleton {
      * @return
      */
     public CryptoConfiguration getConfiguration() {
-	return context.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
+        return context.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
     }
 
     /**
@@ -59,7 +59,7 @@ public class CryptoSingleton {
      * @param context
      */
     public void setContext(ApplicationContext context) {
-	this.context = context;
+        this.context = context;
     }
 
     /**
@@ -68,7 +68,7 @@ public class CryptoSingleton {
      * @return
      */
     protected ApplicationContext getContext() {
-	return this.context;
+        return this.context;
     }
 
 }

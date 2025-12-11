@@ -90,13 +90,13 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getProxyAuth() {
-	String auth = "";
-	if (proxyUser != null && proxyPassword != null) {
-	    String authString = proxyUser + ":" + proxyPassword;
-	    auth = "Basic " + new String(
-		    new org.apache.commons.codec.binary.Base64().encode(authString.getBytes()));
-	}
-	return auth;
+        String auth = "";
+        if (proxyUser != null && proxyPassword != null) {
+            String authString = proxyUser + ":" + proxyPassword;
+            auth = "Basic " + new String(
+                    new org.apache.commons.codec.binary.Base64().encode(authString.getBytes()));
+        }
+        return auth;
     }
 
     /**
@@ -105,11 +105,11 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public boolean isProxy() {
-	boolean ret = false;
-	if (proxyHost != null && proxyPort != null) {
-	    ret = true;
-	}
-	return ret;
+        boolean ret = false;
+        if (proxyHost != null && proxyPort != null) {
+            ret = true;
+        }
+        return ret;
     }
 
     /**
@@ -118,11 +118,11 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public boolean isNTLSAuth() {
-	boolean ret = false;
-	if (userDomain != null && userHost != null) {
-	    ret = true;
-	}
-	return ret;
+        boolean ret = false;
+        if (userDomain != null && userHost != null) {
+            ret = true;
+        }
+        return ret;
     }
 
     // /**
@@ -144,7 +144,7 @@ public class CryptoConfiguration implements Serializable {
      * @param proxyUser
      */
     public void setProxyUser(String proxyUser) {
-	this.proxyUser = proxyUser;
+        this.proxyUser = proxyUser;
     }
 
     /**
@@ -153,7 +153,7 @@ public class CryptoConfiguration implements Serializable {
      * @param proxyPassword
      */
     public void setProxyPassword(String proxyPassword) {
-	this.proxyPassword = proxyPassword;
+        this.proxyPassword = proxyPassword;
     }
 
     /**
@@ -162,7 +162,7 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getProxyHost() {
-	return proxyHost;
+        return proxyHost;
     }
 
     /**
@@ -171,7 +171,7 @@ public class CryptoConfiguration implements Serializable {
      * @param proxyHost
      */
     public void setProxyHost(String proxyHost) {
-	this.proxyHost = proxyHost;
+        this.proxyHost = proxyHost;
     }
 
     /**
@@ -180,7 +180,7 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public Integer getProxyPort() {
-	return proxyPort;
+        return proxyPort;
     }
 
     /**
@@ -189,7 +189,7 @@ public class CryptoConfiguration implements Serializable {
      * @param proxyPort
      */
     public void setProxyPort(Integer proxyPort) {
-	this.proxyPort = proxyPort;
+        this.proxyPort = proxyPort;
     }
 
     /**
@@ -198,7 +198,7 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getScheduleCARevoke() {
-	return scheduleCARevoke;
+        return scheduleCARevoke;
     }
 
     /**
@@ -207,7 +207,7 @@ public class CryptoConfiguration implements Serializable {
      * @param scheduleCARevoke
      */
     public void setScheduleCARevoke(String scheduleCARevoke) {
-	this.scheduleCARevoke = scheduleCARevoke;
+        this.scheduleCARevoke = scheduleCARevoke;
     }
 
     /**
@@ -216,7 +216,7 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getScheduleCAUpdate() {
-	return scheduleCAUpdate;
+        return scheduleCAUpdate;
     }
 
     /**
@@ -225,7 +225,7 @@ public class CryptoConfiguration implements Serializable {
      * @param scheduleCAUpdate
      */
     public void setScheduleCAUpdate(String scheduleCAUpdate) {
-	this.scheduleCAUpdate = scheduleCAUpdate;
+        this.scheduleCAUpdate = scheduleCAUpdate;
     }
 
     /**
@@ -234,7 +234,7 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getQualifiedCertificatesURL() {
-	return qualifiedCertificatesURL;
+        return qualifiedCertificatesURL;
     }
 
     /**
@@ -243,7 +243,7 @@ public class CryptoConfiguration implements Serializable {
      * @param qualifiedCertificatesURL
      */
     public void setQualifiedCertificatesURL(String qualifiedCertificatesURL) {
-	this.qualifiedCertificatesURL = qualifiedCertificatesURL;
+        this.qualifiedCertificatesURL = qualifiedCertificatesURL;
     }
 
     /**
@@ -252,7 +252,7 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getProxyUser() {
-	return proxyUser;
+        return proxyUser;
     }
 
     /**
@@ -261,23 +261,23 @@ public class CryptoConfiguration implements Serializable {
      * @return
      */
     public String getProxyPassword() {
-	return proxyPassword;
+        return proxyPassword;
     }
 
     public String getUserHost() {
-	return userHost;
+        return userHost;
     }
 
     public void setUserHost(String userHost) {
-	this.userHost = userHost;
+        this.userHost = userHost;
     }
 
     public String getUserDomain() {
-	return userDomain;
+        return userDomain;
     }
 
     public void setUserDomain(String userDomain) {
-	this.userDomain = userDomain;
+        this.userDomain = userDomain;
     }
     // public String getTSAServiceURL() {
     // return TSAServiceURL;

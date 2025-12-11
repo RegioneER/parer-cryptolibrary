@@ -56,7 +56,7 @@ public class InputSignerBean extends InputBean {
      * @return informazioni riguardanti il timestamp associato al documento firmato
      */
     public DocumentAndTimeStampInfoBean getDocumentAndTimeStampInfo() {
-	return documentAndTimeStampInfo;
+        return documentAndTimeStampInfo;
     }
 
     /**
@@ -65,7 +65,7 @@ public class InputSignerBean extends InputBean {
      * @param documentAndTimeStampInfo
      */
     public void setDocumentAndTimeStampInfo(DocumentAndTimeStampInfoBean documentAndTimeStampInfo) {
-	this.documentAndTimeStampInfo = documentAndTimeStampInfo;
+        this.documentAndTimeStampInfo = documentAndTimeStampInfo;
     }
 
     /**
@@ -74,7 +74,7 @@ public class InputSignerBean extends InputBean {
      * @return
      */
     public File getEnvelope() {
-	return envelope;
+        return envelope;
     }
 
     /**
@@ -83,7 +83,7 @@ public class InputSignerBean extends InputBean {
      * @param envelope
      */
     public void setEnvelope(File envelope) {
-	this.envelope = envelope;
+        this.envelope = envelope;
     }
 
     /**
@@ -92,7 +92,7 @@ public class InputSignerBean extends InputBean {
      * @return
      */
     public File getDetachedFile() {
-	return detachedFile;
+        return detachedFile;
     }
 
     /**
@@ -101,7 +101,7 @@ public class InputSignerBean extends InputBean {
      * @param detachedFile
      */
     public void setDetachedFile(File detachedFile) {
-	this.detachedFile = detachedFile;
+        this.detachedFile = detachedFile;
     }
 
     /**
@@ -110,7 +110,7 @@ public class InputSignerBean extends InputBean {
      * @return
      */
     public AbstractSigner getSigner() {
-	return signer;
+        return signer;
     }
 
     /**
@@ -119,60 +119,60 @@ public class InputSignerBean extends InputBean {
      * @param signer
      */
     public void setSigner(AbstractSigner signer) {
-	this.signer = signer;
+        this.signer = signer;
     }
 
     /**
      * @return the referenceDate
      */
     public Date getReferenceDate() {
-	return referenceDate;
+        return referenceDate;
     }
 
     /**
      * @param referenceDate the referenceDate to set
      */
     public void setReferenceDate(Date referenceDate) {
-	this.referenceDate = referenceDate;
+        this.referenceDate = referenceDate;
     }
 
     public List<DocumentAndTimeStampInfoBean> getValidTimeStampInfo() {
-	return validTimeStampInfo;
+        return validTimeStampInfo;
     }
 
     public void setValidTimeStampInfo(List<DocumentAndTimeStampInfoBean> validTimeStampInfo) {
-	this.validTimeStampInfo = validTimeStampInfo;
+        this.validTimeStampInfo = validTimeStampInfo;
     }
 
     public boolean getUseSigninTimeAsReferenceDate() {
-	return useSigninTimeAsReferenceDate;
+        return useSigninTimeAsReferenceDate;
     }
 
     public void setUseSigninTimeAsReferenceDate(boolean useSigninTimeAsReferenceDate) {
-	this.useSigninTimeAsReferenceDate = useSigninTimeAsReferenceDate;
+        this.useSigninTimeAsReferenceDate = useSigninTimeAsReferenceDate;
     }
 
     public String getReferenceDateType() {
-	return this.referenceDateType;
+        return this.referenceDateType;
     }
 
     public void setReferenceDateType(String referenceDateType) {
-	this.referenceDateType = referenceDateType;
+        this.referenceDateType = referenceDateType;
     }
 
     public Boolean getUseExternalReferenceTime() {
-	return useExternalReferenceTime;
+        return useExternalReferenceTime;
     }
 
     public void setUseExternalReferenceTime(Boolean useExternalReferenceTime) {
-	this.useExternalReferenceTime = useExternalReferenceTime;
+        this.useExternalReferenceTime = useExternalReferenceTime;
     }
 
     public Boolean getUseExternalTsdTsrM7MEnvelop() {
-	return useExternalTsdTsrM7MEnvelop;
+        return useExternalTsdTsrM7MEnvelop;
     }
 
     public void setUseExternalTsdTsrM7MEnvelop(Boolean useExternalTsdTsrM7MEnvelop) {
-	this.useExternalTsdTsrM7MEnvelop = useExternalTsdTsrM7MEnvelop;
+        this.useExternalTsdTsrM7MEnvelop = useExternalTsdTsrM7MEnvelop;
     }
 }

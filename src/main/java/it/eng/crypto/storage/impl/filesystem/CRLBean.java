@@ -37,7 +37,7 @@ class CRLBean implements Serializable {
      * @return
      */
     public String getFilePath() {
-	return filePath;
+        return filePath;
     }
 
     /**
@@ -46,7 +46,7 @@ class CRLBean implements Serializable {
      * @param filePath
      */
     public void setFilePath(String filePath) {
-	this.filePath = filePath;
+        this.filePath = filePath;
     }
 
     /**
@@ -56,7 +56,7 @@ class CRLBean implements Serializable {
      * @return
      */
     public String getSubjectDN() {
-	return subjectDN;
+        return subjectDN;
     }
 
     /**
@@ -65,6 +65,6 @@ class CRLBean implements Serializable {
      * @return
      */
     public void setSubjectDN(String subjectDN) {
-	this.subjectDN = subjectDN;
+        this.subjectDN = subjectDN;
     }
 }

@@ -37,15 +37,15 @@ public abstract class AbstractController implements ISignerController {
      */
     @Override
     public boolean canExecute(InputBean input) {
-	if (input == null || input.getChecks() == null) {
-	    return true;
-	}
-	String checkProperty = getCheckProperty();
-	if (checkProperty == null) {
-	    return true;
-	}
-	Boolean check = input.getFlag(checkProperty);
-	return check == null ? true : check;
+        if (input == null || input.getChecks() == null) {
+            return true;
+        }
+        String checkProperty = getCheckProperty();
+        if (checkProperty == null) {
+            return true;
+        }
+        Boolean check = input.getFlag(checkProperty);
+        return check == null ? true : check;
     }
 
     /**
@@ -53,7 +53,7 @@ public abstract class AbstractController implements ISignerController {
      * L'implementazione di default restituisce il valore null.
      */
     public String getCheckProperty() {
-	return null;
+        return null;
     }
 
     @Override
@@ -64,7 +64,7 @@ public abstract class AbstractController implements ISignerController {
      */
     @Override
     public boolean isCritical() {
-	return critical;
+        return critical;
     }
 
     /**
@@ -73,6 +73,6 @@ public abstract class AbstractController implements ISignerController {
      * @param critical
      */
     public void setCritical(boolean critical) {
-	this.critical = critical;
+        this.critical = critical;
     }
 }

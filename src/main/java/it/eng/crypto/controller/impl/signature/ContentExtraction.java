@@ -32,19 +32,19 @@ import it.eng.crypto.data.AbstractSigner;
 public class ContentExtraction extends AbstractSignerController {
 
     public boolean execute(InputSignerBean input, OutputSignerBean output)
-	    throws ExceptionController {
-	AbstractSigner signer = input.getSigner();
-	File contentFile;
-	try {
-	    contentFile = signer.getContentAsFile();
-	} catch (IOException e) {
-	    throw new ExceptionController(e);
-	}
-	ContentBean content = new ContentBean();
-	content.setPossiblySigned(signer.canContentBeSigned());
-	content.setContentFile(contentFile);
-	output.setContent(content);
-	return true;
+            throws ExceptionController {
+        AbstractSigner signer = input.getSigner();
+        File contentFile;
+        try {
+            contentFile = signer.getContentAsFile();
+        } catch (IOException e) {
+            throw new ExceptionController(e);
+        }
+        ContentBean content = new ContentBean();
+        content.setPossiblySigned(signer.canContentBeSigned());
+        content.setContentFile(contentFile);
+        output.setContent(content);
+        return true;
     }
 
 }

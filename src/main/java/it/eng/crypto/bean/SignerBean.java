@@ -51,7 +51,7 @@ public class SignerBean {
      * @return emittente del certificato di firma
      */
     public X500Principal getIusser() {
-	return iusser;
+        return iusser;
     }
 
     /**
@@ -60,7 +60,7 @@ public class SignerBean {
      * @param iusser emittente del certificato di firma
      */
     public void setIusser(X500Principal iusser) {
-	this.iusser = iusser;
+        this.iusser = iusser;
     }
 
     /**
@@ -69,7 +69,7 @@ public class SignerBean {
      * @return firmatario
      */
     public Principal getSubject() {
-	return subject;
+        return subject;
     }
 
     /**
@@ -78,7 +78,7 @@ public class SignerBean {
      * @param subject firmatario
      */
     public void setSubject(Principal subject) {
-	this.subject = subject;
+        this.subject = subject;
     }
 
     /**
@@ -87,7 +87,7 @@ public class SignerBean {
      * @return certificato di firma
      */
     public X509Certificate getCertificate() {
-	return certificate;
+        return certificate;
     }
 
     /**
@@ -96,12 +96,12 @@ public class SignerBean {
      * @param certificate certificato di firma
      */
     public void setCertificate(X509Certificate certificate) {
-	this.certificate = certificate;
+        this.certificate = certificate;
     }
 
     public String toString() {
-	// return "certificate:\n" + certificate + ",\nissuer:\n" + iusser + ",\nsubject:\n" +
-	// subject;
-	return "certificate:\n" + certificate + ",\nsubject:\n" + subject;
+        // return "certificate:\n" + certificate + ",\nissuer:\n" + iusser + ",\nsubject:\n" +
+        // subject;
+        return "certificate:\n" + certificate + ",\nsubject:\n" + subject;
     }
 }

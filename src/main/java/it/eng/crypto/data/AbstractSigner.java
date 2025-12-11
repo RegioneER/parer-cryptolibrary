@@ -171,7 +171,7 @@ public abstract class AbstractSigner {
     public abstract TimeStampToken[] getTimeStampTokens();
 
     public void reset() {
-	timestamptokens = null;
+        timestamptokens = null;
     }
 
     /**
@@ -222,7 +222,7 @@ public abstract class AbstractSigner {
      * Recupera il file di firma
      */
     public File getFile() {
-	return file;
+        return file;
     }
 
     /**
@@ -231,8 +231,8 @@ public abstract class AbstractSigner {
      * @param file
      */
     public void setFile(File file) {
-	this.file = file;
-	this.alreadyExtractedFile = null;
+        this.file = file;
+        this.alreadyExtractedFile = null;
     }
 
     /**
@@ -241,7 +241,7 @@ public abstract class AbstractSigner {
      * @return le informazioni sull'esito della validazione
      */
     public ValidationInfos validateTimeStampTokensEmbedded() {
-	return null;
+        return null;
     }
 
     /**
@@ -250,7 +250,7 @@ public abstract class AbstractSigner {
      * @return le informazioni sull'esito della validazione
      */
     public ValidationInfos validateTimeStampTokensEmbedded(TimeStampToken timeStampToken) {
-	return null;
+        return null;
     }
 
     /**
@@ -259,7 +259,7 @@ public abstract class AbstractSigner {
      * @return le informazioni sull'esito della validazione
      */
     public ValidationInfos validateTimeStampTokensDetached(File attachedFile) {
-	return null;
+        return null;
     }
 
     /**
@@ -273,221 +273,221 @@ public abstract class AbstractSigner {
      *                        una marca temporale, secondo le specifiche descritte in RFC3161
      */
     protected void checkTimeStampTokenOverRequest(ValidationInfos validationInfos,
-	    TimeStampToken timestamptoken, TimeStampRequest request) {
-	ASN1InputStream aIn = null;
-	try {
-	    PKIStatusInfo paramPKIStatusInfo = new PKIStatusInfo(PKIStatus.granted);
+            TimeStampToken timestamptoken, TimeStampRequest request) {
+        ASN1InputStream aIn = null;
+        try {
+            PKIStatusInfo paramPKIStatusInfo = new PKIStatusInfo(PKIStatus.granted);
 
-	    aIn = new ASN1InputStream(timestamptoken.getEncoded());
-	    ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
-	    ContentInfo paramContentInfo = ContentInfo.getInstance(seq);
-	    TimeStampResp tsr = new TimeStampResp(paramPKIStatusInfo, paramContentInfo);
-	    TimeStampResponse response = new TimeStampResponse(tsr);
+            aIn = new ASN1InputStream(timestamptoken.getEncoded());
+            ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
+            ContentInfo paramContentInfo = ContentInfo.getInstance(seq);
+            TimeStampResp tsr = new TimeStampResp(paramPKIStatusInfo, paramContentInfo);
+            TimeStampResponse response = new TimeStampResponse(tsr);
 
-	    checkTimeStampRequestOverTimeStampResponse(validationInfos, timestamptoken, request,
-		    response);
+            checkTimeStampRequestOverTimeStampResponse(validationInfos, timestamptoken, request,
+                    response);
 
-	} catch (IOException e) {
-	    validationInfos.addError("Il token non contiene una marca temporale valida");
-	    validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
-	} catch (TSPException e) {
-	    validationInfos.addError(e.getMessage());
-	    validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
-	} finally {
-	    IOUtils.closeQuietly(aIn);
-	}
+        } catch (IOException e) {
+            validationInfos.addError("Il token non contiene una marca temporale valida");
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        } catch (TSPException e) {
+            validationInfos.addError(e.getMessage());
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        } finally {
+            IOUtils.closeQuietly(aIn);
+        }
     }
 
     private void checkTimeStampRequestOverTimeStampResponse(ValidationInfos validationInfos,
-	    TimeStampToken timestamptoken, TimeStampRequest request, TimeStampResponse response) {
+            TimeStampToken timestamptoken, TimeStampRequest request, TimeStampResponse response) {
 
-	String digestAlgorithmOID = null;
+        String digestAlgorithmOID = null;
 
-	/*
-	 * Verifica che la marca temporale sia effettivamente associata alla request
-	 */
-	try {
-	    response.validate(request);
-	} catch (TSPException e) {
-	    validationInfos.addError(e.getMessage());
-	    validationInfos.setEsito(EsitoControllo.NEGATIVO);
-	}
+        /*
+         * Verifica che la marca temporale sia effettivamente associata alla request
+         */
+        try {
+            response.validate(request);
+        } catch (TSPException e) {
+            validationInfos.addError(e.getMessage());
+            validationInfos.setEsito(EsitoControllo.NEGATIVO);
+        }
 
-	/*
-	 * Occorre quindi verificare che il timestamp sia stato effettivamente calcolato a partire
-	 * dall'impronta del file in ingresso, cioè: SignerInfo.digestAlgorithm(ContentInfo.Content
-	 * / ContentInfo.signedAttributes) =
-	 * SignerInfo.signaturealgorithm^-1(SignerInfo.cid.publickey, SignerInfo.Signature)
-	 */
-	try {
+        /*
+         * Occorre quindi verificare che il timestamp sia stato effettivamente calcolato a partire
+         * dall'impronta del file in ingresso, cioè: SignerInfo.digestAlgorithm(ContentInfo.Content
+         * / ContentInfo.signedAttributes) =
+         * SignerInfo.signaturealgorithm^-1(SignerInfo.cid.publickey, SignerInfo.Signature)
+         */
+        try {
 
-	    CMSSignedData cms = timestamptoken.toCMSSignedData();
-	    // Refactored: Use Store and JcaX509CertificateConverter
-	    Store certStore = timestamptoken.getCertificates();
-	    Collection<X509CertificateHolder> certHolders = certStore.getMatches(null);
-	    if (certHolders == null || certHolders.isEmpty()) {
-		throw new Exception("Il certificato di TSA non risulta presente");
-	    }
-	    X509Certificate cert = new JcaX509CertificateConverter().setProvider("BC")
-		    .getCertificate(certHolders.iterator().next());
-	    if (cert == null) {
-		throw new Exception("Il certificato di TSA non risulta presente");
-	    }
-	    // Refactored: end
-	    PublicKey publicKey = cert.getPublicKey();
-	    if (publicKey == null) {
-		throw new Exception("La publicKey della TSA non risulta presente");
-	    }
+            CMSSignedData cms = timestamptoken.toCMSSignedData();
+            // Refactored: Use Store and JcaX509CertificateConverter
+            Store certStore = timestamptoken.getCertificates();
+            Collection<X509CertificateHolder> certHolders = certStore.getMatches(null);
+            if (certHolders == null || certHolders.isEmpty()) {
+                throw new Exception("Il certificato di TSA non risulta presente");
+            }
+            X509Certificate cert = new JcaX509CertificateConverter().setProvider("BC")
+                    .getCertificate(certHolders.iterator().next());
+            if (cert == null) {
+                throw new Exception("Il certificato di TSA non risulta presente");
+            }
+            // Refactored: end
+            PublicKey publicKey = cert.getPublicKey();
+            if (publicKey == null) {
+                throw new Exception("La publicKey della TSA non risulta presente");
+            }
 
-	    Collection<SignerInformation> signers = (Collection<SignerInformation>) cms
-		    .getSignerInfos().getSigners();
-	    SignerInformation signerInfo = signers.iterator().next();
-	    digestAlgorithmOID = signerInfo.getDigestAlgOID();
-	    MessageDigest contentDigestAlgorithm = MessageDigest.getInstance(digestAlgorithmOID);
+            Collection<SignerInformation> signers = (Collection<SignerInformation>) cms
+                    .getSignerInfos().getSigners();
+            SignerInformation signerInfo = signers.iterator().next();
+            digestAlgorithmOID = signerInfo.getDigestAlgOID();
+            MessageDigest contentDigestAlgorithm = MessageDigest.getInstance(digestAlgorithmOID);
 
-	    /*
-	     * I due byte array da verificare
-	     */
-	    byte[] encodedDataToVerify = null;
-	    byte[] encodedSignedData = null;
+            /*
+             * I due byte array da verificare
+             */
+            byte[] encodedDataToVerify = null;
+            byte[] encodedSignedData = null;
 
-	    /*
-	     * Verifica che il certificato sia corretto ripetto al firmatario - la public key è
-	     * correttamente associata al contenuto firmato
-	     */
-	    boolean certificateVerified = false;
+            /*
+             * Verifica che il certificato sia corretto ripetto al firmatario - la public key è
+             * correttamente associata al contenuto firmato
+             */
+            boolean certificateVerified = false;
 
-	    try {
-		SignerInformationVerifier verifier = new JcaSimpleSignerInfoVerifierBuilder()
-			.setProvider("BC").build(publicKey);
-		if (signerInfo.verify(verifier)) {
-		    certificateVerified = true;
-		}
-	    } catch (OperatorCreationException e) {
-		// handle exception
-	    }
+            try {
+                SignerInformationVerifier verifier = new JcaSimpleSignerInfoVerifierBuilder()
+                        .setProvider("BC").build(publicKey);
+                if (signerInfo.verify(verifier)) {
+                    certificateVerified = true;
+                }
+            } catch (OperatorCreationException e) {
+                // handle exception
+            }
 
-	    CMSProcessable signedContent = cms.getSignedContent();
-	    byte[] originalContent = (byte[]) signedContent.getContent();
+            CMSProcessable signedContent = cms.getSignedContent();
+            byte[] originalContent = (byte[]) signedContent.getContent();
 
-	    log.debug("originalContent.length: " + originalContent.length + " originalContent: "
-		    + SignerUtil.asHex(originalContent));
+            log.debug("originalContent.length: " + originalContent.length + " originalContent: "
+                    + SignerUtil.asHex(originalContent));
 
-	    /*
-	     * Controllo se occorre calcolare il digest dell'eContent oppure degli attributi firmati
-	     */
-	    byte[] encodedSignedAttributes = signerInfo.getEncodedSignedAttributes();
-	    if (encodedSignedAttributes != null) {
-		encodedDataToVerify = contentDigestAlgorithm.digest(encodedSignedAttributes);
-	    } else {
-		encodedDataToVerify = contentDigestAlgorithm
-			.digest((byte[]) cms.getSignedContent().getContent());
-	    }
+            /*
+             * Controllo se occorre calcolare il digest dell'eContent oppure degli attributi firmati
+             */
+            byte[] encodedSignedAttributes = signerInfo.getEncodedSignedAttributes();
+            if (encodedSignedAttributes != null) {
+                encodedDataToVerify = contentDigestAlgorithm.digest(encodedSignedAttributes);
+            } else {
+                encodedDataToVerify = contentDigestAlgorithm
+                        .digest((byte[]) cms.getSignedContent().getContent());
+            }
 
-	    log.debug("encodedDataToVerify: " + SignerUtil.asHex(encodedDataToVerify));
+            log.debug("encodedDataToVerify: " + SignerUtil.asHex(encodedDataToVerify));
 
-	    // Hash dell'econtent (da confrontare con l'hash del TSTInfo)
-	    byte[] contentDigest = signerInfo.getContentDigest();
-	    /*
-	     * FIXME: tstInfo.getEncoded() è stato sostituito con getSignedContent().getContent()
-	     * poichè nelle m7m la chiamata restituisce un errore - occorre verificare che i due
-	     * metodi restituiscano lo stesso oggetto (attualmente la mancata verifica viene
-	     * segnalata solo come warning)
-	     */
-	    // TSTInfo tstInfo = timestamptoken.getTimeStampInfo().toTSTInfo();
-	    // byte[] tstInfoEncoded = contentDigestAlgorithm.digest(tstInfo.getEncoded());
-	    byte[] tstInfoEncoded = contentDigestAlgorithm
-		    .digest((byte[]) cms.getSignedContent().getContent());
-	    boolean contentVerified = Arrays.constantTimeAreEqual(contentDigest, tstInfoEncoded);
+            // Hash dell'econtent (da confrontare con l'hash del TSTInfo)
+            byte[] contentDigest = signerInfo.getContentDigest();
+            /*
+             * FIXME: tstInfo.getEncoded() è stato sostituito con getSignedContent().getContent()
+             * poichè nelle m7m la chiamata restituisce un errore - occorre verificare che i due
+             * metodi restituiscano lo stesso oggetto (attualmente la mancata verifica viene
+             * segnalata solo come warning)
+             */
+            // TSTInfo tstInfo = timestamptoken.getTimeStampInfo().toTSTInfo();
+            // byte[] tstInfoEncoded = contentDigestAlgorithm.digest(tstInfo.getEncoded());
+            byte[] tstInfoEncoded = contentDigestAlgorithm
+                    .digest((byte[]) cms.getSignedContent().getContent());
+            boolean contentVerified = Arrays.constantTimeAreEqual(contentDigest, tstInfoEncoded);
 
-	    digestAlgorithmOID = signerInfo.getEncryptionAlgOID();
-	    byte[] signature = signerInfo.getSignature();
-	    Cipher cipher = null;
-	    try {
-		String algorithmName = null;
-		if (PKCSObjectIdentifiers.rsaEncryption.getId().equals(digestAlgorithmOID)) {
-		    algorithmName = "RSA/ECB/PKCS1Padding";
-		} else if (PKCSObjectIdentifiers.sha1WithRSAEncryption.getId()
-			.equals(digestAlgorithmOID)) {
-		    algorithmName = "RSA/ECB/PKCS1Padding";
-		} else {
-		    algorithmName = digestAlgorithmOID;
-		}
-		cipher = Cipher.getInstance(algorithmName, "BC");
-	    } catch (NoSuchPaddingException e1) {
-	    }
-	    if (cipher == null) {
-		validationInfos.addWarning(
-			"Non è stato possibile verificare la corretta associazione tra marca temporale e file poichè l'algoritmo di firma non è supportato: "
-				+ digestAlgorithmOID);
-		validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
-	    } else {
-		ASN1InputStream asn1is = null;
-		try {
-		    log.debug("Cipher: " + cipher.getAlgorithm());
-		    cipher.init(Cipher.DECRYPT_MODE, publicKey);
-		    byte[] decryptedSignature = cipher.doFinal(signature);
+            digestAlgorithmOID = signerInfo.getEncryptionAlgOID();
+            byte[] signature = signerInfo.getSignature();
+            Cipher cipher = null;
+            try {
+                String algorithmName = null;
+                if (PKCSObjectIdentifiers.rsaEncryption.getId().equals(digestAlgorithmOID)) {
+                    algorithmName = "RSA/ECB/PKCS1Padding";
+                } else if (PKCSObjectIdentifiers.sha1WithRSAEncryption.getId()
+                        .equals(digestAlgorithmOID)) {
+                    algorithmName = "RSA/ECB/PKCS1Padding";
+                } else {
+                    algorithmName = digestAlgorithmOID;
+                }
+                cipher = Cipher.getInstance(algorithmName, "BC");
+            } catch (NoSuchPaddingException e1) {
+            }
+            if (cipher == null) {
+                validationInfos.addWarning(
+                        "Non è stato possibile verificare la corretta associazione tra marca temporale e file poichè l'algoritmo di firma non è supportato: "
+                                + digestAlgorithmOID);
+                validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+            } else {
+                ASN1InputStream asn1is = null;
+                try {
+                    log.debug("Cipher: " + cipher.getAlgorithm());
+                    cipher.init(Cipher.DECRYPT_MODE, publicKey);
+                    byte[] decryptedSignature = cipher.doFinal(signature);
 
-		    asn1is = new ASN1InputStream(decryptedSignature);
-		    ASN1Sequence asn1Seq = (ASN1Sequence) asn1is.readObject();
+                    asn1is = new ASN1InputStream(decryptedSignature);
+                    ASN1Sequence asn1Seq = (ASN1Sequence) asn1is.readObject();
 
-		    Enumeration<? extends ASN1Primitive> objs = asn1Seq.getObjects();
-		    while (objs.hasMoreElements()) {
-			ASN1Primitive derObject = objs.nextElement();
-			if (derObject instanceof ASN1OctetString) {
-			    ASN1OctetString octectString = (ASN1OctetString) derObject;
-			    encodedSignedData = octectString.getOctets();
-			    break;
-			}
-		    }
-		    log.debug("encodedSignedData: " + SignerUtil.asHex(encodedSignedData));
-		    boolean signatureVerified = Arrays.constantTimeAreEqual(encodedSignedData,
-			    encodedDataToVerify);
+                    Enumeration<? extends ASN1Primitive> objs = asn1Seq.getObjects();
+                    while (objs.hasMoreElements()) {
+                        ASN1Primitive derObject = objs.nextElement();
+                        if (derObject instanceof ASN1OctetString) {
+                            ASN1OctetString octectString = (ASN1OctetString) derObject;
+                            encodedSignedData = octectString.getOctets();
+                            break;
+                        }
+                    }
+                    log.debug("encodedSignedData: " + SignerUtil.asHex(encodedSignedData));
+                    boolean signatureVerified = Arrays.constantTimeAreEqual(encodedSignedData,
+                            encodedDataToVerify);
 
-		    log.debug("Verifica timestampToken: certificateVerified = "
-			    + certificateVerified + ", signatureVerified=" + signatureVerified
-			    + ", contentVerified=" + contentVerified);
-		    if (!certificateVerified) {
-			validationInfos.addError("Il certificato non è valido");
-			validationInfos.setEsito(EsitoControllo.NEGATIVO);
-		    }
-		    if (!signatureVerified) {
-			validationInfos.addError(
-				"La firma non è valida: l'hash di contenuto + attributi è "
-					+ SignerUtil.asHex(encodedDataToVerify)
-					+ ", mentre la firma è stata apposta su contenuto + attributi con hash: "
-					+ SignerUtil.asHex(encodedSignedData));
-			validationInfos.setEsito(EsitoControllo.NEGATIVO);
-		    }
-		    if (!contentVerified) {
-			validationInfos.addWarning(
-				"Il contenuto non corrisponde a quanto firmato: previsto "
-					+ SignerUtil.asHex(tstInfoEncoded) + ", trovato "
-					+ SignerUtil.asHex(contentDigest));
-			validationInfos.setEsito(EsitoControllo.NEGATIVO);
-		    }
-		} catch (Exception e) {
-		    validationInfos.addWarning(
-			    "Errore durante la verifica del timestamp: " + e.getMessage());
-		    validationInfos.setEsito(EsitoControllo.NEGATIVO);
-		} finally {
-		    IOUtils.closeQuietly(asn1is);
-		}
+                    log.debug("Verifica timestampToken: certificateVerified = "
+                            + certificateVerified + ", signatureVerified=" + signatureVerified
+                            + ", contentVerified=" + contentVerified);
+                    if (!certificateVerified) {
+                        validationInfos.addError("Il certificato non è valido");
+                        validationInfos.setEsito(EsitoControllo.NEGATIVO);
+                    }
+                    if (!signatureVerified) {
+                        validationInfos.addError(
+                                "La firma non è valida: l'hash di contenuto + attributi è "
+                                        + SignerUtil.asHex(encodedDataToVerify)
+                                        + ", mentre la firma è stata apposta su contenuto + attributi con hash: "
+                                        + SignerUtil.asHex(encodedSignedData));
+                        validationInfos.setEsito(EsitoControllo.NEGATIVO);
+                    }
+                    if (!contentVerified) {
+                        validationInfos.addWarning(
+                                "Il contenuto non corrisponde a quanto firmato: previsto "
+                                        + SignerUtil.asHex(tstInfoEncoded) + ", trovato "
+                                        + SignerUtil.asHex(contentDigest));
+                        validationInfos.setEsito(EsitoControllo.NEGATIVO);
+                    }
+                } catch (Exception e) {
+                    validationInfos.addWarning(
+                            "Errore durante la verifica del timestamp: " + e.getMessage());
+                    validationInfos.setEsito(EsitoControllo.NEGATIVO);
+                } finally {
+                    IOUtils.closeQuietly(asn1is);
+                }
 
-	    }
-	} catch (IOException e) {
-	    validationInfos.addError("Il token non contiene una marca temporale valida");
-	    validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
-	} catch (NoSuchAlgorithmException e) {
-	    validationInfos.addError(
-		    "Impossibile validare la marca poichè l'algoritmo di hashing non è supportato: "
-			    + digestAlgorithmOID);
-	    validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
-	} catch (Exception e) {
-	    validationInfos.addError(
-		    "Errore durante la validazione della marca temporale: " + e.getMessage());
-	    validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
-	}
+            }
+        } catch (IOException e) {
+            validationInfos.addError("Il token non contiene una marca temporale valida");
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        } catch (NoSuchAlgorithmException e) {
+            validationInfos.addError(
+                    "Impossibile validare la marca poichè l'algoritmo di hashing non è supportato: "
+                            + digestAlgorithmOID);
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        } catch (Exception e) {
+            validationInfos.addError(
+                    "Errore durante la validazione della marca temporale: " + e.getMessage());
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        }
     }
 
     /**
@@ -501,79 +501,79 @@ public abstract class AbstractSigner {
      */
     public File getContentAsFile() throws IOException {
 
-	// Se si tratta di una firma detached restituisco
-	// il file a cui si riferisce
-	File detachedFile = getDetachedFile();
-	if (detachedFile != null) {
-	    return detachedFile;
-	}
+        // Se si tratta di una firma detached restituisco
+        // il file a cui si riferisce
+        File detachedFile = getDetachedFile();
+        if (detachedFile != null) {
+            return detachedFile;
+        }
 
-	// Se è già stato estratto il contenuto
-	// restituisco il file corrispondente
-	if (alreadyExtractedFile != null && alreadyExtractedFile.exists()) {
-	    return alreadyExtractedFile;
-	}
+        // Se è già stato estratto il contenuto
+        // restituisco il file corrispondente
+        if (alreadyExtractedFile != null && alreadyExtractedFile.exists()) {
+            return alreadyExtractedFile;
+        }
 
-	// Altrimenti occorre estrarre il contenuto..
-	// Verifico se il nome del file contiene più estensioni
-	// (ovvero estensione iniziale + firme: test.doc.p7m)
-	// per preservare l'estensione originaria
-	String extension = getEnclosedEnvelopeExtension();
-	InputStream contentIS = null;
-	OutputStream out = null;
-	try {
-	    contentIS = getUnsignedContent();
-	    if (contentIS == null) {
-		if (alreadyExtractedFile != null && alreadyExtractedFile.exists()) {
-		    return alreadyExtractedFile;
-		} else {
-		    return null;
-		}
-	    }
-	    alreadyExtractedFile = File.createTempFile("content-abstract-signer-", extension);
-	    out = new FileOutputStream(alreadyExtractedFile);
-	    byte buf[] = new byte[1024];
-	    int len;
-	    while ((len = contentIS.read(buf)) > 0) {
-		out.write(buf, 0, len);
-	    }
+        // Altrimenti occorre estrarre il contenuto..
+        // Verifico se il nome del file contiene più estensioni
+        // (ovvero estensione iniziale + firme: test.doc.p7m)
+        // per preservare l'estensione originaria
+        String extension = getEnclosedEnvelopeExtension();
+        InputStream contentIS = null;
+        OutputStream out = null;
+        try {
+            contentIS = getUnsignedContent();
+            if (contentIS == null) {
+                if (alreadyExtractedFile != null && alreadyExtractedFile.exists()) {
+                    return alreadyExtractedFile;
+                } else {
+                    return null;
+                }
+            }
+            alreadyExtractedFile = File.createTempFile("content-abstract-signer-", extension);
+            out = new FileOutputStream(alreadyExtractedFile);
+            byte buf[] = new byte[1024];
+            int len;
+            while ((len = contentIS.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
 
-	} catch (IOException ex) {
-	    throw ex;
-	} finally {
-	    if (out != null) {
-		out.close();
-	    }
-	    if (contentIS != null) {
-		contentIS.close();
-	    }
-	}
-	return alreadyExtractedFile;
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (contentIS != null) {
+                contentIS.close();
+            }
+        }
+        return alreadyExtractedFile;
 
     }
 
     public String getEnclosedEnvelopeExtension() {
-	if (file == null) {
-	    return null;
-	}
-	String fileName = getFile().getName();
-	String extension = null;
-	StringTokenizer tokenizer = new StringTokenizer(fileName, ".");
-	if (tokenizer.countTokens() > 2) {
-	    tokenizer.nextToken();
-	    extension = "." + tokenizer.nextToken();
-	}
-	return extension;
+        if (file == null) {
+            return null;
+        }
+        String fileName = getFile().getName();
+        String extension = null;
+        StringTokenizer tokenizer = new StringTokenizer(fileName, ".");
+        if (tokenizer.countTokens() > 2) {
+            tokenizer.nextToken();
+            extension = "." + tokenizer.nextToken();
+        }
+        return extension;
     }
 
     /**
      * Definisce il file detached a cui si riferiscono le marche temporali
      */
     public void setDetachedFile(File detachedFile) {
-	if (detachedFiles == null) {
-	    detachedFiles = new ArrayList<File>();
-	}
-	detachedFiles.add(0, detachedFile);
+        if (detachedFiles == null) {
+            detachedFiles = new ArrayList<File>();
+        }
+        detachedFiles.add(0, detachedFile);
     }
 
     /**
@@ -582,74 +582,74 @@ public abstract class AbstractSigner {
      * @return
      */
     public File getDetachedFile() {
-	return detachedFiles == null ? null : detachedFiles.get(0);
+        return detachedFiles == null ? null : detachedFiles.get(0);
     }
 
     public long getSizeThreshold() {
-	return sizeThreshold;
+        return sizeThreshold;
     }
 
     public void setSizeThreshold(long sizeThreshold) {
-	this.sizeThreshold = sizeThreshold;
+        this.sizeThreshold = sizeThreshold;
     }
 
     protected CMSSignedData getSignedData(File file) throws IOException {
-	InputStream stream = null;
-	CMSSignedData cmsSignedData = null;
-	PEMParser pr = null;
-	try {
-	    pr = new PEMParser(new FileReader(file));
-	    Object obj = pr.readObject();
-	    if (obj instanceof ContentInfo) {
-		ContentInfo ci = (ContentInfo) obj;
-		if (ci != null) {
-		    cmsSignedData = new CMSSignedData(ci);
-		}
-	    }
-	} catch (IOException | CMSException ex) {
-	} finally {
-	    if (pr != null) {
-		IOUtils.closeQuietly(pr);
-	    }
-	}
-	int streamLength = (file.length() > (long) Integer.MAX_VALUE) ? Integer.MAX_VALUE
-		: (int) file.length();
-	if (cmsSignedData == null) {
-	    log.debug("Il file non è in formato PEM");
-	    try {
-		stream = FileUtils.openInputStream(file);
-		// Utilizzo il costruttore di CMSSignedData che accetta il ContentInfo così posso
-		// impostare il limite
-		// superiore alla dimensione del file
-		// al posto di: cmsSignedData = new CMSSignedData(new BufferedInputStream(stream));
-		ContentInfo ci = ContentInfo.getInstance(
-			new ASN1InputStream(new BufferedInputStream(stream), streamLength)
-				.readObject());
-		cmsSignedData = new CMSSignedData(ci);
-	    } catch (Exception e) {
-		if (stream != null) {
-		    IOUtils.closeQuietly(stream);
-		}
-		log.debug("Il file non è in formato DER");
-		stream = FileUtils.openInputStream(file);
-		// Utilizzo il costruttore di CMSSignedData che accetta il ContentInfo così posso
-		// impostare il limite
-		// superiore alla dimensione del file
-		// al posto di: cmsSignedData = new CMSSignedData(new Base64InputStream(stream));
-		ContentInfo ci = ContentInfo.getInstance(
-			new ASN1InputStream(new Base64InputStream(stream), streamLength)
-				.readObject());
-		try {
-		    cmsSignedData = new CMSSignedData(ci);
-		} catch (CMSException e1) {
-		}
-	    } finally {
-		if (stream != null) {
-		    IOUtils.closeQuietly(stream);
-		}
-	    }
-	}
-	return cmsSignedData;
+        InputStream stream = null;
+        CMSSignedData cmsSignedData = null;
+        PEMParser pr = null;
+        try {
+            pr = new PEMParser(new FileReader(file));
+            Object obj = pr.readObject();
+            if (obj instanceof ContentInfo) {
+                ContentInfo ci = (ContentInfo) obj;
+                if (ci != null) {
+                    cmsSignedData = new CMSSignedData(ci);
+                }
+            }
+        } catch (IOException | CMSException ex) {
+        } finally {
+            if (pr != null) {
+                IOUtils.closeQuietly(pr);
+            }
+        }
+        int streamLength = (file.length() > (long) Integer.MAX_VALUE) ? Integer.MAX_VALUE
+                : (int) file.length();
+        if (cmsSignedData == null) {
+            log.debug("Il file non è in formato PEM");
+            try {
+                stream = FileUtils.openInputStream(file);
+                // Utilizzo il costruttore di CMSSignedData che accetta il ContentInfo così posso
+                // impostare il limite
+                // superiore alla dimensione del file
+                // al posto di: cmsSignedData = new CMSSignedData(new BufferedInputStream(stream));
+                ContentInfo ci = ContentInfo.getInstance(
+                        new ASN1InputStream(new BufferedInputStream(stream), streamLength)
+                                .readObject());
+                cmsSignedData = new CMSSignedData(ci);
+            } catch (Exception e) {
+                if (stream != null) {
+                    IOUtils.closeQuietly(stream);
+                }
+                log.debug("Il file non è in formato DER");
+                stream = FileUtils.openInputStream(file);
+                // Utilizzo il costruttore di CMSSignedData che accetta il ContentInfo così posso
+                // impostare il limite
+                // superiore alla dimensione del file
+                // al posto di: cmsSignedData = new CMSSignedData(new Base64InputStream(stream));
+                ContentInfo ci = ContentInfo.getInstance(
+                        new ASN1InputStream(new Base64InputStream(stream), streamLength)
+                                .readObject());
+                try {
+                    cmsSignedData = new CMSSignedData(ci);
+                } catch (CMSException e1) {
+                }
+            } finally {
+                if (stream != null) {
+                    IOUtils.closeQuietly(stream);
+                }
+            }
+        }
+        return cmsSignedData;
 
     }
 }

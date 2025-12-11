@@ -28,8 +28,8 @@ public class CustomDateEditorRegistrar implements PropertyEditorRegistrar {
 
     @Override
     public void registerCustomEditors(PropertyEditorRegistry registry) {
-	registry.registerCustomEditor(Date.class,
-		new CustomDateEditor(new SimpleDateFormat("dd-MM-yyyy"), false));
+        registry.registerCustomEditor(Date.class,
+                new CustomDateEditor(new SimpleDateFormat("dd-MM-yyyy"), false));
     }
 
 }

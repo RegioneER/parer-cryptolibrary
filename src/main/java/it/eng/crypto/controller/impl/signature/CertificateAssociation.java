@@ -44,84 +44,84 @@ public class CertificateAssociation extends AbstractSignerController {
     public static final String CERTIFICATE_ASSOCIATION_CHECK = "performCertificateAssociation";
 
     public String getCheckProperty() {
-	return CERTIFICATE_ASSOCIATION_CHECK;
+        return CERTIFICATE_ASSOCIATION_CHECK;
     }
 
     @Override
     public boolean execute(InputSignerBean input, OutputSignerBean output)
-	    throws ExceptionController {
+            throws ExceptionController {
 
-	List<ISignature> signatures = null;
-	Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
-	Map<ISignature, List<TrustChainCheck>> certificateReliabilityMap = null;
+        List<ISignature> signatures = null;
+        Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
+        Map<ISignature, List<TrustChainCheck>> certificateReliabilityMap = null;
 
-	boolean result = true;
+        boolean result = true;
 
-	if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
-	    signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
-	    certificateReliabilityMap = (Map<ISignature, List<TrustChainCheck>>) output
-		    .getProperty(OutputSignerBean.CERTIFICATE_RELIABILITY_PROPERTY);
-	    result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures,
-		    input, certificateReliabilityMap);
-	    output.setProperty(OutputSignerBean.CERTIFICATE_VALIDATION_PROPERTY,
-		    validationInfosMap);
-	}
-	return result;
+        if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
+            signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
+            certificateReliabilityMap = (Map<ISignature, List<TrustChainCheck>>) output
+                    .getProperty(OutputSignerBean.CERTIFICATE_RELIABILITY_PROPERTY);
+            result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures,
+                    input, certificateReliabilityMap);
+            output.setProperty(OutputSignerBean.CERTIFICATE_VALIDATION_PROPERTY,
+                    validationInfosMap);
+        }
+        return result;
     }
 
     private boolean populateValidationInfosMapFromSignatureList(
-	    Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures,
-	    InputSignerBean input,
-	    Map<ISignature, List<TrustChainCheck>> certificateReliabilityMap) {
-	boolean result = true;
-	for (ISignature signature : signatures) {
+            Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures,
+            InputSignerBean input,
+            Map<ISignature, List<TrustChainCheck>> certificateReliabilityMap) {
+        boolean result = true;
+        for (ISignature signature : signatures) {
 
-	    // Certificato del firmatario
-	    X509Certificate signatureCertificate = signature.getSignerBean().getCertificate();
+            // Certificato del firmatario
+            X509Certificate signatureCertificate = signature.getSignerBean().getCertificate();
 
-	    X509Certificate issuerCertificate = null;
+            X509Certificate issuerCertificate = null;
 
-	    // Recupero il certificato accreditato (se presente)
-	    if (certificateReliabilityMap != null
-		    && certificateReliabilityMap.get(signature) != null) {
-		issuerCertificate = certificateReliabilityMap.get(signature).get(0).getCerificate();
-	    }
+            // Recupero il certificato accreditato (se presente)
+            if (certificateReliabilityMap != null
+                    && certificateReliabilityMap.get(signature) != null) {
+                issuerCertificate = certificateReliabilityMap.get(signature).get(0).getCerificate();
+            }
 
-	    // se il certificato non è accreditato
-	    if (issuerCertificate == null) {
-		Collection<? extends Certificate> embeddedCertificates = input.getSigner()
-			.getEmbeddedCertificates();
-		if (embeddedCertificates != null) {
-		    issuerCertificate = SignerUtil.getCertificateFromCollection(
-			    signatureCertificate.getIssuerX500Principal(), embeddedCertificates);
-		}
-	    }
+            // se il certificato non è accreditato
+            if (issuerCertificate == null) {
+                Collection<? extends Certificate> embeddedCertificates = input.getSigner()
+                        .getEmbeddedCertificates();
+                if (embeddedCertificates != null) {
+                    issuerCertificate = SignerUtil.getCertificateFromCollection(
+                            signatureCertificate.getIssuerX500Principal(), embeddedCertificates);
+                }
+            }
 
-	    ValidationInfos validationInfos = new ValidationInfos();
+            ValidationInfos validationInfos = new ValidationInfos();
 
-	    // Se non è stato possibile reperire il certificato dell'issuer
-	    // restituisco un errore
-	    if (issuerCertificate == null) {
-		validationInfos
-			.addWarning("Impossibile recuperare il certificato di certificazione");
-		result = false;
-	    } else {
-		try {
-		    signatureCertificate.verify(issuerCertificate.getPublicKey());
-		} catch (Exception e) {
-		    validationInfos.addError(
-			    "Corrispondenza tra certificato dell'issuer e quello di firma non verificata");
-		    result = false;
-		}
-	    }
-	    validationInfosMap.put(signature, validationInfos);
+            // Se non è stato possibile reperire il certificato dell'issuer
+            // restituisco un errore
+            if (issuerCertificate == null) {
+                validationInfos
+                        .addWarning("Impossibile recuperare il certificato di certificazione");
+                result = false;
+            } else {
+                try {
+                    signatureCertificate.verify(issuerCertificate.getPublicKey());
+                } catch (Exception e) {
+                    validationInfos.addError(
+                            "Corrispondenza tra certificato dell'issuer e quello di firma non verificata");
+                    result = false;
+                }
+            }
+            validationInfosMap.put(signature, validationInfos);
 
-	    if (performCounterSignaturesCheck) {
-		List<ISignature> counterSignatures = signature.getCounterSignatures();
-		result = populateValidationInfosMapFromSignatureList(validationInfosMap,
-			counterSignatures, input, certificateReliabilityMap);
-	    }
-	}
-	return result;
+            if (performCounterSignaturesCheck) {
+                List<ISignature> counterSignatures = signature.getCounterSignatures();
+                result = populateValidationInfosMapFromSignatureList(validationInfosMap,
+                        counterSignatures, input, certificateReliabilityMap);
+            }
+        }
+        return result;
     }
 }

@@ -28,18 +28,18 @@ public class CryptoStorageException extends Exception {
     private static final long serialVersionUID = 1L;
 
     public CryptoStorageException() {
-	super();
+        super();
     }
 
     public CryptoStorageException(String arg0, Throwable arg1) {
-	super(arg0, arg1);
+        super(arg0, arg1);
     }
 
     public CryptoStorageException(String arg0) {
-	super(arg0);
+        super(arg0);
     }
 
     public CryptoStorageException(Throwable arg0) {
-	super(arg0);
+        super(arg0);
     }
 }

@@ -25,46 +25,46 @@ public class MessageProperty {
      * @return the errorContext
      */
     public String getErrorContext() {
-	return errorContext;
+        return errorContext;
     }
 
     /**
      * @param errorContext the errorContext to set
      */
     public void setErrorContext(String errorContext) {
-	this.errorContext = errorContext;
+        this.errorContext = errorContext;
     }
 
     /**
      * @return the errorCode
      */
     public int getErrorCode() {
-	return errorCode;
+        return errorCode;
     }
 
     /**
      * @param errorCode the errorCode to set
      */
     public void setErrorCode(int errorCode) {
-	this.errorCode = errorCode;
+        this.errorCode = errorCode;
     }
 
     /**
      * @return the errorKey
      */
     public String getErrorKey() {
-	return errorMessage;
+        return errorMessage;
     }
 
     /**
      * @param errorKey the errorKey to set
      */
     public void setErrorKey(String errorKey) {
-	this.errorMessage = errorKey;
+        this.errorMessage = errorKey;
     }
 
     public String toString() {
-	return this.errorMessage;
+        return this.errorMessage;
     }
 
 }

@@ -45,7 +45,7 @@ public interface ICAStorage {
      * @return X509Certificate
      */
     public X509Certificate retriveCA(X500Principal subject, String authorityKeyId)
-	    throws CryptoStorageException;
+            throws CryptoStorageException;
 
     ;
 
@@ -64,5 +64,5 @@ public interface ICAStorage {
      * @param certificate
      */
     public boolean isActive(X509Certificate certificate, String authorityKeyId)
-	    throws CryptoStorageException;
+            throws CryptoStorageException;
 }

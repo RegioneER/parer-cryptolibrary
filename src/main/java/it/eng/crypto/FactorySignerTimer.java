@@ -45,7 +45,7 @@ public class FactorySignerTimer {
      * @param configuration
      */
     public static void registerSpringContext(ApplicationContext context) {
-	CryptoSingletonTimer.getInstance().setContext(context);
+        CryptoSingletonTimer.getInstance().setContext(context);
     }
 
     /**
@@ -54,18 +54,18 @@ public class FactorySignerTimer {
      * @throws CryptoSignerException
      */
     public static void initialize() throws CryptoSignerException {
-	synchronized (synchronize) {
-	    if (CryptoSingletonTimer.getInstance().getContext() == null) {
-		ApplicationContext context = CryptoSignerApplicationContextProvider.getContext();
-		registerSpringContext(context);
-	    }
-	    getInstanceCertificateAuthority().updateCertificate();
-	}
+        synchronized (synchronize) {
+            if (CryptoSingletonTimer.getInstance().getContext() == null) {
+                ApplicationContext context = CryptoSignerApplicationContextProvider.getContext();
+                registerSpringContext(context);
+            }
+            getInstanceCertificateAuthority().updateCertificate();
+        }
     }
 
     public static void setup() throws CryptoSignerException {
 
-	initialize();
+        initialize();
     }
 
     /**
@@ -74,8 +74,8 @@ public class FactorySignerTimer {
      * @return
      */
     public static synchronized ICAStorage getInstanceCAStorage() {
-	return CryptoSingletonTimer.getInstance().getContext().getBean(CryptoConstants.ICASTORAGE,
-		ICAStorage.class);
+        return CryptoSingletonTimer.getInstance().getContext().getBean(CryptoConstants.ICASTORAGE,
+                ICAStorage.class);
     }
 
     /**
@@ -84,8 +84,8 @@ public class FactorySignerTimer {
      * @return
      */
     public static synchronized ICRLStorage getInstanceCRLStorage() {
-	return CryptoSingletonTimer.getInstance().getContext().getBean(CryptoConstants.ICRLSTORAGE,
-		ICRLStorage.class);
+        return CryptoSingletonTimer.getInstance().getContext().getBean(CryptoConstants.ICRLSTORAGE,
+                ICRLStorage.class);
     }
 
     /**
@@ -94,8 +94,8 @@ public class FactorySignerTimer {
      * @return
      */
     public static synchronized IConfigStorage getInstanceConfigStorage() {
-	return CryptoSingletonTimer.getInstance().getContext()
-		.getBean(CryptoConstants.ICONFIGSTORAGE, IConfigStorage.class);
+        return CryptoSingletonTimer.getInstance().getContext()
+                .getBean(CryptoConstants.ICONFIGSTORAGE, IConfigStorage.class);
     }
 
     /**
@@ -104,7 +104,7 @@ public class FactorySignerTimer {
      * @return
      */
     public static synchronized ICertificateAuthority getInstanceCertificateAuthority() {
-	return CryptoSingletonTimer.getInstance().getContext()
-		.getBean(CryptoConstants.ICERTIFICATEAUTHORITY, ICertificateAuthority.class);
+        return CryptoSingletonTimer.getInstance().getContext()
+                .getBean(CryptoConstants.ICERTIFICATEAUTHORITY, ICertificateAuthority.class);
     }
 }

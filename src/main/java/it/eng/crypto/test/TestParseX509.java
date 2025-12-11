@@ -39,41 +39,41 @@ public class TestParseX509 {
 
     public static void main(String[] args) {
 
-	// ApplicationContext context = new ClassPathXmlApplicationContext("ControllerConfig.xml");
-	// CryptoConfiguration config = (CryptoConfiguration)
-	// context.getBean(CryptoConstants.CRYPTO_CONFIGURATION);
-	//
-	// try {
-	// X509CRL crl = ricercaCrlByProxyHTTP(urlDistribuzione, config);
-	// checkCRL(crl);
-	// } catch (Exception e1) {
-	// // TODO Auto-generated catch block
-	// e1.printStackTrace();
-	// }
-	Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-	File file = new File(filePath);
-	try {
-	    FileInputStream fis = new FileInputStream(file);
-	    byte[] content = IOUtils.toByteArray(fis);
-	    // create the certificate factory
-	    CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
-	    // read the certificate
-	    X509Certificate x509Cert = (X509Certificate) fact
-		    .generateCertificate(new ByteArrayInputStream(content));
-	    // X509Certificate ca = new X509Certificate
-	    System.out.println(x509Cert.getIssuerX500Principal().getName());
-	    System.out.println("AUTH KEY: " + SignerUtil.getAuthorityKeyId(x509Cert));
-	    System.out.println("SUBJ KEY: " + SignerUtil.getSubjectKeyId(x509Cert));
-	} catch (FileNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+        // ApplicationContext context = new ClassPathXmlApplicationContext("ControllerConfig.xml");
+        // CryptoConfiguration config = (CryptoConfiguration)
+        // context.getBean(CryptoConstants.CRYPTO_CONFIGURATION);
+        //
+        // try {
+        // X509CRL crl = ricercaCrlByProxyHTTP(urlDistribuzione, config);
+        // checkCRL(crl);
+        // } catch (Exception e1) {
+        // // TODO Auto-generated catch block
+        // e1.printStackTrace();
+        // }
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        File file = new File(filePath);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] content = IOUtils.toByteArray(fis);
+            // create the certificate factory
+            CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
+            // read the certificate
+            X509Certificate x509Cert = (X509Certificate) fact
+                    .generateCertificate(new ByteArrayInputStream(content));
+            // X509Certificate ca = new X509Certificate
+            System.out.println(x509Cert.getIssuerX500Principal().getName());
+            System.out.println("AUTH KEY: " + SignerUtil.getAuthorityKeyId(x509Cert));
+            System.out.println("SUBJ KEY: " + SignerUtil.getSubjectKeyId(x509Cert));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 }

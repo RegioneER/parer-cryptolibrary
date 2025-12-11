@@ -30,7 +30,7 @@ public class OutputBean {
      * @return valore della proprietà
      */
     public Object getProperty(String key) {
-	return properties.get(key);
+        return properties.get(key);
     }
 
     /**
@@ -40,7 +40,7 @@ public class OutputBean {
      * @param value valore della proprietà
      */
     public void setProperty(String key, Object value) {
-	properties.put(key, value);
+        properties.put(key, value);
     }
 
     /**
@@ -49,7 +49,7 @@ public class OutputBean {
      * @return la mappa tra i nomi e i valori delle proprietà
      */
     public Map<String, Object> getProperties() {
-	return properties;
+        return properties;
     }
 
     /**
@@ -58,7 +58,7 @@ public class OutputBean {
      * @param properties
      */
     public void setProperties(Map<String, Object> properties) {
-	this.properties = properties;
+        this.properties = properties;
     }
 
     /**
@@ -68,7 +68,7 @@ public class OutputBean {
      * @return
      */
     public OutputSignerBean getChild() {
-	return child;
+        return child;
     }
 
     /**
@@ -78,11 +78,11 @@ public class OutputBean {
      * @return
      */
     public void setChild(OutputSignerBean child) {
-	this.child = child;
+        this.child = child;
     }
 
     public String toString() {
-	return "Properties: " + properties == null ? "" : properties.toString();
+        return "Properties: " + properties == null ? "" : properties.toString();
     }
 
 }

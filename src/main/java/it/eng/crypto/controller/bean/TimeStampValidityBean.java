@@ -36,7 +36,7 @@ public class TimeStampValidityBean implements Comparable<TimeStampValidityBean> 
      * @return
      */
     public int getYears() {
-	return years;
+        return years;
     }
 
     /**
@@ -45,7 +45,7 @@ public class TimeStampValidityBean implements Comparable<TimeStampValidityBean> 
      * @param years
      */
     public void setYears(int years) {
-	this.years = years;
+        this.years = years;
     }
 
     /**
@@ -54,7 +54,7 @@ public class TimeStampValidityBean implements Comparable<TimeStampValidityBean> 
      * @return
      */
     public Date getEnd() {
-	return end;
+        return end;
     }
 
     /**
@@ -63,7 +63,7 @@ public class TimeStampValidityBean implements Comparable<TimeStampValidityBean> 
      * @param end
      */
     public void setEnd(Date end) {
-	this.end = end;
+        this.end = end;
     }
 
     /**
@@ -72,7 +72,7 @@ public class TimeStampValidityBean implements Comparable<TimeStampValidityBean> 
      * @return
      */
     public Date getBegin() {
-	return begin;
+        return begin;
     }
 
     /**
@@ -81,47 +81,47 @@ public class TimeStampValidityBean implements Comparable<TimeStampValidityBean> 
      * @param begin
      */
     public void setBegin(Date begin) {
-	this.begin = begin;
+        this.begin = begin;
     }
 
     public int compareTo(TimeStampValidityBean o) {
-	Calendar cal1 = Calendar.getInstance();
-	Calendar cal2 = Calendar.getInstance();
-	if (o == null) {
-	    return 1;
-	}
-	if (this.begin == null) {
-	    if (o.begin == null) {
-		if (this.end == null) {
-		    if (o.end == null) {
-			return 0;
-		    } else {
-			return 1;
-		    }
-		} else {
-		    if (o.end == null) {
-			return -1;
-		    } else {
-			cal1.setTime(this.end);
-			cal2.setTime(o.end);
-			return cal1.before(cal2) ? -1 : 1;
-		    }
-		}
-	    } else {
-		return -1;
-	    }
-	} else {
-	    if (o.begin == null) {
-		return 1;
-	    } else {
-		cal1.setTime(this.begin);
-		cal2.setTime(o.begin);
-		return cal1.before(cal2) ? -1 : 1;
-	    }
-	}
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        if (o == null) {
+            return 1;
+        }
+        if (this.begin == null) {
+            if (o.begin == null) {
+                if (this.end == null) {
+                    if (o.end == null) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    if (o.end == null) {
+                        return -1;
+                    } else {
+                        cal1.setTime(this.end);
+                        cal2.setTime(o.end);
+                        return cal1.before(cal2) ? -1 : 1;
+                    }
+                }
+            } else {
+                return -1;
+            }
+        } else {
+            if (o.begin == null) {
+                return 1;
+            } else {
+                cal1.setTime(this.begin);
+                cal2.setTime(o.begin);
+                return cal1.before(cal2) ? -1 : 1;
+            }
+        }
     }
 
     public String toString() {
-	return "begin: " + this.begin + ", end: " + this.end + ", years: " + this.years;
+        return "begin: " + this.begin + ", end: " + this.end + ", years: " + this.years;
     }
 }

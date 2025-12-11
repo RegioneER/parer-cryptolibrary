@@ -37,13 +37,13 @@ public abstract class AbstractSignerController extends AbstractController {
     protected boolean performCounterSignaturesCheck = true;
 
     protected DateFormat dateFormatter = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG,
-	    DateFormat.LONG, Locale.ITALY);
+            DateFormat.LONG, Locale.ITALY);
 
     /**
      * Restituisce true se occorre effettuare i controlli anche sulle controfirme
      */
     public boolean isPerformCounterSignaturesCheck() {
-	return performCounterSignaturesCheck;
+        return performCounterSignaturesCheck;
     }
 
     /**
@@ -52,16 +52,16 @@ public abstract class AbstractSignerController extends AbstractController {
      * @param performCounterSignaturesCheck
      */
     public void setPerformCounterSignaturesCheck(boolean performCounterSignaturesCheck) {
-	this.performCounterSignaturesCheck = performCounterSignaturesCheck;
+        this.performCounterSignaturesCheck = performCounterSignaturesCheck;
     }
 
     public boolean execute(InputBean input, OutputBean output) throws ExceptionController {
-	if (input instanceof InputSignerBean && output instanceof OutputSignerBean)
-	    return execute((InputSignerBean) input, (OutputSignerBean) output);
-	return false;
+        if (input instanceof InputSignerBean && output instanceof OutputSignerBean)
+            return execute((InputSignerBean) input, (OutputSignerBean) output);
+        return false;
     }
 
     public abstract boolean execute(InputSignerBean input, OutputSignerBean output)
-	    throws ExceptionController;
+            throws ExceptionController;
 
 }

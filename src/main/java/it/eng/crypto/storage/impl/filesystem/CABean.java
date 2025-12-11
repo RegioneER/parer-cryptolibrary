@@ -39,7 +39,7 @@ class CABean implements Serializable {
      * @return
      */
     public String getFilePath() {
-	return filePath;
+        return filePath;
     }
 
     /**
@@ -48,7 +48,7 @@ class CABean implements Serializable {
      * @param filePath
      */
     public void setFilePath(String filePath) {
-	this.filePath = filePath;
+        this.filePath = filePath;
     }
 
     /**
@@ -58,7 +58,7 @@ class CABean implements Serializable {
      * @return
      */
     public String getSubjectDN() {
-	return subjectDN;
+        return subjectDN;
     }
 
     /**
@@ -68,7 +68,7 @@ class CABean implements Serializable {
      * @return
      */
     public void setSubjectDN(String subjectDN) {
-	this.subjectDN = subjectDN;
+        this.subjectDN = subjectDN;
     }
 
     /**
@@ -77,7 +77,7 @@ class CABean implements Serializable {
      * @return
      */
     public boolean isActive() {
-	return active;
+        return active;
     }
 
     /**
@@ -86,6 +86,6 @@ class CABean implements Serializable {
      * @param active
      */
     public void setActive(boolean active) {
-	this.active = active;
+        this.active = active;
     }
 }
