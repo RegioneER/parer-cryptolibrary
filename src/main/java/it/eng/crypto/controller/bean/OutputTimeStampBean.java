@@ -28,36 +28,36 @@ public class OutputTimeStampBean extends OutputBean {
      * @return the documentAndTimeStampInfos
      */
     public List<DocumentAndTimeStampInfoBean> getDocumentAndTimeStampInfos() {
-	return documentAndTimeStampInfos;
+        return documentAndTimeStampInfos;
     }
 
     /**
      * @param documentAndTimeStampInfos the documentAndTimeStampInfos to set
      */
     public void setDocumentAndTimeStampInfos(
-	    List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfos) {
-	this.documentAndTimeStampInfos = documentAndTimeStampInfos;
+            List<DocumentAndTimeStampInfoBean> documentAndTimeStampInfos) {
+        this.documentAndTimeStampInfos = documentAndTimeStampInfos;
     }
 
     /**
      * @return the signer
      */
     public AbstractSigner getSigner() {
-	return signer;
+        return signer;
     }
 
     /**
      * @param signer the signer to set
      */
     public void setSigner(AbstractSigner signer) {
-	this.signer = signer;
+        this.signer = signer;
     }
 
     public Map getComplianceChecks() {
-	return complianceChecks;
+        return complianceChecks;
     }
 
     public void setComplianceChecks(Map complianceChecks) {
-	this.complianceChecks = complianceChecks;
+        this.complianceChecks = complianceChecks;
     }
 }

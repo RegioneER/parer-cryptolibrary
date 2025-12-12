@@ -117,7 +117,7 @@ public class OutputSignerBean extends OutputBean {
      * @return
      */
     public ContentBean getContent() {
-	return content;
+        return content;
     }
 
     /**
@@ -126,7 +126,7 @@ public class OutputSignerBean extends OutputBean {
      * @param content
      */
     public void setContent(ContentBean content) {
-	this.content = content;
+        this.content = content;
     }
 
 }

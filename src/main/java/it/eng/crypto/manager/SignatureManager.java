@@ -158,16 +158,21 @@ public class SignatureManager {
     private String referenceDateType;
 
     private boolean searchCAOnline;
+    private int httpCrlTimeout;
+    private int httpCrlSocketTimeout;    
+    private int ldapCrlTimeout;
+
+    
 
     private static final ThreadLocal<Boolean> _isXml = new ThreadLocal<Boolean>() {
-	@Override
-	protected Boolean initialValue() {
-	    return Boolean.FALSE;
-	}
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE;
+        }
     };
 
     public OutputTimeStampBean executeMassiveTimeStamp(File timestamp, File[] contentFile) {
-	return null;
+        return null;
     }
 
     /**
@@ -179,7 +184,7 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean execute() throws CryptoSignerException {
-	return execute(this.config);
+        return execute(this.config);
     }
 
     /**
@@ -190,34 +195,34 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean execute(SignatureManagerConfig config) throws CryptoSignerException {
-	reset();
-	if (config == null || !config.isValid()) {
-	    throw new CryptoSignerException("Configurazione non valida");
-	}
-	it.eng.crypto.manager.SignatureManager.CONFIGURATION configuration = config
-		.getConfiguration();
-	switch (configuration) {
-	case CONFIG_1_2:
-	    timeStampedSignatureWithContentFile = config.getContentFile();
-	    break;
-	case CONFIG_3:
-	    signatureWithContentFile = config.getContentFile();
-	    timeStampFile = config.getTimeStampFile();
-	    break;
-	case CONFIG_4_5:
-	    detachedContentFile = config.getContentFile();
-	    timeStampedSignatureFile = config.getSignatureFile();
-	    break;
-	case CONFIG_6:
-	    detachedContentFile = config.getContentFile();
-	    signatureFile = config.getSignatureFile();
-	    timeStampFile = config.getTimeStampFile();
-	default:
-	    break;
-	}
-	timeStampsChain = config.getTimeStampExtensions();
-	this.referenceDate = config.getReferenceDate();
-	return run();
+        reset();
+        if (config == null || !config.isValid()) {
+            throw new CryptoSignerException("Configurazione non valida");
+        }
+        it.eng.crypto.manager.SignatureManager.CONFIGURATION configuration = config
+                .getConfiguration();
+        switch (configuration) {
+        case CONFIG_1_2:
+            timeStampedSignatureWithContentFile = config.getContentFile();
+            break;
+        case CONFIG_3:
+            signatureWithContentFile = config.getContentFile();
+            timeStampFile = config.getTimeStampFile();
+            break;
+        case CONFIG_4_5:
+            detachedContentFile = config.getContentFile();
+            timeStampedSignatureFile = config.getSignatureFile();
+            break;
+        case CONFIG_6:
+            detachedContentFile = config.getContentFile();
+            signatureFile = config.getSignatureFile();
+            timeStampFile = config.getTimeStampFile();
+        default:
+            break;
+        }
+        timeStampsChain = config.getTimeStampExtensions();
+        this.referenceDate = config.getReferenceDate();
+        return run();
     }
 
     /*
@@ -234,8 +239,8 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile)
-	    throws CryptoSignerException {
-	return executeEmbedded(timeStampedSignatureWithContentFile, (Date) null);
+            throws CryptoSignerException {
+        return executeEmbedded(timeStampedSignatureWithContentFile, (Date) null);
     }
 
     /**
@@ -249,8 +254,8 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, File timeStampFile)
-	    throws CryptoSignerException {
-	return executeEmbedded(signatureWithContentFile, timeStampFile, (Date) null);
+            throws CryptoSignerException {
+        return executeEmbedded(signatureWithContentFile, timeStampFile, (Date) null);
     }
 
     /**
@@ -266,9 +271,9 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile,
-	    File... timeStampExtensionFiles) throws CryptoSignerException {
-	return executeEmbedded(timeStampedSignatureWithContentFile, (Date) null,
-		timeStampExtensionFiles);
+            File... timeStampExtensionFiles) throws CryptoSignerException {
+        return executeEmbedded(timeStampedSignatureWithContentFile, (Date) null,
+                timeStampExtensionFiles);
     }
 
     /**
@@ -284,9 +289,9 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, File timeStampFile,
-	    File... timeStampExtensionFiles) throws CryptoSignerException {
-	return executeEmbedded(signatureWithContentFile, timeStampFile, (Date) null,
-		timeStampExtensionFiles);
+            File... timeStampExtensionFiles) throws CryptoSignerException {
+        return executeEmbedded(signatureWithContentFile, timeStampFile, (Date) null,
+                timeStampExtensionFiles);
     }
 
     /**
@@ -299,11 +304,11 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile,
-	    Date reference) throws CryptoSignerException {
-	reset();
-	this.timeStampedSignatureWithContentFile = timeStampedSignatureWithContentFile;
-	this.referenceDate = reference;
-	return run();
+            Date reference) throws CryptoSignerException {
+        reset();
+        this.timeStampedSignatureWithContentFile = timeStampedSignatureWithContentFile;
+        this.referenceDate = reference;
+        return run();
     }
 
     /**
@@ -317,12 +322,12 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, Date reference,
-	    File timeStampFile) throws CryptoSignerException {
-	reset();
-	this.signatureWithContentFile = signatureWithContentFile;
-	this.timeStampFile = timeStampFile;
-	this.referenceDate = reference;
-	return run();
+            File timeStampFile) throws CryptoSignerException {
+        reset();
+        this.signatureWithContentFile = signatureWithContentFile;
+        this.timeStampFile = timeStampFile;
+        this.referenceDate = reference;
+        return run();
     }
 
     /**
@@ -338,12 +343,12 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File timeStampedSignatureWithContentFile,
-	    Date reference, File... timeStampExtensionFiles) throws CryptoSignerException {
-	reset();
-	this.timeStampedSignatureWithContentFile = timeStampedSignatureWithContentFile;
-	this.timeStampsChain = timeStampExtensionFiles;
-	this.referenceDate = reference;
-	return run();
+            Date reference, File... timeStampExtensionFiles) throws CryptoSignerException {
+        reset();
+        this.timeStampedSignatureWithContentFile = timeStampedSignatureWithContentFile;
+        this.timeStampsChain = timeStampExtensionFiles;
+        this.referenceDate = reference;
+        return run();
     }
 
     /**
@@ -359,13 +364,13 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeEmbedded(File signatureWithContentFile, File timeStampFile,
-	    Date reference, File... timeStampExtensionFiles) throws CryptoSignerException {
-	reset();
-	this.signatureWithContentFile = signatureWithContentFile;
-	this.timeStampFile = timeStampFile;
-	this.timeStampsChain = timeStampExtensionFiles;
-	this.referenceDate = reference;
-	return run();
+            Date reference, File... timeStampExtensionFiles) throws CryptoSignerException {
+        reset();
+        this.signatureWithContentFile = signatureWithContentFile;
+        this.timeStampFile = timeStampFile;
+        this.timeStampsChain = timeStampExtensionFiles;
+        this.referenceDate = reference;
+        return run();
     }
 
     /*
@@ -383,8 +388,8 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile)
-	    throws CryptoSignerException {
-	return executeDetached(detachedContentFile, timeStampedSignatureFile, (Date) null);
+            throws CryptoSignerException {
+        return executeDetached(detachedContentFile, timeStampedSignatureFile, (Date) null);
     }
 
     /**
@@ -399,8 +404,8 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile,
-	    File timeStampFile) throws CryptoSignerException {
-	return executeDetached(detachedContentFile, signatureFile, timeStampFile, (Date) null);
+            File timeStampFile) throws CryptoSignerException {
+        return executeDetached(detachedContentFile, signatureFile, timeStampFile, (Date) null);
     }
 
     /**
@@ -416,9 +421,9 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile,
-	    File... timeStampExtensionFiles) throws CryptoSignerException {
-	return executeDetached(detachedContentFile, timeStampedSignatureFile, (Date) null,
-		timeStampExtensionFiles);
+            File... timeStampExtensionFiles) throws CryptoSignerException {
+        return executeDetached(detachedContentFile, timeStampedSignatureFile, (Date) null,
+                timeStampExtensionFiles);
     }
 
     /**
@@ -435,9 +440,9 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile,
-	    File timeStampFile, File... timeStampExtensionFiles) throws CryptoSignerException {
-	return executeDetached(detachedContentFile, signatureFile, timeStampFile, (Date) null,
-		timeStampExtensionFiles);
+            File timeStampFile, File... timeStampExtensionFiles) throws CryptoSignerException {
+        return executeDetached(detachedContentFile, signatureFile, timeStampFile, (Date) null,
+                timeStampExtensionFiles);
     }
 
     /**
@@ -452,12 +457,12 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile,
-	    Date reference) throws CryptoSignerException {
-	reset();
-	this.detachedContentFile = detachedContentFile;
-	this.timeStampedSignatureFile = timeStampedSignatureFile;
-	this.referenceDate = reference;
-	return run();
+            Date reference) throws CryptoSignerException {
+        reset();
+        this.detachedContentFile = detachedContentFile;
+        this.timeStampedSignatureFile = timeStampedSignatureFile;
+        this.referenceDate = reference;
+        return run();
     }
 
     /**
@@ -473,13 +478,13 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile,
-	    File timeStampFile, Date reference) throws CryptoSignerException {
-	reset();
-	this.detachedContentFile = detachedContentFile;
-	this.signatureFile = signatureFile;
-	this.timeStampFile = timeStampFile;
-	this.referenceDate = reference;
-	return run();
+            File timeStampFile, Date reference) throws CryptoSignerException {
+        reset();
+        this.detachedContentFile = detachedContentFile;
+        this.signatureFile = signatureFile;
+        this.timeStampFile = timeStampFile;
+        this.referenceDate = reference;
+        return run();
     }
 
     /**
@@ -496,13 +501,13 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File timeStampedSignatureFile,
-	    Date reference, File... timeStampExtensionFiles) throws CryptoSignerException {
-	reset();
-	this.detachedContentFile = detachedContentFile;
-	this.timeStampedSignatureFile = timeStampedSignatureFile;
-	this.timeStampsChain = timeStampExtensionFiles;
-	this.referenceDate = reference;
-	return run();
+            Date reference, File... timeStampExtensionFiles) throws CryptoSignerException {
+        reset();
+        this.detachedContentFile = detachedContentFile;
+        this.timeStampedSignatureFile = timeStampedSignatureFile;
+        this.timeStampsChain = timeStampExtensionFiles;
+        this.referenceDate = reference;
+        return run();
     }
 
     /**
@@ -520,280 +525,283 @@ public class SignatureManager {
      * @throws CryptoSignerException
      */
     public OutputSignerBean executeDetached(File detachedContentFile, File signatureFile,
-	    File timeStampFile, Date reference, File... timeStampExtensionFiles)
-	    throws CryptoSignerException {
-	reset();
-	this.detachedContentFile = detachedContentFile;
-	this.signatureFile = signatureFile;
-	this.timeStampFile = timeStampFile;
-	this.timeStampsChain = timeStampExtensionFiles;
-	this.referenceDate = reference;
-	return run();
+            File timeStampFile, Date reference, File... timeStampExtensionFiles)
+            throws CryptoSignerException {
+        reset();
+        this.detachedContentFile = detachedContentFile;
+        this.signatureFile = signatureFile;
+        this.timeStampFile = timeStampFile;
+        this.timeStampsChain = timeStampExtensionFiles;
+        this.referenceDate = reference;
+        return run();
     }
 
     private void reset() {
-	this.detachedContentFile = null;
-	this.signatureFile = null;
-	this.timeStampFile = null;
-	this.timeStampedSignatureFile = null;
-	this.timeStampsChain = null;
-	this.signatureWithContentFile = null;
-	this.timeStampedSignatureWithContentFile = null;
-	this.referenceDate = null;
+        this.detachedContentFile = null;
+        this.signatureFile = null;
+        this.timeStampFile = null;
+        this.timeStampedSignatureFile = null;
+        this.timeStampsChain = null;
+        this.signatureWithContentFile = null;
+        this.timeStampedSignatureWithContentFile = null;
+        this.referenceDate = null;
     }
 
     private OutputSignerBean run() {
 
-	CONFIGURATION configuration = getConfiguration();
+        CONFIGURATION configuration = getConfiguration();
 
-	// Esegue il primo ciclo di controllo
-	OutputSignerBean outputSigner = executeCycle(configuration, referenceDate);
+        // Esegue il primo ciclo di controllo
+        OutputSignerBean outputSigner = executeCycle(configuration, referenceDate);
 
-	// Se si vuole eseguire il controllo anche sul contenuto sbustato
-	if (!singleStep) {
+        // Se si vuole eseguire il controllo anche sul contenuto sbustato
+        if (!singleStep) {
 
-	    // Esegue il controllo sul contenuto sbustato
-	    OutputSignerBean currentOutput = outputSigner;
-	    while (currentOutput != null && currentOutput.getContent() != null
-		    && currentOutput.getContent().isPossiblySigned()) {
-		// Verifico se il controllo precedente si è interrotto
-		// a causa di un errore di un controllo bloccante
-		if (masterSignerController.isInterrupted()) {
-		    break;
-		} else {
-		    timeStampedSignatureWithContentFile = currentOutput.getContent()
-			    .getContentFile();
-		    // Ottengo la marca temporale: valida, più vecchia e non Embedded (ie:
-		    // detached,
-		    // embedded_m7m e
-		    // embedded_tsd)
-		    DocumentAndTimeStampInfoBean oldestTS = getTimeStampDateFromOutput(
-			    currentOutput);
-		    Date newReference = oldestTS == null ? null
-			    : oldestTS.getTimeStampToken().getTimeStampInfo().getGenTime();
-		    // Setto il riferimento solo se non devo utilizzare un riferimento esterno più
-		    // prioritario (CHIUSURA
-		    // VOLUMI)
-		    if (oldestTS != null && !useExternalReferenceTime) {
-			useExternalTsdTsrM7MEnvelop = true;
-			referenceDate = newReference;
-		    }
+            // Esegue il controllo sul contenuto sbustato
+            OutputSignerBean currentOutput = outputSigner;
+            while (currentOutput != null && currentOutput.getContent() != null
+                    && currentOutput.getContent().isPossiblySigned()) {
+                // Verifico se il controllo precedente si è interrotto
+                // a causa di un errore di un controllo bloccante
+                if (masterSignerController.isInterrupted()) {
+                    break;
+                } else {
+                    timeStampedSignatureWithContentFile = currentOutput.getContent()
+                            .getContentFile();
+                    // Ottengo la marca temporale: valida, più vecchia e non Embedded (ie:
+                    // detached,
+                    // embedded_m7m e
+                    // embedded_tsd)
+                    DocumentAndTimeStampInfoBean oldestTS = getTimeStampDateFromOutput(
+                            currentOutput);
+                    Date newReference = oldestTS == null ? null
+                            : oldestTS.getTimeStampToken().getTimeStampInfo().getGenTime();
+                    // Setto il riferimento solo se non devo utilizzare un riferimento esterno più
+                    // prioritario (CHIUSURA
+                    // VOLUMI)
+                    if (oldestTS != null && !useExternalReferenceTime) {
+                        useExternalTsdTsrM7MEnvelop = true;
+                        referenceDate = newReference;
+                    }
 
-		    OutputSignerBean tmpOutput = executeCycle(CONFIGURATION.CONFIG_1_2,
-			    newReference);
-		    if (tmpOutput == null) {
-			break;
-		    }
-		    currentOutput.setChild(tmpOutput);
-		    currentOutput = currentOutput.getChild();
-		}
-	    }
+                    OutputSignerBean tmpOutput = executeCycle(CONFIGURATION.CONFIG_1_2,
+                            newReference);
+                    if (tmpOutput == null) {
+                        break;
+                    }
+                    currentOutput.setChild(tmpOutput);
+                    currentOutput = currentOutput.getChild();
+                }
+            }
 
-	}
-	return outputSigner;
+        }
+        return outputSigner;
     }
 
     private OutputSignerBean executeCycle(CONFIGURATION configuration, Date reference) {
-	OutputTimeStampBean outputTimeStamp = getDocumentAndTimeStampInfos(configuration,
-		reference);
-	OutputSignerBean outputSigner = getOutputSigner(configuration, outputTimeStamp);
-	return outputSigner;
+        OutputTimeStampBean outputTimeStamp = getDocumentAndTimeStampInfos(configuration,
+                reference);
+        OutputSignerBean outputSigner = getOutputSigner(configuration, outputTimeStamp);
+        return outputSigner;
     }
 
     /**
      * ************************************************ Controllo del timestamp
      */
     public OutputTimeStampBean getDocumentAndTimeStampInfos(CONFIGURATION configuration,
-	    Date reference) {
+            Date reference) {
 
-	if (masterTimeStampController == null) {
-	    return null;
-	}
+        if (masterTimeStampController == null) {
+            return null;
+        }
 
-	InputTimeStampBean input = new InputTimeStampBean();
-	OutputTimeStampBean output = null;
-	try {
+        InputTimeStampBean input = new InputTimeStampBean();
+        OutputTimeStampBean output = null;
+        try {
 
-	    switch (configuration) {
+            switch (configuration) {
 
-	    case CONFIG_1_2:
-		input.setTimeStampWithContentFile(timeStampedSignatureWithContentFile);
-		break;
+            case CONFIG_1_2:
+                input.setTimeStampWithContentFile(timeStampedSignatureWithContentFile);
+                break;
 
-	    case CONFIG_3:
-		input.setTimeStampFile(timeStampFile);
-		input.setContentFile(signatureWithContentFile);
-		break;
+            case CONFIG_3:
+                input.setTimeStampFile(timeStampFile);
+                input.setContentFile(signatureWithContentFile);
+                break;
 
-	    case CONFIG_4_5:
-		input.setTimeStampWithContentFile(timeStampedSignatureFile);
-		break;
+            case CONFIG_4_5:
+                input.setTimeStampWithContentFile(timeStampedSignatureFile);
+                break;
 
-	    case CONFIG_6:
-		input.setTimeStampFile(timeStampFile);
-		input.setContentFile(signatureFile);
-		break;
+            case CONFIG_6:
+                input.setTimeStampFile(timeStampFile);
+                input.setContentFile(signatureFile);
+                break;
 
-	    default:
-		break;
-	    }
+            default:
+                break;
+            }
 
-	    input.setReferenceDate(reference);
-	    input.setTimeStampExtensionsChain(timeStampsChain);
-	    output = masterTimeStampController.executeControll(input);
+            input.setReferenceDate(reference);
+            input.setTimeStampExtensionsChain(timeStampsChain);
+            output = masterTimeStampController.executeControll(input);
 
-	} catch (ExceptionController e) {
-	    // e.printStackTrace();
-	    // Questa eccezione può essere generata solo se il signer non è stato trovato, recupero
-	    // il check di
-	    // Validazione, poi,
-	    // nel controllo di fime (getOutputSigner) imposterò l'outputTimeStamp nuovamente a
-	    // null
-	    if (e.getComplianceChecks() != null) {
-		output = new OutputTimeStampBean();
-		output.setComplianceChecks(e.getComplianceChecks());
-	    }
-	}
-	return output;
+        } catch (ExceptionController e) {
+            // e.printStackTrace();
+            // Questa eccezione può essere generata solo se il signer non è stato trovato, recupero
+            // il check di
+            // Validazione, poi,
+            // nel controllo di fime (getOutputSigner) imposterò l'outputTimeStamp nuovamente a
+            // null
+            if (e.getComplianceChecks() != null) {
+                output = new OutputTimeStampBean();
+                output.setComplianceChecks(e.getComplianceChecks());
+            }
+        }
+        return output;
     }
 
     /**
      * ************************************************ Controllo delle firme
      */
     public OutputSignerBean getOutputSigner(CONFIGURATION configuration,
-	    OutputTimeStampBean outputTimeStamp) {
-	AbstractSigner signer = null;
-	InputSignerBean input = new InputSignerBean();
-	input.setCheckCAOnline(isSearchCAOnline());
-	Map<String, ValidationInfos> complianceChecks = null;
-	if (outputTimeStamp != null && outputTimeStamp.getComplianceChecks() != null) {
-	    complianceChecks = outputTimeStamp.getComplianceChecks();
-	    outputTimeStamp = null;
-	}
-	File envelope = null;
-	try {
+            OutputTimeStampBean outputTimeStamp) {
+        AbstractSigner signer = null;
+        InputSignerBean input = new InputSignerBean();
+        input.setCheckCAOnline(isSearchCAOnline());
+        input.setHttpCrlTimeoutConnection(getHttpCrlTimeout());
+        input.setHttpCrlSocketTimeout(getHttpCrlSocketTimeout());
+        input.setLdapCrlTimeoutConnection(getLdapCrlTimeout());
+        Map<String, ValidationInfos> complianceChecks = null;
+        if (outputTimeStamp != null && outputTimeStamp.getComplianceChecks() != null) {
+            complianceChecks = outputTimeStamp.getComplianceChecks();
+            outputTimeStamp = null;
+        }
+        File envelope = null;
+        try {
 
-	    switch (configuration) {
-	    case CONFIG_1_2:
-		signer = outputTimeStamp == null ? null : outputTimeStamp.getSigner();
-		envelope = timeStampedSignatureWithContentFile;
-		break;
+            switch (configuration) {
+            case CONFIG_1_2:
+                signer = outputTimeStamp == null ? null : outputTimeStamp.getSigner();
+                envelope = timeStampedSignatureWithContentFile;
+                break;
 
-	    case CONFIG_3:
-		signer = signerUtil.getSignerManager(signatureWithContentFile);
-		envelope = signatureWithContentFile;
-		break;
+            case CONFIG_3:
+                signer = signerUtil.getSignerManager(signatureWithContentFile);
+                envelope = signatureWithContentFile;
+                break;
 
-	    case CONFIG_4_5:
-		signer = outputTimeStamp == null ? null : outputTimeStamp.getSigner();
-		envelope = timeStampedSignatureFile;
-		if (signer != null) {
-		    signer.setDetachedFile(detachedContentFile);
-		}
-		break;
+            case CONFIG_4_5:
+                signer = outputTimeStamp == null ? null : outputTimeStamp.getSigner();
+                envelope = timeStampedSignatureFile;
+                if (signer != null) {
+                    signer.setDetachedFile(detachedContentFile);
+                }
+                break;
 
-	    case CONFIG_6:
-		signer = signerUtil.getSignerManager(signatureFile);
-		envelope = signatureFile;
-		if (signer != null) {
-		    signer.setDetachedFile(detachedContentFile);
-		}
-		break;
+            case CONFIG_6:
+                signer = signerUtil.getSignerManager(signatureFile);
+                envelope = signatureFile;
+                if (signer != null) {
+                    signer.setDetachedFile(detachedContentFile);
+                }
+                break;
 
-	    default:
-		break;
-	    }
+            default:
+                break;
+            }
 
-	} catch (CryptoSignerException e) {
-	    complianceChecks = e.getComplianceChecks();
-	    if (signer != null) {
-		e.printStackTrace();
-	    }
-	}
+        } catch (CryptoSignerException e) {
+            complianceChecks = e.getComplianceChecks();
+            if (signer != null) {
+                e.printStackTrace();
+            }
+        }
 
-	List<DocumentAndTimeStampInfoBean> timeStampInfos = outputTimeStamp == null ? null
-		: outputTimeStamp.getDocumentAndTimeStampInfos();
-	OutputSignerBean output = null;
-	// Se il contenuto non è firmato oppure il file è un TSR ritorno i soli dati sul timestamp
-	// (qualora presenti)
-	if (signer == null || signer.getFormat().equals(SignerType.TSR)) {
-	    output = new OutputSignerBean();
-	    output.setProperty(OutputSignerBean.FORMAT_COMPLIANCE_PROPERTY, complianceChecks);
-	    if (timeStampInfos == null) {
-		if (complianceChecks == null) {
-		    return null;
-		}
-		return output;
-	    }
-	    output.setProperty(OutputSignerBean.TIME_STAMP_INFO_PROPERTY, timeStampInfos);
-	    return output;
-	}
+        List<DocumentAndTimeStampInfoBean> timeStampInfos = outputTimeStamp == null ? null
+                : outputTimeStamp.getDocumentAndTimeStampInfos();
+        OutputSignerBean output = null;
+        // Se il contenuto non è firmato oppure il file è un TSR ritorno i soli dati sul timestamp
+        // (qualora presenti)
+        if (signer == null || signer.getFormat().equals(SignerType.TSR)) {
+            output = new OutputSignerBean();
+            output.setProperty(OutputSignerBean.FORMAT_COMPLIANCE_PROPERTY, complianceChecks);
+            if (timeStampInfos == null) {
+                if (complianceChecks == null) {
+                    return null;
+                }
+                return output;
+            }
+            output.setProperty(OutputSignerBean.TIME_STAMP_INFO_PROPERTY, timeStampInfos);
+            return output;
+        }
 
-	// Mantengo solo i timestamp che sono validi
-	List<DocumentAndTimeStampInfoBean> validTimeStampInfosList = new ArrayList<DocumentAndTimeStampInfoBean>();
-	if (timeStampInfos != null && !timeStampInfos.isEmpty()) {
-	    for (DocumentAndTimeStampInfoBean timeStampInfo : timeStampInfos) {
-		if (timeStampInfo.getValidationInfos().isValid()) {
-		    validTimeStampInfosList.add(timeStampInfo);
-		}
-	    }
-	}
+        // Mantengo solo i timestamp che sono validi
+        List<DocumentAndTimeStampInfoBean> validTimeStampInfosList = new ArrayList<DocumentAndTimeStampInfoBean>();
+        if (timeStampInfos != null && !timeStampInfos.isEmpty()) {
+            for (DocumentAndTimeStampInfoBean timeStampInfo : timeStampInfos) {
+                if (timeStampInfo.getValidationInfos().isValid()) {
+                    validTimeStampInfosList.add(timeStampInfo);
+                }
+            }
+        }
 
-	List<DocumentAndTimeStampInfoBean> detachedValidTimeStampInfosList = new ArrayList<DocumentAndTimeStampInfoBean>();
-	for (DocumentAndTimeStampInfoBean timeStampInfo : validTimeStampInfosList) {
-	    if (timeStampInfo.getTimeStampTokenType()
-		    .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.DETACHED)
-		    || timeStampInfo.getTimeStampTokenType()
-			    .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.EMBEDDED_M7M)
-		    || timeStampInfo.getTimeStampTokenType()
-			    .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.EMBEDDED_TSD)) {
-		detachedValidTimeStampInfosList.add(timeStampInfo);
-	    }
-	}
+        List<DocumentAndTimeStampInfoBean> detachedValidTimeStampInfosList = new ArrayList<DocumentAndTimeStampInfoBean>();
+        for (DocumentAndTimeStampInfoBean timeStampInfo : validTimeStampInfosList) {
+            if (timeStampInfo.getTimeStampTokenType()
+                    .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.DETACHED)
+                    || timeStampInfo.getTimeStampTokenType()
+                            .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.EMBEDDED_M7M)
+                    || timeStampInfo.getTimeStampTokenType()
+                            .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.EMBEDDED_TSD)) {
+                detachedValidTimeStampInfosList.add(timeStampInfo);
+            }
+        }
 
-	// Popolo il bean di input
-	input.setUseExternalReferenceTime(this.useExternalReferenceTime);
-	input.setUseExternalTsdTsrM7MEnvelop(this.useExternalTsdTsrM7MEnvelop);
-	input.setEnvelope(envelope);
-	input.setUseSigninTimeAsReferenceDate(this.useSigninTimeAsReferenceDate);
-	input.setReferenceDateType(this.referenceDateType);
+        // Popolo il bean di input
+        input.setUseExternalReferenceTime(this.useExternalReferenceTime);
+        input.setUseExternalTsdTsrM7MEnvelop(this.useExternalTsdTsrM7MEnvelop);
+        input.setEnvelope(envelope);
+        input.setUseSigninTimeAsReferenceDate(this.useSigninTimeAsReferenceDate);
+        input.setReferenceDateType(this.referenceDateType);
 
-	// Cerco il più vecchio timestamp DETACHED
-	DocumentAndTimeStampInfoBean oldest = null;
-	if (detachedValidTimeStampInfosList != null && !detachedValidTimeStampInfosList.isEmpty()) {
-	    oldest = getOldestDocumentAndTimeStampInfoBean(detachedValidTimeStampInfosList);
-	    input.setDocumentAndTimeStampInfo(oldest);
-	}
-	input.setValidTimeStampInfo(validTimeStampInfosList);
+        // Cerco il più vecchio timestamp DETACHED
+        DocumentAndTimeStampInfoBean oldest = null;
+        if (detachedValidTimeStampInfosList != null && !detachedValidTimeStampInfosList.isEmpty()) {
+            oldest = getOldestDocumentAndTimeStampInfoBean(detachedValidTimeStampInfosList);
+            input.setDocumentAndTimeStampInfo(oldest);
+        }
+        input.setValidTimeStampInfo(validTimeStampInfosList);
 
-	input.setSigner(signer);
+        input.setSigner(signer);
 
-	/*
-	 * Il settaggio della data di riferimento temporale è effettuata per singola firma. Ad
-	 * occuparsene, quindi, sarà il controller SignatureExtraction che lo setterà in ogni firma.
-	 * Per avere un comportamento corretto il controllo SignatureExtraction deve essere
-	 * effettuato prima degli altri I riferimenti temporali utilizzabili per firma sono
-	 * (partendo dal più prioritario): - Un eventuale TSD presente nella busta esterna - La
-	 * Marca detached più vecchia tra le detached se valida(da usare quindi per tutte le firme
-	 * presenti) - Marca embedded se valida(da usare per la firma a cui si riferisce) - Data di
-	 * firma (da usare per la firma a cui si riferisce) - Data passata da chi chiama il metodo -
-	 * Data attuale
-	 */
+        /*
+         * Il settaggio della data di riferimento temporale è effettuata per singola firma. Ad
+         * occuparsene, quindi, sarà il controller SignatureExtraction che lo setterà in ogni firma.
+         * Per avere un comportamento corretto il controllo SignatureExtraction deve essere
+         * effettuato prima degli altri I riferimenti temporali utilizzabili per firma sono
+         * (partendo dal più prioritario): - Un eventuale TSD presente nella busta esterna - La
+         * Marca detached più vecchia tra le detached se valida(da usare quindi per tutte le firme
+         * presenti) - Marca embedded se valida(da usare per la firma a cui si riferisce) - Data di
+         * firma (da usare per la firma a cui si riferisce) - Data passata da chi chiama il metodo -
+         * Data attuale
+         */
 
-	if (referenceDate != null) {
-	    input.setReferenceDate(referenceDate);
-	} else {
-	    referenceDate = new Date();
-	    input.setReferenceDate(referenceDate);
-	}
-	try {
-	    output = masterSignerController.executeControll(input);
-	} catch (ExceptionController e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	output.setProperty(OutputSignerBean.TIME_STAMP_INFO_PROPERTY, timeStampInfos);
-	return output;
+        if (referenceDate != null) {
+            input.setReferenceDate(referenceDate);
+        } else {
+            referenceDate = new Date();
+            input.setReferenceDate(referenceDate);
+        }
+        try {
+            output = masterSignerController.executeControll(input);
+        } catch (ExceptionController e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        output.setProperty(OutputSignerBean.TIME_STAMP_INFO_PROPERTY, timeStampInfos);
+        return output;
     }
 
     /*
@@ -802,7 +810,7 @@ public class SignatureManager {
      * @return l'istanza del controller preposto alla gestione dei cicli di analisi sui file firmati
      */
     public MasterSignerController getMasterSignerController() {
-	return masterSignerController;
+        return masterSignerController;
     }
 
     /**
@@ -811,25 +819,25 @@ public class SignatureManager {
      * @param masterSignerController
      */
     public void setMasterSignerController(MasterSignerController masterSignerController) {
-	this.masterSignerController = masterSignerController;
+        this.masterSignerController = masterSignerController;
     }
 
     protected CONFIGURATION getConfiguration() {
-	if (timeStampedSignatureWithContentFile != null) {
-	    return CONFIGURATION.CONFIG_1_2;
-	} else if (signatureWithContentFile != null && timeStampFile != null) {
-	    return CONFIGURATION.CONFIG_3;
-	} else if (detachedContentFile != null && timeStampedSignatureFile != null) {
-	    return CONFIGURATION.CONFIG_4_5;
-	} else if (detachedContentFile != null && signatureFile != null && timeStampFile != null) {
-	    return CONFIGURATION.CONFIG_6;
-	}
-	return null;
+        if (timeStampedSignatureWithContentFile != null) {
+            return CONFIGURATION.CONFIG_1_2;
+        } else if (signatureWithContentFile != null && timeStampFile != null) {
+            return CONFIGURATION.CONFIG_3;
+        } else if (detachedContentFile != null && timeStampedSignatureFile != null) {
+            return CONFIGURATION.CONFIG_4_5;
+        } else if (detachedContentFile != null && signatureFile != null && timeStampFile != null) {
+            return CONFIGURATION.CONFIG_6;
+        }
+        return null;
     }
 
     enum CONFIGURATION {
 
-	CONFIG_1_2, CONFIG_3, CONFIG_4_5, CONFIG_6
+        CONFIG_1_2, CONFIG_3, CONFIG_4_5, CONFIG_6
     }
 
     /**
@@ -838,7 +846,7 @@ public class SignatureManager {
      * @return
      */
     public SignatureManagerConfig getConfig() {
-	return config;
+        return config;
     }
 
     /**
@@ -847,84 +855,84 @@ public class SignatureManager {
      * @param config
      */
     public void setConfig(SignatureManagerConfig config) {
-	this.config = config;
+        this.config = config;
     }
 
     private DocumentAndTimeStampInfoBean getOldestDocumentAndTimeStampInfoBean(
-	    List<DocumentAndTimeStampInfoBean> timeStampInfos) {
-	if (timeStampInfos == null || timeStampInfos.isEmpty()) {
-	    return null;
-	}
-	DocumentAndTimeStampInfoBean oldest = timeStampInfos.get(0);
-	for (DocumentAndTimeStampInfoBean timeStampInfo : timeStampInfos) {
-	    if (oldest.getTimeStampToken().getTimeStampInfo().getGenTime()
-		    .after(timeStampInfo.getTimeStampToken().getTimeStampInfo().getGenTime())) {
-		oldest = timeStampInfo;
-	    }
-	}
-	return oldest;
+            List<DocumentAndTimeStampInfoBean> timeStampInfos) {
+        if (timeStampInfos == null || timeStampInfos.isEmpty()) {
+            return null;
+        }
+        DocumentAndTimeStampInfoBean oldest = timeStampInfos.get(0);
+        for (DocumentAndTimeStampInfoBean timeStampInfo : timeStampInfos) {
+            if (oldest.getTimeStampToken().getTimeStampInfo().getGenTime()
+                    .after(timeStampInfo.getTimeStampToken().getTimeStampInfo().getGenTime())) {
+                oldest = timeStampInfo;
+            }
+        }
+        return oldest;
     }
 
     private DocumentAndTimeStampInfoBean getTimeStampDateFromOutput(
-	    OutputSignerBean outputSignerBean) {
-	List<DocumentAndTimeStampInfoBean> timeStampInfos = (List<DocumentAndTimeStampInfoBean>) outputSignerBean
-		.getProperty(OutputSignerBean.TIME_STAMP_INFO_PROPERTY);
-	ArrayList<DocumentAndTimeStampInfoBean> validTimeStampInfosList = new ArrayList<DocumentAndTimeStampInfoBean>();
-	if (timeStampInfos != null && !timeStampInfos.isEmpty()) {
-	    for (DocumentAndTimeStampInfoBean timeStampInfo : timeStampInfos) {
-		if (timeStampInfo.getValidationInfos().isValid()
-			&& !timeStampInfo.getTimeStampTokenType()
-				.equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.EMBEDDED)) {
-		    validTimeStampInfosList.add(timeStampInfo);
-		}
-	    }
-	}
-	DocumentAndTimeStampInfoBean documentAndTimeStampInfoBean = getOldestDocumentAndTimeStampInfoBean(
-		validTimeStampInfosList);
-	return documentAndTimeStampInfoBean;// == null ? null :
-					    // documentAndTimeStampInfoBean.getTimeStampToken().getTimeStampInfo().getGenTime();
+            OutputSignerBean outputSignerBean) {
+        List<DocumentAndTimeStampInfoBean> timeStampInfos = (List<DocumentAndTimeStampInfoBean>) outputSignerBean
+                .getProperty(OutputSignerBean.TIME_STAMP_INFO_PROPERTY);
+        ArrayList<DocumentAndTimeStampInfoBean> validTimeStampInfosList = new ArrayList<DocumentAndTimeStampInfoBean>();
+        if (timeStampInfos != null && !timeStampInfos.isEmpty()) {
+            for (DocumentAndTimeStampInfoBean timeStampInfo : timeStampInfos) {
+                if (timeStampInfo.getValidationInfos().isValid()
+                        && !timeStampInfo.getTimeStampTokenType()
+                                .equals(DocumentAndTimeStampInfoBean.TimeStampTokenType.EMBEDDED)) {
+                    validTimeStampInfosList.add(timeStampInfo);
+                }
+            }
+        }
+        DocumentAndTimeStampInfoBean documentAndTimeStampInfoBean = getOldestDocumentAndTimeStampInfoBean(
+                validTimeStampInfosList);
+        return documentAndTimeStampInfoBean;// == null ? null :
+        // documentAndTimeStampInfoBean.getTimeStampToken().getTimeStampInfo().getGenTime();
     }
 
     /**
      * @return the referenceDate
      */
     public Date getReferenceDate() {
-	return referenceDate;
+        return referenceDate;
     }
 
     /**
      * @param referenceDate the referenceDate to set
      */
     public void setReferenceDate(Date referenceDate) {
-	this.referenceDate = referenceDate;
+        this.referenceDate = referenceDate;
     }
 
     /**
      * @return the masterTimeStampController
      */
     public MasterTimeStampController getMasterTimeStampController() {
-	return masterTimeStampController;
+        return masterTimeStampController;
     }
 
     /**
      * @param masterTimeStampController the masterTimeStampController to set
      */
     public void setMasterTimeStampController(MasterTimeStampController masterTimeStampController) {
-	this.masterTimeStampController = masterTimeStampController;
+        this.masterTimeStampController = masterTimeStampController;
     }
 
     /**
      * @return the singleStep
      */
     public boolean isSingleStep() {
-	return singleStep;
+        return singleStep;
     }
 
     /**
      * @param singleStep the singleStep to set
      */
     public void setSingleStep(boolean singleStep) {
-	this.singleStep = singleStep;
+        this.singleStep = singleStep;
     }
 
     /**
@@ -932,7 +940,7 @@ public class SignatureManager {
      * @see it.eng.crypto.controller.MasterSignerController#disableCryptoCheck()
      */
     public void disableCryptoCheck() {
-	masterSignerController.disableCryptoCheck();
+        masterSignerController.disableCryptoCheck();
     }
 
     /**
@@ -940,7 +948,7 @@ public class SignatureManager {
      * @see it.eng.crypto.controller.MasterSignerController#disableTrustedChain()
      */
     public void disableTrustedChain() {
-	masterSignerController.disableTrustedChain();
+        masterSignerController.disableTrustedChain();
     }
 
     /**
@@ -948,50 +956,74 @@ public class SignatureManager {
      * @see it.eng.crypto.controller.MasterSignerController#disableCertExpAndRevocation()
      */
     public void disableCertExpAndRevocation() {
-	masterSignerController.disableCertExpAndRevocation();
+        masterSignerController.disableCertExpAndRevocation();
     }
 
     public boolean isUseSigninTimeAsReferenceDate() {
-	return useSigninTimeAsReferenceDate;
+        return useSigninTimeAsReferenceDate;
     }
 
     public void setUseSigninTimeAsReferenceDate(boolean useSigninTimeAsReferenceDate) {
-	this.useSigninTimeAsReferenceDate = useSigninTimeAsReferenceDate;
+        this.useSigninTimeAsReferenceDate = useSigninTimeAsReferenceDate;
     }
 
     public String getReferenceDateType() {
-	return referenceDateType;
+        return referenceDateType;
     }
 
     public void setReferenceDateType(String referenceDateType) {
-	this.referenceDateType = referenceDateType;
+        this.referenceDateType = referenceDateType;
     }
 
     public boolean isUseExternalReferenceTime() {
-	return useExternalReferenceTime;
+        return useExternalReferenceTime;
     }
 
     public void setUseExternalReferenceTime(boolean useExternalReferenceTime) {
-	this.useExternalReferenceTime = useExternalReferenceTime;
+        this.useExternalReferenceTime = useExternalReferenceTime;
     }
 
     public boolean isSearchCAOnline() {
-	return searchCAOnline;
+        return searchCAOnline;
     }
 
     public void setSearchCAOnline(boolean searchCAOnline) {
-	this.searchCAOnline = searchCAOnline;
+        this.searchCAOnline = searchCAOnline;
     }
 
     public static Boolean getIsXml() {
-	return _isXml.get();
+        return _isXml.get();
     }
 
     public static void setIsXml(Boolean isXml) {
-	_isXml.set(isXml);
+        _isXml.set(isXml);
     }
 
     public static void cleanIsXml() {
-	_isXml.remove();
+        _isXml.remove();
+    }
+
+    public int getHttpCrlTimeout() {
+	return httpCrlTimeout;
+    }
+
+    public void setHttpCrlTimeout(int httpCrlTimeout) {
+	this.httpCrlTimeout = httpCrlTimeout;
+    }
+
+    public int getLdapCrlTimeout() {
+	return ldapCrlTimeout;
+    }
+
+    public void setLdapCrlTimeout(int ldapCrlTimeout) {
+	this.ldapCrlTimeout = ldapCrlTimeout;
+    }
+
+    public int getHttpCrlSocketTimeout() {
+	return httpCrlSocketTimeout;
+    }
+
+    public void setHttpCrlSocketTimeout(int httpCrlSocketTimeout) {
+	this.httpCrlSocketTimeout = httpCrlSocketTimeout;
     }
 }

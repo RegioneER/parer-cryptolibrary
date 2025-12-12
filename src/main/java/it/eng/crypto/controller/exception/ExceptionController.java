@@ -28,19 +28,19 @@ public class ExceptionController extends Exception {
     Map<String, ValidationInfos> complianceChecks;
 
     public ExceptionController(String message) {
-	super(message);
+        super(message);
     }
 
     public ExceptionController(Exception e) {
-	super(e);
+        super(e);
     }
 
     public ExceptionController(Exception e, Map<String, ValidationInfos> complianceChecks) {
-	super(e);
-	this.complianceChecks = complianceChecks;
+        super(e);
+        this.complianceChecks = complianceChecks;
     }
 
     public Map<String, ValidationInfos> getComplianceChecks() {
-	return complianceChecks;
+        return complianceChecks;
     }
 }

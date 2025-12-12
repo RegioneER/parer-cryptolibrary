@@ -33,7 +33,7 @@ public class ContentBean {
      * @return il contenuto sbustato
      */
     public File getContentFile() {
-	return contentFile;
+        return contentFile;
     }
 
     /**
@@ -42,7 +42,7 @@ public class ContentBean {
      * @param contentFile
      */
     public void setContentFile(File contentFile) {
-	this.contentFile = contentFile;
+        this.contentFile = contentFile;
     }
 
     /**
@@ -51,7 +51,7 @@ public class ContentBean {
      * @return
      */
     public boolean isPossiblySigned() {
-	return possiblySigned;
+        return possiblySigned;
     }
 
     /**
@@ -60,7 +60,7 @@ public class ContentBean {
      * @param possiblySigned
      */
     public void setPossiblySigned(boolean possiblySigned) {
-	this.possiblySigned = possiblySigned;
+        this.possiblySigned = possiblySigned;
     }
 
 }

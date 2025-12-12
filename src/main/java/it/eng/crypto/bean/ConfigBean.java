@@ -15,7 +15,6 @@ package it.eng.crypto.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Bean contenente le configurazioni dei certificati e delle CRL
@@ -41,7 +40,7 @@ public class ConfigBean implements Serializable {
      * @return
      */
     public String getSubjectDN() {
-	return subjectDN;
+        return subjectDN;
     }
 
     /**
@@ -50,7 +49,7 @@ public class ConfigBean implements Serializable {
      * @return
      */
     public void setSubjectDN(String subjectDN) {
-	this.subjectDN = subjectDN;
+        this.subjectDN = subjectDN;
     }
 
     /**
@@ -59,7 +58,7 @@ public class ConfigBean implements Serializable {
      * @return
      */
     public String getCrlURL() {
-	return crlURL;
+        return crlURL;
     }
 
     /**
@@ -68,7 +67,7 @@ public class ConfigBean implements Serializable {
      * @param crlURL
      */
     public void setCrlURL(String crlURL) {
-	this.crlURL = crlURL;
+        this.crlURL = crlURL;
     }
 
     /**
@@ -77,7 +76,7 @@ public class ConfigBean implements Serializable {
      * @return
      */
     public String getSchedule() {
-	return schedule;
+        return schedule;
     }
 
     /**
@@ -86,22 +85,22 @@ public class ConfigBean implements Serializable {
      * @param schedule
      */
     public void setSchedule(String schedule) {
-	this.schedule = schedule;
+        this.schedule = schedule;
     }
 
     public BigDecimal getNiOrdUrlDistribCrl() {
-	return niOrdUrlDistribCrl;
+        return niOrdUrlDistribCrl;
     }
 
     public void setNiOrdUrlDistribCrl(BigDecimal niOrdUrlDistribCrl) {
-	this.niOrdUrlDistribCrl = niOrdUrlDistribCrl;
+        this.niOrdUrlDistribCrl = niOrdUrlDistribCrl;
     }
 
     public String getKeyId() {
-	return keyId;
+        return keyId;
     }
 
     public void setKeyId(String keyId) {
-	this.keyId = keyId;
+        this.keyId = keyId;
     }
 }

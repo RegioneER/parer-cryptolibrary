@@ -33,10 +33,10 @@ public class CryptoSingletonTimer {
     private static CryptoSingletonTimer singleton = null;
 
     public static synchronized CryptoSingletonTimer getInstance() {
-	if (singleton == null) {
-	    singleton = new CryptoSingletonTimer();
-	}
-	return singleton;
+        if (singleton == null) {
+            singleton = new CryptoSingletonTimer();
+        }
+        return singleton;
     }
 
     /**
@@ -50,7 +50,7 @@ public class CryptoSingletonTimer {
      * @return
      */
     public CryptoConfiguration getConfiguration() {
-	return context.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
+        return context.getBean(CryptoConstants.CRYPTO_CONFIGURATION, CryptoConfiguration.class);
     }
 
     /**
@@ -59,7 +59,7 @@ public class CryptoSingletonTimer {
      * @param context
      */
     public void setContext(ApplicationContext context) {
-	this.context = context;
+        this.context = context;
     }
 
     /**
@@ -68,6 +68,6 @@ public class CryptoSingletonTimer {
      * @return
      */
     protected ApplicationContext getContext() {
-	return this.context;
+        return this.context;
     }
 }

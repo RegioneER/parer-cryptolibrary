@@ -51,7 +51,7 @@ public class MasterSignerController {
      * @return i controller configurati
      */
     public List<ISignerController> getControllers() {
-	return controllers;
+        return controllers;
     }
 
     /**
@@ -60,7 +60,7 @@ public class MasterSignerController {
      * @param controllers la lista dei controlli cui cui iterare l'analisi
      */
     public void setControllers(List<ISignerController> controllers) {
-	this.controllers = controllers;
+        this.controllers = controllers;
     }
 
     /**
@@ -73,9 +73,9 @@ public class MasterSignerController {
      * @throws ExceptionController
      */
     public OutputSignerBean executeControll(InputSignerBean input) throws ExceptionController {
-	OutputSignerBean output = new OutputSignerBean();
-	this.execute(input, output);
-	return output;
+        OutputSignerBean output = new OutputSignerBean();
+        this.execute(input, output);
+        return output;
     }
 
     /**
@@ -84,44 +84,44 @@ public class MasterSignerController {
      *
      */
     private void execute(InputSignerBean input, OutputSignerBean output)
-	    throws ExceptionController {
-	boolean result;
-	input.setChecks(checks);
-	input.setCrl(crl);
-	for (ISignerController controller : controllers) {
-	    if (controller.canExecute(input)) {
-		try {
-		    long start = System.currentTimeMillis();
-		    result = controller.execute(input, output);
-		    if (!result && controller.isCritical()) {
-			output.setProperty(OutputSignerBean.MASTER_SIGNER_EXCEPTION_PROPERTY,
-				controller.getClass().getName());
-			// Se il signer è TSD è un comportamento normale che il ciclo si sia
-			// interrotto: il TSD non ha
-			// firme per cui devo
-			// terminare i controlli sulle firme (quindi eseguire il break) ma non devo
-			// settare il flag
-			// interrupted perchè voglio
-			// proseguire le verifiche con lo sbustato
-			if (!input.getSigner().getFormat().equals(SignerType.TSD)) {
-			    interrupted = true;
-			}
-			break;
-		    }
-		    long elapsedTimeMillis = System.currentTimeMillis() - start;
-		    log.debug("Controllo: " + controller.getClass().getSimpleName()
-			    + " eseguito con successo in " + elapsedTimeMillis + "ms");
-		} catch (ExceptionController e) {
-		    if (controller.isCritical()) {
-			interrupted = true;
-			output.setProperty(OutputSignerBean.MASTER_SIGNER_EXCEPTION_PROPERTY,
-				controller.getClass().getName());
-			throw e;
-		    }
-		}
+            throws ExceptionController {
+        boolean result;
+        input.setChecks(checks);
+        input.setCrl(crl);
+        for (ISignerController controller : controllers) {
+            if (controller.canExecute(input)) {
+                try {
+                    long start = System.currentTimeMillis();
+                    result = controller.execute(input, output);
+                    if (!result && controller.isCritical()) {
+                        output.setProperty(OutputSignerBean.MASTER_SIGNER_EXCEPTION_PROPERTY,
+                                controller.getClass().getName());
+                        // Se il signer è TSD è un comportamento normale che il ciclo si sia
+                        // interrotto: il TSD non ha
+                        // firme per cui devo
+                        // terminare i controlli sulle firme (quindi eseguire il break) ma non devo
+                        // settare il flag
+                        // interrupted perchè voglio
+                        // proseguire le verifiche con lo sbustato
+                        if (!input.getSigner().getFormat().equals(SignerType.TSD)) {
+                            interrupted = true;
+                        }
+                        break;
+                    }
+                    long elapsedTimeMillis = System.currentTimeMillis() - start;
+                    log.debug("Controllo: " + controller.getClass().getSimpleName()
+                            + " eseguito con successo in " + elapsedTimeMillis + "ms");
+                } catch (ExceptionController e) {
+                    if (controller.isCritical()) {
+                        interrupted = true;
+                        output.setProperty(OutputSignerBean.MASTER_SIGNER_EXCEPTION_PROPERTY,
+                                controller.getClass().getName());
+                        throw e;
+                    }
+                }
 
-	    }
-	}
+            }
+        }
 
     }
 
@@ -131,7 +131,7 @@ public class MasterSignerController {
      * @return la mappa dei flag
      */
     public Map<String, Boolean> getChecks() {
-	return checks;
+        return checks;
     }
 
     /**
@@ -140,7 +140,7 @@ public class MasterSignerController {
      * @param checks la mappa contenente i flag dei controlli e il loro valore (true/false)
      */
     public void setChecks(Map<String, Boolean> checks) {
-	this.checks = checks;
+        this.checks = checks;
     }
 
     /**
@@ -149,7 +149,7 @@ public class MasterSignerController {
      * @return
      */
     public CRL getCrl() {
-	return crl;
+        return crl;
     }
 
     /**
@@ -159,7 +159,7 @@ public class MasterSignerController {
      * @param crl
      */
     public void setCrl(CRL crl) {
-	this.crl = crl;
+        this.crl = crl;
     }
 
     /**
@@ -168,22 +168,22 @@ public class MasterSignerController {
      * @return true se uno dei controller ha generato un errore bloccante
      */
     public boolean isInterrupted() {
-	return interrupted;
+        return interrupted;
     }
 
     /**
      * Disabilita i controlli di crittografici di firma
      */
     public void disableCryptoCheck() {
-	this.disableCheck("performSignatureAssociation");
+        this.disableCheck("performSignatureAssociation");
     }
 
     /**
      * Disabilita il controllo di sui certificati di certificazione
      */
     public void disableTrustedChain() {
-	this.disableCheck("performCertificateAssociation");
-	this.disableCheck("performCertificateReliability");
+        this.disableCheck("performCertificateAssociation");
+        this.disableCheck("performCertificateReliability");
     }
 
     /**
@@ -191,8 +191,8 @@ public class MasterSignerController {
      *
      */
     public void disableCertExpAndRevocation() {
-	this.disableCheck("performCertificateExpiration");
-	this.disableCheck("performCertificateRevocation");
+        this.disableCheck("performCertificateExpiration");
+        this.disableCheck("performCertificateRevocation");
     }
 
     /**
@@ -200,8 +200,8 @@ public class MasterSignerController {
      *
      */
     private void disableCheck(String checkName) {
-	if (checks.containsKey(checkName)) {
-	    checks.put(checkName, false);
-	}
+        if (checks.containsKey(checkName)) {
+            checks.put(checkName, false);
+        }
     }
 }

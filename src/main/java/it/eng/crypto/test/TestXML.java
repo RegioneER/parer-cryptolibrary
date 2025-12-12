@@ -35,42 +35,42 @@ public class TestXML {
      */
     public static void main(String[] args) throws Exception {
 
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	dbf.setNamespaceAware(true);
-	Document doc = dbf.newDocumentBuilder()
-		.parse(new FileInputStream("C:/Michele/aurigaweb.xml.xml"));
-	NodeList nl = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
-	if (nl.getLength() == 0) {
-	    throw new Exception("Cannot find Signature element");
-	}
-	String providerName = System.getProperty("jsr105Provider",
-		"org.jcp.xml.dsig.internal.dom.XMLDSigRI");
-	XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
-		(Provider) Class.forName(providerName).newInstance());
-	DOMStructure struct = new DOMStructure(nl.item(0));
-	XMLSignature signature = fac.unmarshalXMLSignature(struct);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        Document doc = dbf.newDocumentBuilder()
+                .parse(new FileInputStream("C:/Michele/aurigaweb.xml.xml"));
+        NodeList nl = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+        if (nl.getLength() == 0) {
+            throw new Exception("Cannot find Signature element");
+        }
+        String providerName = System.getProperty("jsr105Provider",
+                "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
+        XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
+                (Provider) Class.forName(providerName).newInstance());
+        DOMStructure struct = new DOMStructure(nl.item(0));
+        XMLSignature signature = fac.unmarshalXMLSignature(struct);
 
-	List<?> lst = signature.getKeyInfo().getContent();
+        List<?> lst = signature.getKeyInfo().getContent();
 
-	for (Object obj : lst) {
-	    if (obj instanceof X509Data) {
-		X509Data x509Data = (X509Data) obj;
-		List<?> x509Content = x509Data.getContent();
-		for (Object content : x509Content) {
-		    if (content instanceof X509Certificate) {
-			X509Certificate certificate = (X509Certificate) content;
-			System.out.println(certificate.getIssuerX500Principal().getName());
-			System.out.println(certificate.getSubjectX500Principal().getName());
-			System.out.println(certificate.getPublicKey());
-			DOMValidateContext context = new DOMValidateContext(
-				certificate.getPublicKey(), nl.item(0));
-			boolean bol = signature.validate(context);
-			System.out.println(bol);
-			break;
-		    }
-		}
-	    }
-	}
+        for (Object obj : lst) {
+            if (obj instanceof X509Data) {
+                X509Data x509Data = (X509Data) obj;
+                List<?> x509Content = x509Data.getContent();
+                for (Object content : x509Content) {
+                    if (content instanceof X509Certificate) {
+                        X509Certificate certificate = (X509Certificate) content;
+                        System.out.println(certificate.getIssuerX500Principal().getName());
+                        System.out.println(certificate.getSubjectX500Principal().getName());
+                        System.out.println(certificate.getPublicKey());
+                        DOMValidateContext context = new DOMValidateContext(
+                                certificate.getPublicKey(), nl.item(0));
+                        boolean bol = signature.validate(context);
+                        System.out.println(bol);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 }

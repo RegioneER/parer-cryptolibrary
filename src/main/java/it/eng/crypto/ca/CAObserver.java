@@ -70,113 +70,113 @@ public class CAObserver implements Observer {
      * @param obj oggetto della chiamata notify ({@link java.security.cert.X509Certificate})
      */
     public void update(Observable o, Object obj) {
-	synchronized (SINC) {
-	    log.info("update START");
-	    try {
-		// Salvo il certificato sullo storage
-		FactorySigner.getInstanceCAStorage().insertCA((X509Certificate) obj);
+        synchronized (SINC) {
+            log.info("update START");
+            try {
+                // Salvo il certificato sullo storage
+                FactorySigner.getInstanceCAStorage().insertCA((X509Certificate) obj);
 
-		try {
-		    X509Certificate cert = (X509Certificate) obj;
-		    ASN1InputStream aIn = new ASN1InputStream(cert.getEncoded());
-		    ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
+                try {
+                    X509Certificate cert = (X509Certificate) obj;
+                    ASN1InputStream aIn = new ASN1InputStream(cert.getEncoded());
+                    ASN1Sequence seq = (ASN1Sequence) aIn.readObject();
 
-		    X509CertificateStructure obj2 = new X509CertificateStructure(seq);
-		    TBSCertificateStructure tbsCert = obj2.getTBSCertificate();
+                    X509CertificateStructure obj2 = new X509CertificateStructure(seq);
+                    TBSCertificateStructure tbsCert = obj2.getTBSCertificate();
 
-		    X509Extensions ext = tbsCert.getExtensions();
+                    X509Extensions ext = tbsCert.getExtensions();
 
-		    Enumeration enumera = ext.oids();
-		    while (enumera.hasMoreElements()) {
-			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) enumera.nextElement();
-			org.bouncycastle.asn1.x509.X509Extension extVal = ext.getExtension(oid);
-			ASN1OctetString oct = extVal.getValue();
-			ASN1InputStream extIn = new ASN1InputStream(
-				new ByteArrayInputStream(oct.getOctets()));
-			if (oid.equals(X509Extension.cRLDistributionPoints)) {
-			    log.debug("SubjectDN:"
-				    + ((X509Certificate) obj).getIssuerX500Principal().getName());
-			    CRLDistPoint p = CRLDistPoint.getInstance(extIn.readObject());
-			    DistributionPoint[] points = p.getDistributionPoints();
-			    for (int i = 0; i != points.length; i++) {
-				String ret = StringUtils.remove(
-					points[i].getDistributionPoint().getName().toString(),
-					"GeneralNames:");
-				log.debug("Distriution Point:" + ret);
-				if (StringUtils.trim(ret).startsWith("6:")) {
-				    // Salvo l'url di recupero CRL
-				    ret = StringUtils.remove(StringUtils.trim(ret), "6:");
+                    Enumeration enumera = ext.oids();
+                    while (enumera.hasMoreElements()) {
+                        ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) enumera.nextElement();
+                        org.bouncycastle.asn1.x509.X509Extension extVal = ext.getExtension(oid);
+                        ASN1OctetString oct = extVal.getValue();
+                        ASN1InputStream extIn = new ASN1InputStream(
+                                new ByteArrayInputStream(oct.getOctets()));
+                        if (oid.equals(X509Extension.cRLDistributionPoints)) {
+                            log.debug("SubjectDN:"
+                                    + ((X509Certificate) obj).getIssuerX500Principal().getName());
+                            CRLDistPoint p = CRLDistPoint.getInstance(extIn.readObject());
+                            DistributionPoint[] points = p.getDistributionPoints();
+                            for (int i = 0; i != points.length; i++) {
+                                String ret = StringUtils.remove(
+                                        points[i].getDistributionPoint().getName().toString(),
+                                        "GeneralNames:");
+                                log.debug("Distriution Point:" + ret);
+                                if (StringUtils.trim(ret).startsWith("6:")) {
+                                    // Salvo l'url di recupero CRL
+                                    ret = StringUtils.remove(StringUtils.trim(ret), "6:");
 
-				    // Creo una nuova configurazione
-				    ConfigBean config = new ConfigBean();
-				    config.setCrlURL(ret);
+                                    // Creo una nuova configurazione
+                                    ConfigBean config = new ConfigBean();
+                                    config.setCrlURL(ret);
 
-				    Date date = cert.getNotAfter();
-				    String task1 = "";
-				    String task2 = "";
-				    String task3 = "";
+                                    Date date = cert.getNotAfter();
+                                    String task1 = "";
+                                    String task2 = "";
+                                    String task3 = "";
 
-				    // Creo lo scheduling
-				    GregorianCalendar calendar = new GregorianCalendar();
-				    calendar.setTime(date);
+                                    // Creo lo scheduling
+                                    GregorianCalendar calendar = new GregorianCalendar();
+                                    calendar.setTime(date);
 
-				    task3 = format.format(calendar.getTime());
+                                    task3 = format.format(calendar.getTime());
 
-				    calendar.roll(GregorianCalendar.DAY_OF_YEAR, false);
+                                    calendar.roll(GregorianCalendar.DAY_OF_YEAR, false);
 
-				    task2 = format.format(calendar.getTime());
+                                    task2 = format.format(calendar.getTime());
 
-				    calendar.roll(GregorianCalendar.DAY_OF_YEAR, false);
+                                    calendar.roll(GregorianCalendar.DAY_OF_YEAR, false);
 
-				    task1 = format.format(calendar.getTime());
+                                    task1 = format.format(calendar.getTime());
 
-				    config.setSchedule(task1 + "|" + task2 + "|" + task3);
-				    config.setSubjectDN(cert.getIssuerX500Principal().getName());
+                                    config.setSchedule(task1 + "|" + task2 + "|" + task3);
+                                    config.setSubjectDN(cert.getIssuerX500Principal().getName());
 
-				    log.debug("Schedule:" + config.getSchedule());
+                                    log.debug("Schedule:" + config.getSchedule());
 
-				    FactorySigner.getInstanceConfigStorage().upsertConfig(config);
+                                    FactorySigner.getInstanceConfigStorage().upsertConfig(config);
 
-				    // Se il certificato è scaduto recupero ed inserico la CRL se
-				    // non già presente
-				    X509CRL crl = null;
-				    try {
-					crl = FactorySigner.getInstanceCRLStorage().retriveCRL(
-						((X509Certificate) obj).getSubjectX500Principal()
-							.getName(),
-						SignerUtil.getSubjectKeyId((X509Certificate) obj));
-				    } catch (CryptoStorageException e) {
-					log.error("errore durante il recupero di una crl", e);
-				    }
+                                    // Se il certificato è scaduto recupero ed inserico la CRL se
+                                    // non già presente
+                                    X509CRL crl = null;
+                                    try {
+                                        crl = FactorySigner.getInstanceCRLStorage().retriveCRL(
+                                                ((X509Certificate) obj).getSubjectX500Principal()
+                                                        .getName(),
+                                                SignerUtil.getSubjectKeyId((X509Certificate) obj));
+                                    } catch (CryptoStorageException e) {
+                                        log.error("errore durante il recupero di una crl", e);
+                                    }
 
-				    if (crl == null) {
-					// Recupero ed inserisco la CRL
-					try {
-					    List<String> urlCRLDistributionPoints = SignerUtil
-						    .newInstance().getURLCrlDistributionPoint(
-							    (X509Certificate) obj);
-					    crl = SignerUtil.newInstance()
-						    .getCrlByURL(urlCRLDistributionPoints);
-					    if (crl != null) {
-						FactorySigner.getInstanceCRLStorage()
-							.upsertCRL(crl);
-					    }
-					} catch (CryptoSignerException e) {
-					    log.warn("Warning recupero CRL!", e);
-					}
-				    }
-				    break;
-				}
-			    }
-			}
-		    }
-		} catch (Exception e) {
-		    log.error("update errore", e);
-		}
-		log.info("update END");
-	    } catch (CryptoStorageException e) {
-		log.error("Errore Inserimento CA", e);
-	    }
-	}
+                                    if (crl == null) {
+                                        // Recupero ed inserisco la CRL
+                                        try {
+                                            List<String> urlCRLDistributionPoints = SignerUtil
+                                                    .newInstance().getURLCrlDistributionPoint(
+                                                            (X509Certificate) obj);
+                                            crl = SignerUtil.newInstance()
+                                                    .getCrlByURL(urlCRLDistributionPoints, 20000, 20000, 20000); // default timeout 20s
+                                            if (crl != null) {
+                                                FactorySigner.getInstanceCRLStorage()
+                                                        .upsertCRL(crl);
+                                            }
+                                        } catch (CryptoSignerException e) {
+                                            log.warn("Warning recupero CRL!", e);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("update errore", e);
+                }
+                log.info("update END");
+            } catch (CryptoStorageException e) {
+                log.error("Errore Inserimento CA", e);
+            }
+        }
     }
 }

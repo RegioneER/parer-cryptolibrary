@@ -47,70 +47,70 @@ public class InputTimeStampBean extends InputBean {
      * @return the timeStampWithContentFile
      */
     public File getTimeStampWithContentFile() {
-	return timeStampWithContentFile;
+        return timeStampWithContentFile;
     }
 
     /**
      * @param timeStampWithContentFile the timeStampWithContentFile to set
      */
     public void setTimeStampWithContentFile(File timeStampWithContentFile) {
-	this.timeStampWithContentFile = timeStampWithContentFile;
+        this.timeStampWithContentFile = timeStampWithContentFile;
     }
 
     /**
      * @return the timeStampFile
      */
     public File getTimeStampFile() {
-	return timeStampFile;
+        return timeStampFile;
     }
 
     /**
      * @param timeStampFile the timeStampFile to set
      */
     public void setTimeStampFile(File timeStampFile) {
-	this.timeStampFile = timeStampFile;
+        this.timeStampFile = timeStampFile;
     }
 
     /**
      * @return the contentFile
      */
     public File getContentFile() {
-	return contentFile;
+        return contentFile;
     }
 
     /**
      * @param contentFile the contentFile to set
      */
     public void setContentFile(File contentFile) {
-	this.contentFile = contentFile;
+        this.contentFile = contentFile;
     }
 
     /**
      * @return the timeStampExtensionsChain
      */
     public File[] getTimeStampExtensionsChain() {
-	return timeStampExtensionsChain;
+        return timeStampExtensionsChain;
     }
 
     /**
      * @param timeStampExtensionsChain the timeStampExtensionsChain to set
      */
     public void setTimeStampExtensionsChain(File[] timeStampExtensionsChain) {
-	this.timeStampExtensionsChain = timeStampExtensionsChain;
+        this.timeStampExtensionsChain = timeStampExtensionsChain;
     }
 
     /**
      * @return the referenceDate
      */
     public Date getReferenceDate() {
-	return referenceDate;
+        return referenceDate;
     }
 
     /**
      * @param referenceDate the referenceDate to set
      */
     public void setReferenceDate(Date referenceDate) {
-	this.referenceDate = referenceDate;
+        this.referenceDate = referenceDate;
     }
 
 }

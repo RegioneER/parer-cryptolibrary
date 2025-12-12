@@ -59,12 +59,12 @@ public class LDAPHelper {
      * @param dc           dc di LDAP
      */
     public LDAPHelper(String usr, String psw, String provider_url, String ou, String dc) {
-	this.user = usr;
-	this.password = psw;
-	this.provider_url = provider_url;
-	this.ou = ou;
-	this.dc = dc;
-	prepareConnection();
+        this.user = usr;
+        this.password = psw;
+        this.provider_url = provider_url;
+        this.ou = ou;
+        this.dc = dc;
+        prepareConnection();
     }
 
     /**
@@ -72,11 +72,11 @@ public class LDAPHelper {
      * Il metodo prepara l'oggetto necessario alla connessione
      */
     private void prepareConnection() {
-	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://" + provider_url);
-	env.put(Context.SECURITY_AUTHENTICATION, "simple");
-	env.put(Context.SECURITY_PRINCIPAL, "CN=" + dc);
-	// env.put(Context.SECURITY_CREDENTIALS, password);
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.PROVIDER_URL, "ldap://" + provider_url);
+        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_PRINCIPAL, "CN=" + dc);
+        // env.put(Context.SECURITY_CREDENTIALS, password);
     }
 
     /**
@@ -85,22 +85,22 @@ public class LDAPHelper {
      * con il metodo costruttore
      */
     public boolean userVerify() {
-	boolean userVerify = false;
-	try {
-	    DirContext authContext = new InitialDirContext(env);
+        boolean userVerify = false;
+        try {
+            DirContext authContext = new InitialDirContext(env);
 
-	    userVerify = true;
-	    authContext.close();
-	} catch (AuthenticationException authEx) {
-	    authEx.printStackTrace();
-	    // System.out.println("Authentication failed!");
-	    userVerify = false;
-	} catch (NamingException namEx) {
-	    namEx.printStackTrace();
-	    // System.out.println("Something went wrong!");
-	    userVerify = false;
-	}
-	return userVerify;
+            userVerify = true;
+            authContext.close();
+        } catch (AuthenticationException authEx) {
+            authEx.printStackTrace();
+            // System.out.println("Authentication failed!");
+            userVerify = false;
+        } catch (NamingException namEx) {
+            namEx.printStackTrace();
+            // System.out.println("Something went wrong!");
+            userVerify = false;
+        }
+        return userVerify;
     }
 
     /**
@@ -114,26 +114,26 @@ public class LDAPHelper {
      * @exception Il metodo restituisce ""
      */
     public String retriveParameter(String paramToResearch) {
-	String returnValue = "";
-	try {
-	    DirContext ctx = new InitialDirContext(env);
-	    String results;
-	    String[] sAttrIDs = new String[1];
-	    sAttrIDs[0] = paramToResearch;
+        String returnValue = "";
+        try {
+            DirContext ctx = new InitialDirContext(env);
+            String results;
+            String[] sAttrIDs = new String[1];
+            sAttrIDs[0] = paramToResearch;
 
-	    /* Get the attributes requested */
+            /* Get the attributes requested */
 
-	    Attributes aAnswer = ctx.getAttributes(env.get(Context.SECURITY_PRINCIPAL).toString(),
-		    sAttrIDs);
-	    NamingEnumeration enumUserInfo = aAnswer.getAll();
-	    while (enumUserInfo.hasMoreElements()) {
-		results = (enumUserInfo.nextElement().toString());
-		returnValue = results.substring(6);
-	    }
-	} catch (NamingException e) {
-	    System.out.println(e.getMessage());
-	}
-	return returnValue;
+            Attributes aAnswer = ctx.getAttributes(env.get(Context.SECURITY_PRINCIPAL).toString(),
+                    sAttrIDs);
+            NamingEnumeration enumUserInfo = aAnswer.getAll();
+            while (enumUserInfo.hasMoreElements()) {
+                results = (enumUserInfo.nextElement().toString());
+                returnValue = results.substring(6);
+            }
+        } catch (NamingException e) {
+            System.out.println(e.getMessage());
+        }
+        return returnValue;
     }
 
     /**
@@ -149,25 +149,25 @@ public class LDAPHelper {
      */
     public String retriveParameter(String userName, String paramToResearch) {
 
-	String indirizzoMail = "";
-	try {
-	    DirContext ctx = new InitialDirContext(env);
-	    String results;
-	    String[] sAttrIDs = new String[1];
-	    sAttrIDs[0] = paramToResearch;
+        String indirizzoMail = "";
+        try {
+            DirContext ctx = new InitialDirContext(env);
+            String results;
+            String[] sAttrIDs = new String[1];
+            sAttrIDs[0] = paramToResearch;
 
-	    /* Get the attributes requested */
-	    Attributes aAnswer = ctx.getAttributes("CN=" + userName + "," + ou + "," + dc,
-		    sAttrIDs);
-	    NamingEnumeration enumUserInfo = aAnswer.getAll();
-	    while (enumUserInfo.hasMoreElements()) {
-		results = (enumUserInfo.nextElement().toString());
-		indirizzoMail = results.substring(6);
-	    }
-	} catch (NamingException e) {
-	    System.out.println(e.getMessage());
-	}
-	return indirizzoMail;
+            /* Get the attributes requested */
+            Attributes aAnswer = ctx.getAttributes("CN=" + userName + "," + ou + "," + dc,
+                    sAttrIDs);
+            NamingEnumeration enumUserInfo = aAnswer.getAll();
+            while (enumUserInfo.hasMoreElements()) {
+                results = (enumUserInfo.nextElement().toString());
+                indirizzoMail = results.substring(6);
+            }
+        } catch (NamingException e) {
+            System.out.println(e.getMessage());
+        }
+        return indirizzoMail;
     }
 
     /**
@@ -176,18 +176,18 @@ public class LDAPHelper {
      * connessione
      */
     public void writeListParameter() {
-	try {
-	    DirContext ctx = new InitialDirContext(env);
-	    String results;
-	    Attributes aAnswer = ctx.getAttributes(env.get(Context.SECURITY_PRINCIPAL).toString());
-	    NamingEnumeration enumUserInfo = aAnswer.getAll();
-	    while (enumUserInfo.hasMoreElements()) {
-		results = (enumUserInfo.nextElement().toString());
-		System.out.println(results);
-	    }
-	} catch (NamingException e) {
-	    System.out.println(e.getMessage());
-	}
+        try {
+            DirContext ctx = new InitialDirContext(env);
+            String results;
+            Attributes aAnswer = ctx.getAttributes(env.get(Context.SECURITY_PRINCIPAL).toString());
+            NamingEnumeration enumUserInfo = aAnswer.getAll();
+            while (enumUserInfo.hasMoreElements()) {
+                results = (enumUserInfo.nextElement().toString());
+                System.out.println(results);
+            }
+        } catch (NamingException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -197,36 +197,36 @@ public class LDAPHelper {
      * @param username Utente per cui ricercare tutti i parametri
      */
     public void writeListParameter(String userName) {
-	try {
-	    DirContext ctx = new InitialDirContext(env);
-	    String results;
-	    Attributes aAnswer = ctx.getAttributes("CN=" + userName + "," + ou + "," + dc);
-	    NamingEnumeration enumUserInfo = aAnswer.getAll();
-	    while (enumUserInfo.hasMoreElements()) {
-		results = (enumUserInfo.nextElement().toString());
-		System.out.println(results);
-	    }
-	} catch (NamingException e) {
-	    System.out.println(e.getMessage());
-	}
+        try {
+            DirContext ctx = new InitialDirContext(env);
+            String results;
+            Attributes aAnswer = ctx.getAttributes("CN=" + userName + "," + ou + "," + dc);
+            NamingEnumeration enumUserInfo = aAnswer.getAll();
+            while (enumUserInfo.hasMoreElements()) {
+                results = (enumUserInfo.nextElement().toString());
+                System.out.println(results);
+            }
+        } catch (NamingException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void main(String[] args) throws Exception {
-	Security.addProvider(new BouncyCastleProvider());
+        Security.addProvider(new BouncyCastleProvider());
 
-	X509LDAPCertStoreParameters.Builder builder = new X509LDAPCertStoreParameters.Builder(
-		"ldap://fe.csp.multicertify.com",
-		"o=CNIPA,ou=Actalis CA per Firma Digitale Qualificata");
+        X509LDAPCertStoreParameters.Builder builder = new X509LDAPCertStoreParameters.Builder(
+                "ldap://fe.csp.multicertify.com",
+                "o=CNIPA,ou=Actalis CA per Firma Digitale Qualificata");
 
-	LDAPStoreHelper helper = new LDAPStoreHelper(builder.build());
+        LDAPStoreHelper helper = new LDAPStoreHelper(builder.build());
 
-	CertStore cs = CertStore.getInstance("X509LDAP", builder.build(), "BC");
+        CertStore cs = CertStore.getInstance("X509LDAP", builder.build(), "BC");
 
-	cs.getCertificates(new X509CertStoreSelector());
+        cs.getCertificates(new X509CertStoreSelector());
 
-	System.out.println(
-		helper.getAttributeAuthorityRevocationLists(new X509CRLStoreSelector()).size());
-	System.out.println("FINE");
+        System.out.println(
+                helper.getAttributeAuthorityRevocationLists(new X509CRLStoreSelector()).size());
+        System.out.println("FINE");
 
     }
 }

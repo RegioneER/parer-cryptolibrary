@@ -44,7 +44,7 @@ public class CertificateExpiration extends AbstractSignerController {
     public static final String CERTIFICATE_EXPIRATION_CHECK = "performCertificateExpiration";
 
     public String getCheckProperty() {
-	return CERTIFICATE_EXPIRATION_CHECK;
+        return CERTIFICATE_EXPIRATION_CHECK;
     }
 
     /**
@@ -56,73 +56,73 @@ public class CertificateExpiration extends AbstractSignerController {
      * </ul>
      */
     public boolean execute(InputSignerBean input, OutputSignerBean output)
-	    throws ExceptionController {
+            throws ExceptionController {
 
-	boolean result = true;
-	Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
-	List<ISignature> signatures = null;
-	if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
-	    signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
+        boolean result = true;
+        Map<ISignature, ValidationInfos> validationInfosMap = new HashMap<ISignature, ValidationInfos>();
+        List<ISignature> signatures = null;
+        if (output.getProperties().containsKey(OutputSignerBean.SIGNATURE_PROPERTY)) {
+            signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
 
-	    result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures);
-	    output.setProperty(OutputSignerBean.CERTIFICATE_EXPIRATION_PROPERTY,
-		    validationInfosMap);
-	}
+            result = populateValidationInfosMapFromSignatureList(validationInfosMap, signatures);
+            output.setProperty(OutputSignerBean.CERTIFICATE_EXPIRATION_PROPERTY,
+                    validationInfosMap);
+        }
 
-	return result;
+        return result;
     }
 
     private boolean populateValidationInfosMapFromSignatureList(
-	    Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures) {
-	boolean result = true;
-	for (ISignature signature : signatures) {
+            Map<ISignature, ValidationInfos> validationInfosMap, List<ISignature> signatures) {
+        boolean result = true;
+        for (ISignature signature : signatures) {
 
-	    ValidationInfos validationInfos = new ValidationInfos();
+            ValidationInfos validationInfos = new ValidationInfos();
 
-	    /*
-	     * Verifica della validità dei certificati di firma :
-	     */
-	    X509Certificate signatureCertificate = signature.getSignerBean().getCertificate();
+            /*
+             * Verifica della validità dei certificati di firma :
+             */
+            X509Certificate signatureCertificate = signature.getSignerBean().getCertificate();
 
-	    /*
-	     * Verifico che il certificato sia valido rispetto ai valori di expiration indicati nel
-	     * certificato stesso
-	     */
-	    try {
-		if (signature.getReferenceDate() == null) {
-		    signatureCertificate.checkValidity();
-		} else {
-		    signatureCertificate.checkValidity(signature.getReferenceDate());
-		}
-		validationInfos.setEsito(EsitoControllo.POSITIVO);
-	    } catch (CertificateExpiredException e) {
+            /*
+             * Verifico che il certificato sia valido rispetto ai valori di expiration indicati nel
+             * certificato stesso
+             */
+            try {
+                if (signature.getReferenceDate() == null) {
+                    signatureCertificate.checkValidity();
+                } else {
+                    signatureCertificate.checkValidity(signature.getReferenceDate());
+                }
+                validationInfos.setEsito(EsitoControllo.POSITIVO);
+            } catch (CertificateExpiredException e) {
 
-		validationInfos.addError("Il certificato è scaduto in data: "
-			+ dateFormatter.format(signatureCertificate.getNotAfter()));
-		validationInfos.setEsito(EsitoControllo.CERTIFICATO_SCADUTO);
-	    } catch (CertificateNotYetValidException e) {
-		validationInfos.addError("Il certificato è valido a partire dalla data: "
-			+ dateFormatter.format(signatureCertificate.getNotBefore())
-			+ " successiva al riferimento temporale usato: "
-			+ dateFormatter.format(signature.getReferenceDate()));
-		validationInfos.setEsito(EsitoControllo.CERTIFICATO_NON_VALIDO);
-	    }
+                validationInfos.addError("Il certificato è scaduto in data: "
+                        + dateFormatter.format(signatureCertificate.getNotAfter()));
+                validationInfos.setEsito(EsitoControllo.CERTIFICATO_SCADUTO);
+            } catch (CertificateNotYetValidException e) {
+                validationInfos.addError("Il certificato è valido a partire dalla data: "
+                        + dateFormatter.format(signatureCertificate.getNotBefore())
+                        + " successiva al riferimento temporale usato: "
+                        + dateFormatter.format(signature.getReferenceDate()));
+                validationInfos.setEsito(EsitoControllo.CERTIFICATO_NON_VALIDO);
+            }
 
-	    boolean[] keyUsage = signature.getSignerBean().getCertificate().getKeyUsage();
-	    if (keyUsage == null || !keyUsage[1]) {
-		validationInfos.addError("Il certificato non supporta l'utilizzo non-repudation");
-		validationInfos.setEsito(EsitoControllo.CERTIFICATO_ERRATO);
-	    }
+            boolean[] keyUsage = signature.getSignerBean().getCertificate().getKeyUsage();
+            if (keyUsage == null || !keyUsage[1]) {
+                validationInfos.addError("Il certificato non supporta l'utilizzo non-repudation");
+                validationInfos.setEsito(EsitoControllo.CERTIFICATO_ERRATO);
+            }
 
-	    validationInfosMap.put(signature, validationInfos);
+            validationInfosMap.put(signature, validationInfos);
 
-	    result &= validationInfos.isValid();
+            result &= validationInfos.isValid();
 
-	    if (performCounterSignaturesCheck) {
-		List<ISignature> counterSignatures = signature.getCounterSignatures();
-		populateValidationInfosMapFromSignatureList(validationInfosMap, counterSignatures);
-	    }
-	}
-	return result;
+            if (performCounterSignaturesCheck) {
+                List<ISignature> counterSignatures = signature.getCounterSignatures();
+                populateValidationInfosMapFromSignatureList(validationInfosMap, counterSignatures);
+            }
+        }
+        return result;
     }
 }

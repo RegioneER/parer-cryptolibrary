@@ -22,13 +22,13 @@ public class CryptoSignerApplicationContextProvider implements ApplicationContex
     private static ApplicationContext context;
 
     public void setApplicationContext(ApplicationContext context) throws BeansException {
-	CryptoSignerApplicationContextProvider.context = context;
+        CryptoSignerApplicationContextProvider.context = context;
     }
 
     /**
      * @return the context
      */
     public static ApplicationContext getContext() {
-	return context;
+        return context;
     }
 }

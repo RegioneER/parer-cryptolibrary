@@ -23,10 +23,10 @@ public class SimpleKeySelectorResult implements KeySelectorResult {
     private PublicKey pk;
 
     SimpleKeySelectorResult(PublicKey pk) {
-	this.pk = pk;
+        this.pk = pk;
     }
 
     public Key getKey() {
-	return pk;
+        return pk;
     }
 }

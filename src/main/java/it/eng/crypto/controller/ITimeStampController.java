@@ -38,7 +38,7 @@ public interface ITimeStampController {
      * @throws CryptoSignerException
      */
     public DocumentAndTimeStampInfoBean[] checkTimeStamps(File file)
-	    throws FileNotFoundException, CryptoSignerException;
+            throws FileNotFoundException, CryptoSignerException;
 
     /**
      * Controlla e restituisce le informazioni riguardo alla marca temporale di un file, verificando
@@ -53,7 +53,7 @@ public interface ITimeStampController {
      * @throws CryptoSignerException
      */
     public DocumentAndTimeStampInfoBean[] checkTimeStamps(File file,
-	    File... timeStampExtensionChain) throws FileNotFoundException, CryptoSignerException;
+            File... timeStampExtensionChain) throws FileNotFoundException, CryptoSignerException;
 
     /**
      * Controlla e restituisce le informazioni riguardo alle marche temporali presenti in un file
@@ -68,7 +68,7 @@ public interface ITimeStampController {
      * @throws FileNotFoundException
      */
     public DocumentAndTimeStampInfoBean[] checkTimeStamps(File file, File detachedTimeStamp)
-	    throws FileNotFoundException, CryptoSignerException;
+            throws FileNotFoundException, CryptoSignerException;
 
     /**
      * Controlla e restituisce le informazioni riguardo alle marche temporali presenti in un file
@@ -85,7 +85,7 @@ public interface ITimeStampController {
      * @throws CryptoSignerException
      */
     public DocumentAndTimeStampInfoBean[] checkTimeStamps(File file, File detachedTimeStamp,
-	    File... timeStampExtensionChain) throws FileNotFoundException, CryptoSignerException;
+            File... timeStampExtensionChain) throws FileNotFoundException, CryptoSignerException;
 
     /**
      * Recupera il {@link it.eng.crypto.data.AbstractSigner signer} utilizzato per l'analisi e

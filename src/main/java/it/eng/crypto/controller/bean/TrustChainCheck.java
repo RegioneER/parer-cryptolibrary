@@ -30,27 +30,27 @@ public class TrustChainCheck {
     private boolean isRootCa;
 
     public X509Certificate getCerificate() {
-	return cerificate;
+        return cerificate;
     }
 
     public void setCerificate(X509Certificate cerificate) {
-	this.cerificate = cerificate;
+        this.cerificate = cerificate;
     }
 
     public X509CRL getCrl() {
-	return crl;
+        return crl;
     }
 
     public void setCrl(X509CRL crl) {
-	this.crl = crl;
+        this.crl = crl;
     }
 
     public boolean isIsRootCa() {
-	return isRootCa;
+        return isRootCa;
     }
 
     public void setIsRootCa(boolean isRootCa) {
-	this.isRootCa = isRootCa;
+        this.isRootCa = isRootCa;
     }
 
 }

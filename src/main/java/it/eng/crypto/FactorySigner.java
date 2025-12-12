@@ -38,7 +38,7 @@ public class FactorySigner {
      * @param configuration
      */
     public static void registerSpringContext(ApplicationContext context) {
-	CryptoSingleton.getInstance().setContext(context);
+        CryptoSingleton.getInstance().setContext(context);
     }
 
     /**
@@ -47,8 +47,8 @@ public class FactorySigner {
      * @return
      */
     public static synchronized ICAStorage getInstanceCAStorage() {
-	return CryptoSingleton.getInstance().getContext().getBean(CryptoConstants.ICASTORAGE,
-		ICAStorage.class);
+        return CryptoSingleton.getInstance().getContext().getBean(CryptoConstants.ICASTORAGE,
+                ICAStorage.class);
     }
 
     /**
@@ -57,8 +57,8 @@ public class FactorySigner {
      * @return
      */
     public static synchronized ICRLStorage getInstanceCRLStorage() {
-	return CryptoSingleton.getInstance().getContext().getBean(CryptoConstants.ICRLSTORAGE,
-		ICRLStorage.class);
+        return CryptoSingleton.getInstance().getContext().getBean(CryptoConstants.ICRLSTORAGE,
+                ICRLStorage.class);
     }
 
     /**
@@ -67,8 +67,8 @@ public class FactorySigner {
      * @return
      */
     public static synchronized IConfigStorage getInstanceConfigStorage() {
-	return CryptoSingleton.getInstance().getContext().getBean(CryptoConstants.ICONFIGSTORAGE,
-		IConfigStorage.class);
+        return CryptoSingleton.getInstance().getContext().getBean(CryptoConstants.ICONFIGSTORAGE,
+                IConfigStorage.class);
     }
 
     /**
@@ -77,7 +77,7 @@ public class FactorySigner {
      * @return
      */
     public static synchronized ICertificateAuthority getInstanceCertificateAuthority() {
-	return CryptoSingleton.getInstance().getContext()
-		.getBean(CryptoConstants.ICERTIFICATEAUTHORITY, ICertificateAuthority.class);
+        return CryptoSingleton.getInstance().getContext()
+                .getBean(CryptoConstants.ICERTIFICATEAUTHORITY, ICertificateAuthority.class);
     }
 }

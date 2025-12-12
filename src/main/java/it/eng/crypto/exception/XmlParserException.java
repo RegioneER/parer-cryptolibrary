@@ -28,22 +28,22 @@ public class XmlParserException extends Exception {
     private static final long serialVersionUID = 1L;
 
     public XmlParserException() {
-	super();
-	// TODO Auto-generated constructor stub
+        super();
+        // TODO Auto-generated constructor stub
     }
 
     public XmlParserException(String message, Throwable cause) {
-	super(message, cause);
-	// TODO Auto-generated constructor stub
+        super(message, cause);
+        // TODO Auto-generated constructor stub
     }
 
     public XmlParserException(String message) {
-	super(message);
-	// TODO Auto-generated constructor stub
+        super(message);
+        // TODO Auto-generated constructor stub
     }
 
     public XmlParserException(Throwable cause) {
-	super(cause);
-	// TODO Auto-generated constructor stub
+        super(cause);
+        // TODO Auto-generated constructor stub
     }
 }

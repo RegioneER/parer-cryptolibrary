@@ -20,10 +20,10 @@ public class DataSigner {
     private List<AbstractSigner> signersManager;
 
     public List<AbstractSigner> getSignersManager() {
-	return signersManager;
+        return signersManager;
     }
 
     public void setSignersManager(List<AbstractSigner> signersManager) {
-	this.signersManager = signersManager;
+        this.signersManager = signersManager;
     }
 }
