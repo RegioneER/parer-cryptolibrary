@@ -236,11 +236,14 @@ public class TimeStampController implements ITimeStampController {
                                             .getURLCrlDistributionPoint(saX509Certificate);
                                     X509CRL envelopeCrl = null;
                                     if (urlCRLDistributionPoints != null) {
-					envelopeCrl = signerUtil.getCrlByURL(urlCRLDistributionPoints,
-						documentAndTimeStampInfo.getHttpCrlTimeoutConnection(),
-						documentAndTimeStampInfo.getHttpCrlSocketTimeout(),
-						documentAndTimeStampInfo.getLdapCrlTimeoutConnection());
-				      }
+                                        envelopeCrl = signerUtil.getCrlByURL(
+                                                urlCRLDistributionPoints,
+                                                documentAndTimeStampInfo
+                                                        .getHttpCrlTimeoutConnection(),
+                                                documentAndTimeStampInfo.getHttpCrlSocketTimeout(),
+                                                documentAndTimeStampInfo
+                                                        .getLdapCrlTimeoutConnection());
+                                    }
                                     if (envelopeCrl != null) {
                                         // Se arriva qua, è stata scaricata una crl valida
 

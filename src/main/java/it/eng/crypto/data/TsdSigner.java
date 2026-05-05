@@ -16,22 +16,21 @@
  */
 package it.eng.crypto.data;
 
-import it.eng.crypto.controller.bean.ValidationInfos;
-import it.eng.crypto.data.signature.ISignature;
-import it.eng.crypto.data.type.SignerType;
-import it.eng.crypto.utils.VerificheEnums;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRL;
 import java.security.cert.Certificate;
 import java.util.Collection;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
@@ -39,6 +38,11 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.cms.CMSTimeStampedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.eng.crypto.controller.bean.ValidationInfos;
+import it.eng.crypto.data.signature.ISignature;
+import it.eng.crypto.data.type.SignerType;
+import it.eng.crypto.utils.VerificheEnums;
 
 /**
  *
@@ -163,8 +167,16 @@ public class TsdSigner extends AbstractSigner {
         return validationInfos;
     }
 
+    @Override
     public ValidationInfos validateTimeStampTokensEmbedded(TimeStampToken timeStampToken) {
         ValidationInfos validationInfos = new ValidationInfos();
+
+        if (this.file == null) {
+            validationInfos.addError("File non specificato");
+            validationInfos.setEsito(VerificheEnums.EsitoControllo.FORMATO_NON_CONOSCIUTO);
+            return validationInfos;
+        }
+
         if (this.timestamptokens == null || this.timestamptokens.length == 0) {
             if (!this.isSignedType(file, validationInfos)) {
                 validationInfos.addError("File non in formato: " + this.getFormat());
@@ -172,17 +184,46 @@ public class TsdSigner extends AbstractSigner {
                 return validationInfos;
             }
         }
+
+        if (timeStampToken == null) {
+            validationInfos.addError("Timestamp token nullo");
+            validationInfos.setEsito(VerificheEnums.EsitoControllo.FORMATO_NON_CONOSCIUTO);
+            return validationInfos;
+        }
+
         try {
+            // Get the content to digest from tsd (CMSSignedData)
+            byte[] contentToDigest = tsd.getContent();
+            if (contentToDigest == null) {
+                validationInfos.addError("Contenuto della busta CMS nullo");
+                validationInfos.setEsito(VerificheEnums.EsitoControllo.FORMATO_NON_CONOSCIUTO);
+                return validationInfos;
+            }
+
             TimeStampRequestGenerator gen = new TimeStampRequestGenerator();
             String hashAlgOID = timeStampToken.getTimeStampInfo().getMessageImprintAlgOID().getId();
+
+            // Convert to ASN1ObjectIdentifier for non-deprecated method
+            ASN1ObjectIdentifier algorithmOID = new ASN1ObjectIdentifier(hashAlgOID);
+
             MessageDigest digest = MessageDigest.getInstance(hashAlgOID);
-            TimeStampRequest request = gen.generate(hashAlgOID, digest.digest(tsd.getContent()));
+            byte[] digestBytes = digest.digest(contentToDigest);
+
+            // Use non-deprecated method with ASN1ObjectIdentifier
+            TimeStampRequest request = gen.generate(algorithmOID, digestBytes);
+
             this.checkTimeStampTokenOverRequest(validationInfos, timeStampToken, request);
+
+        } catch (NoSuchAlgorithmException e) {
+            validationInfos
+                    .addError("Impossibile trovare l'algoritmo di digest: " + e.getMessage());
+            validationInfos.setEsito(VerificheEnums.EsitoControllo.FORMATO_NON_CONOSCIUTO);
         } catch (Exception e) {
             validationInfos.addError(
                     "Errore durante la validazione della marca temporale: " + e.getMessage());
             validationInfos.setEsito(VerificheEnums.EsitoControllo.FORMATO_NON_CONOSCIUTO);
         }
+
         return validationInfos;
     }
 }

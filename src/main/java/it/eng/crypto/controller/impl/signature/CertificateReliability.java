@@ -96,8 +96,8 @@ public class CertificateReliability extends AbstractSignerController {
             signatures = (List<ISignature>) output.getProperty(OutputSignerBean.SIGNATURE_PROPERTY);
             result = populateUnqualifiedSignaturesList(tCheckMap,
                     unqualifiedSignatureValidationInfos, signatures, certificatesAuthorityStorage,
-                    input.isCheckCAOnline(), 
-                    input.getHttpCrlTimeoutConnection(), input.getHttpCrlSocketTimeout(), input.getLdapCrlTimeoutConnection());
+                    input.isCheckCAOnline(), input.getHttpCrlTimeoutConnection(),
+                    input.getHttpCrlSocketTimeout(), input.getLdapCrlTimeoutConnection());
 
             // Popolo la lista delle firme con certificato non accreditato
             output.setProperty(OutputSignerBean.CERTIFICATE_UNQUALIFIED_PROPERTY,
@@ -114,7 +114,8 @@ public class CertificateReliability extends AbstractSignerController {
             Map<ISignature, List<TrustChainCheck>> tCheckMap,
             Map<ISignature, ValidationInfos> unqualifiedSignatureValidationInfos,
             List<ISignature> signatures, ICAStorage certificatesAuthorityStorage,
-            boolean checkCaOnline, int  httpCrlTimeoutConnection, int httpCrlSocketTimeout, int ldapCrlTimeoutConnection) {
+            boolean checkCaOnline, int httpCrlTimeoutConnection, int httpCrlSocketTimeout,
+            int ldapCrlTimeoutConnection) {
 
         boolean result = true;
 
@@ -222,8 +223,9 @@ public class CertificateReliability extends AbstractSignerController {
                                     X509CRL envelopeCrl = null;
                                     if (urlCRLDistributionPoints != null) {
                                         log.debug("CRL nel db non trovata, scarico la CRL");
-					envelopeCrl = signerUtil.getCrlByURL(urlCRLDistributionPoints,
-						httpCrlTimeoutConnection, httpCrlSocketTimeout, ldapCrlTimeoutConnection);
+                                        envelopeCrl = signerUtil.getCrlByURL(
+                                                urlCRLDistributionPoints, httpCrlTimeoutConnection,
+                                                httpCrlSocketTimeout, ldapCrlTimeoutConnection);
                                     }
                                     if (envelopeCrl != null) {
                                         tChainCheck.setCrl(envelopeCrl);
@@ -273,8 +275,8 @@ public class CertificateReliability extends AbstractSignerController {
                 List<ISignature> counterSignatures = signature.getCounterSignatures();
                 result &= populateUnqualifiedSignaturesList(tCheckMap,
                         unqualifiedSignatureValidationInfos, counterSignatures,
-                        certificatesAuthorityStorage, checkCaOnline,
-                        httpCrlTimeoutConnection, httpCrlSocketTimeout, ldapCrlTimeoutConnection);
+                        certificatesAuthorityStorage, checkCaOnline, httpCrlTimeoutConnection,
+                        httpCrlSocketTimeout, ldapCrlTimeoutConnection);
             }
 
         }

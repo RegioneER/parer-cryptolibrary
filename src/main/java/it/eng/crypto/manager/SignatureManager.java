@@ -159,10 +159,8 @@ public class SignatureManager {
 
     private boolean searchCAOnline;
     private int httpCrlTimeout;
-    private int httpCrlSocketTimeout;    
+    private int httpCrlSocketTimeout;
     private int ldapCrlTimeout;
-
-    
 
     private static final ThreadLocal<Boolean> _isXml = new ThreadLocal<Boolean>() {
         @Override
@@ -1004,26 +1002,26 @@ public class SignatureManager {
     }
 
     public int getHttpCrlTimeout() {
-	return httpCrlTimeout;
+        return httpCrlTimeout;
     }
 
     public void setHttpCrlTimeout(int httpCrlTimeout) {
-	this.httpCrlTimeout = httpCrlTimeout;
+        this.httpCrlTimeout = httpCrlTimeout;
     }
 
     public int getLdapCrlTimeout() {
-	return ldapCrlTimeout;
+        return ldapCrlTimeout;
     }
 
     public void setLdapCrlTimeout(int ldapCrlTimeout) {
-	this.ldapCrlTimeout = ldapCrlTimeout;
+        this.ldapCrlTimeout = ldapCrlTimeout;
     }
 
     public int getHttpCrlSocketTimeout() {
-	return httpCrlSocketTimeout;
+        return httpCrlSocketTimeout;
     }
 
     public void setHttpCrlSocketTimeout(int httpCrlSocketTimeout) {
-	this.httpCrlSocketTimeout = httpCrlSocketTimeout;
+        this.httpCrlSocketTimeout = httpCrlSocketTimeout;
     }
 }

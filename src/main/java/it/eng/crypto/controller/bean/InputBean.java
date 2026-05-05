@@ -29,13 +29,11 @@ public class InputBean {
 
     // Timeout socket HTTP per recupero CRL
     private int httpCrlSocketTimeout;
-    
+
     // Timeout connessione LDAP per recupero CRL
     private int ldapCrlTimeoutConnection;
 
-
     private boolean checkCAOnline;
-
 
     /**
      * Recupera il valore di un flag di controllo
@@ -99,7 +97,7 @@ public class InputBean {
     public void setCrl(CRL crl) {
         this.crl = crl;
     }
-    
+
     public boolean isCheckCAOnline() {
         return checkCAOnline;
     }
@@ -107,32 +105,30 @@ public class InputBean {
     public void setCheckCAOnline(boolean checkCAOnline) {
         this.checkCAOnline = checkCAOnline;
     }
-    
+
     // Getter e Setter timeout connessione CRL
     public int getHttpCrlTimeoutConnection() {
-	return httpCrlTimeoutConnection;
+        return httpCrlTimeoutConnection;
     }
 
     public void setHttpCrlTimeoutConnection(int httpCrlTimeoutConnection) {
-	this.httpCrlTimeoutConnection = httpCrlTimeoutConnection;
+        this.httpCrlTimeoutConnection = httpCrlTimeoutConnection;
     }
 
     public int getLdapCrlTimeoutConnection() {
-	return ldapCrlTimeoutConnection;
+        return ldapCrlTimeoutConnection;
     }
 
     public void setLdapCrlTimeoutConnection(int ldapCrlTimeoutConnection) {
-	this.ldapCrlTimeoutConnection = ldapCrlTimeoutConnection;
+        this.ldapCrlTimeoutConnection = ldapCrlTimeoutConnection;
     }
 
     public int getHttpCrlSocketTimeout() {
-	return httpCrlSocketTimeout;
+        return httpCrlSocketTimeout;
     }
 
     public void setHttpCrlSocketTimeout(int httpCrlSocketTimeout) {
-	this.httpCrlSocketTimeout = httpCrlSocketTimeout;
+        this.httpCrlSocketTimeout = httpCrlSocketTimeout;
     }
-
-
 
 }

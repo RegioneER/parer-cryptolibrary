@@ -80,19 +80,20 @@ public class CRLUtil {
     private static final String BC_PROVIDER = "BC";
 
     /**
-     *  Recupera le CRL tramite il protocollo HTTP/HTTPS con supporto proxy
-     * 
-     * @param url URL della CRL
-     * @param configuration Configurazione della connessione
+     * Recupera le CRL tramite il protocollo HTTP/HTTPS con supporto proxy
+     *
+     * @param url                   URL della CRL
+     * @param configuration         Configurazione della connessione
      * @param httpTimeoutConnection timeout di connessione HTTP
-     * @param httpSocketTimeout timeout di socket HTTP
+     * @param httpSocketTimeout     timeout di socket HTTP
      * @return CRL recuperata
-     * @throws IOException generica eccezione di I/O
-     * @throws CryptoSignerException generica eccezione di firma
-     * @throws CertificateException generica eccezione di certificato
+     * @throws IOException             generica eccezione di I/O
+     * @throws CryptoSignerException   generica eccezione di firma
+     * @throws CertificateException    generica eccezione di certificato
      * @throws NoSuchProviderException generica eccezione di provider non trovato
      */
-    X509CRL ricercaCrlByProxyHTTP(String url, CryptoConfiguration configuration, int httpTimeoutConnection, int httpSocketTimeout) throws IOException,
+    X509CRL ricercaCrlByProxyHTTP(String url, CryptoConfiguration configuration,
+            int httpTimeoutConnection, int httpSocketTimeout) throws IOException,
             CryptoSignerException, CertificateException, NoSuchProviderException {
 
         final int connectionTimeout = httpTimeoutConnection * 1000; // conversione in millisecondi
@@ -161,18 +162,20 @@ public class CRLUtil {
      * Recupera le CRL tramite il protocollo LDAP
      *
      * @param url
-     * @param ldapTimeoutConnection 
+     * @param ldapTimeoutConnection
      *
      * @return
-     * @throws IOException 
-     * @throws NoSuchProviderException 
-     * @throws CertificateException 
-     * @throws CryptoSignerException 
+     * @throws IOException
+     * @throws NoSuchProviderException
+     * @throws CertificateException
+     * @throws CryptoSignerException
      *
      * @throws Exception
      */
-    X509CRL searchCrlByLDAP(String url, int ldapTimeoutConnection) throws CertificateException, NoSuchProviderException, IOException, CryptoSignerException {
-        final String timeout = String.valueOf(ldapTimeoutConnection * 1000); // conversione in millisecondi
+    X509CRL searchCrlByLDAP(String url, int ldapTimeoutConnection) throws CertificateException,
+            NoSuchProviderException, IOException, CryptoSignerException {
+        final String timeout = String.valueOf(ldapTimeoutConnection * 1000); // conversione in
+                                                                             // millisecondi
         String ldapUrl = url.replace(" ", "%20");
         X509CRL ret = null;
         if (ldapUrl.toLowerCase().indexOf("?certificaterevocationlist") < 0) {
@@ -223,7 +226,8 @@ public class CRLUtil {
         return ret;
     }
 
-    X509CRL ricercaCrlByFile(String url) throws URISyntaxException, IOException, CertificateException, NoSuchProviderException {
+    X509CRL ricercaCrlByFile(String url)
+            throws URISyntaxException, IOException, CertificateException, NoSuchProviderException {
         Path crlPath = Paths.get(new URI(url));
         byte[] crlBytes = Files.readAllBytes(crlPath);
         return parse(crlBytes);

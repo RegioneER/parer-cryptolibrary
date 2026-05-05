@@ -13,7 +13,6 @@
 
 package it.eng.crypto.data;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRL;
 import java.security.cert.Certificate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64InputStream;
@@ -41,6 +41,7 @@ import org.apache.james.mime4j.dom.Multipart;
 import org.apache.james.mime4j.message.BodyPart;
 import org.apache.james.mime4j.message.DefaultMessageBuilder;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -49,6 +50,7 @@ import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.util.encoders.Base64;
 
 import it.eng.crypto.controller.bean.ValidationInfos;
 import it.eng.crypto.data.signature.ISignature;
@@ -80,8 +82,8 @@ public class M7MSigner extends AbstractSigner {
                     Multipart multipart = (Multipart) mimeMsg.getBody();
                     for (Entity en : multipart.getBodyParts()) {
                         BodyPart part = (BodyPart) en;
-                        if (part.isMimeType("application/timestamp-reply")
-                                || part.isMimeType("application/timestamp")) {
+                        if (part.getMimeType().equalsIgnoreCase("application/timestamp-reply")
+                                || part.getMimeType().equalsIgnoreCase("application/timestamp")) {
                             byte[] buffer = null;
                             byte[] input = IOUtils
                                     .toByteArray(((BinaryBody) part.getBody()).getInputStream());
@@ -90,8 +92,7 @@ public class M7MSigner extends AbstractSigner {
                                 tsToken = resp.getTimeStampToken();
                             } catch (Exception e1) {
                                 try {
-                                    org.bouncycastle.util.encoders.Base64 dec = new org.bouncycastle.util.encoders.Base64();
-                                    buffer = dec.decode(input);
+                                    buffer = Base64.decode(input);
                                     resp = new TimeStampResponse(buffer);
                                     tsToken = resp.getTimeStampToken();
                                 } catch (Exception e) {
@@ -133,7 +134,7 @@ public class M7MSigner extends AbstractSigner {
                 Multipart multipart = (Multipart) mimeMsg.getBody();
                 for (Entity e : multipart.getBodyParts()) {
                     BodyPart part = (BodyPart) e;
-                    if (part.isMimeType("application/pkcs7-mime")) {
+                    if (part.getMimeType().equalsIgnoreCase("application/pkcs7-mime")) {
                         return part;
                     }
                 }
@@ -192,14 +193,14 @@ public class M7MSigner extends AbstractSigner {
                 Multipart multipart = (Multipart) mimeMsg.getBody();
                 for (Entity e : multipart.getBodyParts()) {
                     BodyPart part = (BodyPart) e;
-                    if (part.isMimeType("application/timestamp-reply")
-                            || part.isMimeType("application/timestamp")) {
+                    if (part.getMimeType().equalsIgnoreCase("application/timestamp-reply")
+                            || part.getMimeType().equalsIgnoreCase("application/timestamp")) {
                         if (timestamp_reply) {
                             // se ci sono due marche non è un M7M
                             return false;
                         }
                         timestamp_reply = true;
-                    } else if (part.isMimeType("application/pkcs7-mime")) {
+                    } else if (part.getMimeType().equalsIgnoreCase("application/pkcs7-mime")) {
                         if (pcks7_mime) {
                             // se ci sono due firme non è un M7M
                             return false;
@@ -238,23 +239,24 @@ public class M7MSigner extends AbstractSigner {
                         IOUtils.closeQuietly(pr);
                     }
                 }
-                if (cmsSignedData == null) {
-                    partStream = p7mPart.getInputStream();
-                    ContentInfo ci = ContentInfo.getInstance(
-                            new ASN1InputStream(new BufferedInputStream(partStream), streamLength)
-                                    .readObject());
-                    cmsSignedData = new CMSSignedData(ci);
-                }
+				if (cmsSignedData == null) {
+					partStream = p7mPart.getInputStream();
+					try (Base64InputStream bis = new Base64InputStream(partStream)) {
+						ContentInfo ci = ContentInfo.getInstance(new ASN1InputStream(bis, streamLength).readObject());
+						cmsSignedData = new CMSSignedData(ci);
+					}
+				}
             } catch (Exception e) {
                 try {
                     if (partStream != null) {
                         IOUtils.closeQuietly(partStream);
                     }
                     partStream = p7mPart.getInputStream();
-                    ContentInfo ci = ContentInfo.getInstance(
-                            new ASN1InputStream(new Base64InputStream(partStream), streamLength)
-                                    .readObject());
-                    cmsSignedData = new CMSSignedData(ci);
+					try (Base64InputStream bis = new Base64InputStream(partStream)) {
+						ContentInfo ci = ContentInfo
+								.getInstance(new ASN1InputStream(bis, streamLength).readObject());
+						cmsSignedData = new CMSSignedData(ci);
+					}
                 } catch (Exception e2) {
                     complianceCheck
                             .addWarning("Il file M7M contiene una busta CMS non valida o corrotta");
@@ -279,15 +281,12 @@ public class M7MSigner extends AbstractSigner {
      * </ul>
      */
     public boolean isSignedType(byte[] content, ValidationInfos complianceCheck) {
-        ByteArrayInputStream bais = null;
-        try {
-            bais = new ByteArrayInputStream(content);
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(content)) {
             return isSignedType(bais, content.length, complianceCheck);
-        } finally {
-            if (bais != null) {
-                IOUtils.closeQuietly(bais);
-            }
-        }
+        } catch (IOException ioex) {
+			log.error("Errore IO", ioex);
+			return false;
+		} 
     }
 
     public SignerType getFormat() {
@@ -297,33 +296,45 @@ public class M7MSigner extends AbstractSigner {
     public ValidationInfos validateTimeStampTokensEmbedded() {
         ValidationInfos validationInfos = new ValidationInfos();
         if (this.file == null) {
-            validationInfos.addError("File di non specificato");
+            validationInfos.addError("File non specificato");
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
             return validationInfos;
         }
         if (this.timestamptokens == null) {
             getTimeStampTokens();
         }
-        // validationInfos.setValidatedObject(timestamptoken);
+        
         try {
-            if (timestamptokens == null) {
-                throw new Exception();
+            if (timestamptokens == null || timestamptokens.length == 0) {
+                throw new Exception("Nessun timestamp token trovato");
             }
+            
+            // Get the content bytes once for all tokens
+            byte[] contentBytes = getP7MContentBytes();
+            
             for (TimeStampToken timestamptoken : timestamptokens) {
+                if (timestamptoken == null) {
+                    continue;
+                }
+                
                 TimeStampRequestGenerator gen = new TimeStampRequestGenerator();
-                String hashAlgOID = timestamptoken.getTimeStampInfo().getMessageImprintAlgOID()
-                        .getId();
+                String hashAlgOID = timestamptoken.getTimeStampInfo().getMessageImprintAlgOID().getId();
+                ASN1ObjectIdentifier algorithmOID = new ASN1ObjectIdentifier(hashAlgOID);
+                
                 MessageDigest digest = MessageDigest.getInstance(hashAlgOID);
-                TimeStampRequest request = gen.generate(hashAlgOID,
-                        digest.digest(IOUtils.toByteArray(p7mPart.getInputStream())));
+                byte[] digestBytes = digest.digest(contentBytes);
+                TimeStampRequest request = gen.generate(algorithmOID, digestBytes);
 
                 this.checkTimeStampTokenOverRequest(validationInfos, timestamptoken, request);
             }
         } catch (NoSuchAlgorithmException e) {
-            validationInfos.addError("Impossibile trovare l'algoritmo di digest");
+            validationInfos.addError("Impossibile trovare l'algoritmo di digest: " + e.getMessage());
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        } catch (IOException e) {
+            validationInfos.addError("Errore nella lettura del contenuto: " + e.getMessage());
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
         } catch (Exception e) {
-            validationInfos.addError("Il token non contiene una marca temporale valida");
+            validationInfos.addError("Il token non contiene una marca temporale valida: " + e.getMessage());
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
         }
 
@@ -335,37 +346,71 @@ public class M7MSigner extends AbstractSigner {
         ValidationInfos validationInfos = new ValidationInfos();
 
         if (this.file == null) {
-            validationInfos.addError("File di non specificato");
+            validationInfos.addError("File non specificato");
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
             return validationInfos;
         }
         if (this.timestamptokens == null) {
             getTimeStampTokens();
         }
+        
         try {
-            if (timestamptokens == null) {
-                throw new Exception();
+            if (timestamptokens == null || timestamptokens.length == 0) {
+                throw new Exception("Nessun timestamp token trovato");
             }
+            if (timeStampToken == null) {
+                throw new Exception("Timestamp token nullo");
+            }
+
+            // Get the content bytes
+            byte[] contentBytes = getP7MContentBytes();
 
             TimeStampRequestGenerator gen = new TimeStampRequestGenerator();
             String hashAlgOID = timeStampToken.getTimeStampInfo().getMessageImprintAlgOID().getId();
+            ASN1ObjectIdentifier algorithmOID = new ASN1ObjectIdentifier(hashAlgOID);
+            
             MessageDigest digest = MessageDigest.getInstance(hashAlgOID);
-            TimeStampRequest request = gen.generate(hashAlgOID,
-                    digest.digest(IOUtils.toByteArray(p7mPart.getInputStream())));
+            byte[] digestBytes = digest.digest(contentBytes);
+            TimeStampRequest request = gen.generate(algorithmOID, digestBytes);
 
             this.checkTimeStampTokenOverRequest(validationInfos, timeStampToken, request);
 
         } catch (NoSuchAlgorithmException e) {
-            validationInfos.addError("Impossibile trovare l'algoritmo di digest");
+            validationInfos.addError("Impossibile trovare l'algoritmo di digest: " + e.getMessage());
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+        } catch (IOException e) {
+            validationInfos.addError("Errore nella lettura del contenuto: " + e.getMessage());
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
         } catch (Exception e) {
-            validationInfos.addError("Il token non contiene una marca temporale valida");
+            validationInfos.addError("Il token non contiene una marca temporale valida: " + e.getMessage());
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
         }
 
         return validationInfos;
     }
 
+    /**
+     * Helper method to extract P7M content bytes with proper resource management
+     */
+    private byte[] getP7MContentBytes() throws IOException {
+        if (p7mPart == null) {
+            BodyPart p7mBodyPart = getP7MPart();
+            if (p7mBodyPart == null) {
+                throw new IOException("Parte application/pkcs7-mime non trovata");
+            }
+            if (p7mBodyPart.getBody() == null) {
+                throw new IOException("Body della parte application/pkcs7-mime nullo");
+            }
+            if (!(p7mBodyPart.getBody() instanceof BinaryBody)) {
+                throw new IOException("Il body non è di tipo BinaryBody");
+            }
+            p7mPart = (BinaryBody) p7mBodyPart.getBody();
+        }
+        
+        try (InputStream p7mInputStream = p7mPart.getInputStream()) {
+            return IOUtils.toByteArray(p7mInputStream);
+        }
+    }
     protected void writeExtractedContentToFile(CMSSignedData cmsSignedData)
             throws IOException, CMSException {
         alreadyExtractedFile = File.createTempFile("content-m7m-signer-",
@@ -425,7 +470,7 @@ public class M7MSigner extends AbstractSigner {
                 }
             }
         }
-        return null;
+        return new byte[0];
     }
 
     public List<ISignature> getSignatures() {
@@ -460,7 +505,6 @@ public class M7MSigner extends AbstractSigner {
     }
 
     public Collection<CRL> getEmbeddedCRLs() {
-        Object content;
         try {
             // content = ((BinaryBody) p7mPart.getBody()).getInputStream();
             // if (content instanceof InputStream) {
@@ -470,11 +514,10 @@ public class M7MSigner extends AbstractSigner {
         } catch (Exception e) {
             log.error("Eccezione generica", e);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public Collection<? extends Certificate> getEmbeddedCertificates() {
-        Object content;
         try {
             // content = ((BinaryBody) p7mPart.getBody()).getInputStream();
             // if (content instanceof InputStream) {
@@ -484,7 +527,7 @@ public class M7MSigner extends AbstractSigner {
         } catch (Exception e) {
             log.error("Eccezione generica", e);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

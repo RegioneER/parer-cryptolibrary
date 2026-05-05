@@ -13,7 +13,6 @@
 
 package it.eng.crypto;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**

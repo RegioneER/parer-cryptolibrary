@@ -174,7 +174,7 @@ public class XMLSigner extends AbstractSigner {
         } catch (Exception e) {
             if (xmlValidator != null && xmlValidator.getResultado() != null
                     && xmlValidator.getResultado().getLog() != null
-                    && xmlValidator.getResultado().getLog().length() > 0) {
+                    && !xmlValidator.getResultado().getLog().isEmpty()) {
                 complianceCheck.addWarning(xmlValidator.getResultado().getLog());
             }
             if (validationResults != null) {
@@ -275,7 +275,7 @@ public class XMLSigner extends AbstractSigner {
                 if (signatureNode instanceof Element) {
                     Element signatureNodeElement = (Element) signatureNode;
                     if (xmlSignatures == null) {
-                        xmlSignatures = new ArrayList<XMLSignature>();
+                        xmlSignatures = new ArrayList<>();
                     }
                     xmlSignatures.add(xmlSignature);
 
@@ -411,16 +411,16 @@ public class XMLSigner extends AbstractSigner {
     }
 
     private Node parseSignatureForSignatureValue(Node signatureNode) {
-        Node signatureValueNode = null;
+        Node localSignatureValueNode = null;
         if (signatureNode instanceof Element) {
             Element signatureNodeElement = (Element) signatureNode;
             NodeList signatureValueList = signatureNodeElement
                     .getElementsByTagNameNS(XMLSignature.XMLNS, "SignatureValue");
             if (signatureValueList != null && signatureValueList.getLength() != 0) {
-                signatureValueNode = signatureValueList.item(0);
+                localSignatureValueNode = signatureValueList.item(0);
             }
         }
-        return signatureValueNode;
+        return localSignatureValueNode;
     }
 
     public ValidationInfos validateTimeStampTokensEmbedded() {

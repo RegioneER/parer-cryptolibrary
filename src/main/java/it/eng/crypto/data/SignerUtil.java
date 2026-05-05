@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.naming.NameNotFoundException;
 import javax.security.auth.x500.X500Principal;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -188,7 +187,7 @@ public class SignerUtil {
         // AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
         // (ASN1Sequence) new ASN1InputStream(new
         // ByteArrayInputStream(oct.getOctets())).readObject());
-        byte[] authkeyId = keyId.getKeyIdentifier(); // new
+        byte[] authkeyId = keyId.getKeyIdentifierOctets(); // new
         // AuthorityKeyIdentifierStructure(pkcs7.getSigningCertificate()).getKeyIdentifier();
         return Hex.encodeHexString(authkeyId);
     }
@@ -214,7 +213,7 @@ public class SignerUtil {
         // AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
         // (ASN1Sequence) new ASN1InputStream(new
         // ByteArrayInputStream(oct.getOctets())).readObject());
-        byte[] authkeyId = keyId.getKeyIdentifier(); // new
+        byte[] authkeyId = keyId.getKeyIdentifierOctets(); // new
         // AuthorityKeyIdentifierStructure(pkcs7.getSigningCertificate()).getKeyIdentifier();
         return Hex.encodeHexString(authkeyId);
     }
@@ -269,16 +268,17 @@ public class SignerUtil {
     }
 
     /**
-     * 
+     *
      * Recupera la CRL in base all'url passato in ingresso
-     * 
-     * @param urls, lista di indirizzi delle CRL
+     *
+     * @param urls,                  lista di indirizzi delle CRL
      * @param httpTimeoutConnection, timeout connessione HTTP
-     * @param httpSocketTimeout, timeout socket HTTP
+     * @param httpSocketTimeout,     timeout socket HTTP
      * @param ldapTimeoutConnection, timeout connessione LDAP
      * @return oggetto CRL
      */
-    public X509CRL getCrlByURL(List<String> urls, int httpTimeoutConnection, int httpSocketTimeout, int ldapTimeoutConnection) {
+    public X509CRL getCrlByURL(List<String> urls, int httpTimeoutConnection, int httpSocketTimeout,
+            int ldapTimeoutConnection) {
 
         X509CRL mostRecentCrl = null;
         for (String url : urls) {
@@ -287,7 +287,7 @@ public class SignerUtil {
                 CRLUtil util = new CRLUtil();
 
                 url = StringUtils.trim(url);
-                log.info("Scarico la CRL dall'URL: {}",  url);
+                log.info("Scarico la CRL dall'URL: {}", url);
 
                 if (url.toUpperCase().startsWith("LDAP")) {
                     crl = util.searchCrlByLDAP(url, ldapTimeoutConnection);
@@ -295,17 +295,19 @@ public class SignerUtil {
                     crl = util.ricercaCrlByFile(url);
                 } else if (url.toUpperCase().startsWith("HTTP")) {
                     crl = util.ricercaCrlByProxyHTTP(url,
-                            CryptoSingleton.getInstance().getConfiguration(), httpTimeoutConnection, httpSocketTimeout);
+                            CryptoSingleton.getInstance().getConfiguration(), httpTimeoutConnection,
+                            httpSocketTimeout);
                 } else {
                     throw new CryptoSignerException("Protocollo di comunicazione non supportato!");
                 }
                 // log.info("getCrlByURL END");
                 log.info("CRL scaricata correttamente");
             } catch (CryptoSignerException e) {
-                log.warn("Si è verificato il seguente errore", e);            
-	    } catch (CertificateException | NoSuchProviderException | IOException | URISyntaxException e) {
+                log.warn("Si è verificato il seguente errore", e);
+            } catch (CertificateException | NoSuchProviderException | IOException
+                    | URISyntaxException e) {
                 log.error("Si è verificato il seguente errore", e);
-	    } 
+            }
             if (crl != null && (mostRecentCrl == null
                     || mostRecentCrl.getNextUpdate().before(crl.getNextUpdate()))) {
                 mostRecentCrl = crl;
@@ -338,7 +340,7 @@ public class SignerUtil {
             CRLUtil util = new CRLUtil();
             Vector<String> urls = (Vector<String>) util.getDERValue(derObj2);
             if (urls != null && !urls.isEmpty()) {
-                return new ArrayList<String>(urls);
+                return new ArrayList<>(urls);
             } else {
                 throw new Exception("Lista delle distribution point vuota o nulla");
             }
@@ -632,7 +634,7 @@ public class SignerUtil {
                 if (donwloadedCaCert.getIssuerX500Principal().getName()
                         .equals(issuerPrincipal.getName())) {
                     String subjectKeyId = getSubjectKeyId(donwloadedCaCert);
-                    if (authIdSignature.equals(subjectKeyId)) {
+                    if (authIdSignature != null && authIdSignature.equals(subjectKeyId)) {
                         // qualifiedCertificate = donwloadedCaCert;
                         return donwloadedCaCert;
                     }
@@ -658,7 +660,7 @@ public class SignerUtil {
         StringBuilder strbuf = new StringBuilder(buf.length * 2);
 
         for (int i = 0; i < buf.length; i++) {
-            if (((int) buf[i] & 0xff) < 0x10) {
+            if ((buf[i] & 0xff) < 0x10) {
                 strbuf.append("0");
             }
             strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
@@ -675,8 +677,8 @@ public class SignerUtil {
                     if (qualifiedCertificate instanceof X509Certificate) {
                         X509Certificate x509Certificate = (X509Certificate) qualifiedCertificate;
                         Principal principal = x509Certificate.getSubjectX500Principal();
-                        if (principal instanceof X509Principal) {
-                            X509Principal x509Principal = (X509Principal) principal;
+                        if (principal instanceof X500Name) {
+                            X500Name x509Principal = (X500Name) principal;
                             if (x509Principal.equals(x500Name)) {
                                 return x509Certificate;
                             }

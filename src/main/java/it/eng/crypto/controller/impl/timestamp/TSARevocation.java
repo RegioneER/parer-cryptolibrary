@@ -138,8 +138,10 @@ public class TSARevocation extends AbstractTimeStampController {
                                     .getURLCrlDistributionPoint(saX509Certificate);
                             X509CRL envelopeCrl = null;
                             if (urlCRLDistributionPoints != null) {
-                                envelopeCrl = signerUtil.getCrlByURL(urlCRLDistributionPoints, input.getHttpCrlTimeoutConnection(),
-					input.getHttpCrlSocketTimeout(), input.getLdapCrlTimeoutConnection());
+                                envelopeCrl = signerUtil.getCrlByURL(urlCRLDistributionPoints,
+                                        input.getHttpCrlTimeoutConnection(),
+                                        input.getHttpCrlSocketTimeout(),
+                                        input.getLdapCrlTimeoutConnection());
                             }
                             if (envelopeCrl != null) {
                                 // Se arriva qua, è stata scaricata una crl valida

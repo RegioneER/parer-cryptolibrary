@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRL;
 import java.security.cert.Certificate;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.tsp.TimeStampResp;
 import org.bouncycastle.cms.CMSSignedData;
@@ -202,24 +204,51 @@ public class TsrSigner extends AbstractSigner {
             }
         }
 
-        // validationInfos.setValidatedObject(timestamptoken);
-        String hashAlgOID = null;
         try {
-            if (timestamptokens == null) {
-                throw new Exception("Il token non contiene una marca temporale");
+            if (timestamptokens == null || timestamptokens.length == 0) {
+                throw new Exception("Nessun timestamp token trovato");
             }
+
+            // Calculate the hash once for all tokens if attachedFile is the same
+            byte[] contentHash = null;
+            String lastHashAlgOID = null;
+
             for (TimeStampToken timestamptoken : timestamptokens) {
+                if (timestamptoken == null) {
+                    continue;
+                }
+
                 TimeStampRequestGenerator gen = new TimeStampRequestGenerator();
-                hashAlgOID = timestamptoken.getTimeStampInfo().getMessageImprintAlgOID().getId();
+                String hashAlgOID = timestamptoken.getTimeStampInfo().getMessageImprintAlgOID()
+                        .getId();
+                ASN1ObjectIdentifier algorithmOID = new ASN1ObjectIdentifier(hashAlgOID);
+
                 MessageDigest digest = MessageDigest.getInstance(hashAlgOID);
-                byte[] hash = generateHash(digest, validationInfos, attachedFile);
-                TimeStampRequest request = gen.generate(hashAlgOID, hash);
+
+                // Recalculate hash only if algorithm changed
+                byte[] hash;
+                if (contentHash != null && hashAlgOID.equals(lastHashAlgOID)) {
+                    hash = contentHash;
+                } else {
+                    hash = generateHash(digest, validationInfos, attachedFile);
+                    contentHash = hash;
+                    lastHashAlgOID = hashAlgOID;
+                }
+
+                // Use non-deprecated method with ASN1ObjectIdentifier
+                TimeStampRequest request = gen.generate(algorithmOID, hash);
                 checkTimeStampTokenOverRequest(validationInfos, timestamptoken, request);
             }
+        } catch (NoSuchAlgorithmException e) {
+            validationInfos
+                    .addError("Impossibile trovare l'algoritmo di digest: " + e.getMessage());
+            validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+            log.error("NoSuchAlgorithmException", e);
         } catch (Exception e) {
             validationInfos.addError(
                     "Errore durante la validazione della marca temporale: " + e.getMessage());
             validationInfos.setEsito(EsitoControllo.FORMATO_NON_CONOSCIUTO);
+            log.error("Exception validating detached timestamp tokens", e);
         }
         return validationInfos;
     }
@@ -227,7 +256,7 @@ public class TsrSigner extends AbstractSigner {
     private byte[] generateHash(MessageDigest digest, ValidationInfos validationInfos,
             File... files) {
         if (files == null) {
-            return null;
+            return new byte[0];
         }
         for (File file : files) {
             try (FileInputStream fis = FileUtils.openInputStream(file)) {

@@ -182,10 +182,10 @@ public class CertificateRevocation extends AbstractSignerController {
                                 .getURLCrlDistributionPoint(signatureCertificate);
 
                         if (urlCRLDistributionPoints != null) {
-			    X509CRL distributionPointCRL = signerUtil.getCrlByURL(urlCRLDistributionPoints,
-				    input.getHttpCrlTimeoutConnection(),
-				    input.getHttpCrlSocketTimeout(),
-				    input.getLdapCrlTimeoutConnection());
+                            X509CRL distributionPointCRL = signerUtil.getCrlByURL(
+                                    urlCRLDistributionPoints, input.getHttpCrlTimeoutConnection(),
+                                    input.getHttpCrlSocketTimeout(),
+                                    input.getLdapCrlTimeoutConnection());
 
                             // Se la CRL è stata scaricata correttamente
                             // allora questa deve essere storicizzata

@@ -155,8 +155,10 @@ public class CAObserver implements Observer {
                                             List<String> urlCRLDistributionPoints = SignerUtil
                                                     .newInstance().getURLCrlDistributionPoint(
                                                             (X509Certificate) obj);
-                                            crl = SignerUtil.newInstance()
-                                                    .getCrlByURL(urlCRLDistributionPoints, 20000, 20000, 20000); // default timeout 20s
+                                            crl = SignerUtil.newInstance().getCrlByURL(
+                                                    urlCRLDistributionPoints, 20000, 20000, 20000); // default
+                                                                                                    // timeout
+                                                                                                    // 20s
                                             if (crl != null) {
                                                 FactorySigner.getInstanceCRLStorage()
                                                         .upsertCRL(crl);

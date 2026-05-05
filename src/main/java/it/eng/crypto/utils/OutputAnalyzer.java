@@ -13,15 +13,14 @@
 
 package it.eng.crypto.utils;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import it.eng.crypto.controller.bean.DocumentAndTimeStampInfoBean;
 import it.eng.crypto.controller.bean.OutputSignerBean;
 import it.eng.crypto.controller.bean.ValidationInfos;
 import it.eng.crypto.data.signature.ISignature;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class OutputAnalyzer {
 
